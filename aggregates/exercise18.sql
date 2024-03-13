@@ -17,6 +17,11 @@ CREATE TABLE cd.members (
                             recommendedby INT,
                             joindate timestamp
 );
+
+ALTER TABLE cd.bookings
+    ADD FOREIGN KEY (memid)
+        REFERENCES cd.members (memid);
+
 INSERT INTO cd.members (memid, surname, firstname, address, zipcode, telephone, recommendedby, joindate)
 VALUES
     (0, 'GUEST', 'GUEST', 'GUEST', 0, '(000) 000-0000', NULL, '2012-07-01 00:00:00'),

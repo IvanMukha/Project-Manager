@@ -18,6 +18,11 @@ CREATE TABLE cd.bookings (
                              slots INT
 );
 
+ALTER TABLE cd.bookings
+    ADD FOREIGN KEY (facid)
+        REFERENCES cd.facilities (facid);
+
+
 INSERT INTO cd.facilities (facid,name, membercost, guestcost, initialoutlay, monthlymaintenance)
 VALUES (0,'Tennis Court 1', 5, 25, 10000, 200),
        (1,'Tennis Court 2', 5, 25, 8000, 200),
