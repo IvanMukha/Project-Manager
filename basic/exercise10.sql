@@ -17,6 +17,11 @@ CREATE TABLE cd.facilities(
                               initialoutlay numeric,
                               monthlymaintenance numeric
 );
+
+ALTER TABLE cd.members
+    ADD FOREIGN KEY (recommendedby)
+        REFERENCES cd.members (memid);
+
 INSERT INTO cd.facilities (facid,name, membercost, guestcost, initialoutlay, monthlymaintenance)
 VALUES (0,'Tennis Court 1', 5, 25, 10000, 200),
        (1,'Tennis Court 2', 5, 25, 8000, 200),

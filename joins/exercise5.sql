@@ -33,6 +33,9 @@ ALTER TABLE cd.bookings
     ADD FOREIGN KEY (memid)
         REFERENCES cd.members (memid);
 
+ALTER TABLE cd.members
+    ADD FOREIGN KEY (recommendedby)
+        REFERENCES cd.members (memid);
 
 INSERT INTO cd.members (memid, surname, firstname, address, zipcode, telephone, recommendedby, joindate)
 VALUES
