@@ -17,4 +17,5 @@ target/maven-status
 *.iml
 *.ipr
 *.class
+*.jar
 
