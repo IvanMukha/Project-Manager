@@ -1,5 +1,5 @@
 CREATE TABLE roles (
                        id INT PRIMARY KEY,
-                       name VARCHAR(50) NOT NULL
+                       name VARCHAR NOT NULL
 );
 

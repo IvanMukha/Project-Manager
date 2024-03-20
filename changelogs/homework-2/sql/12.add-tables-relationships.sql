@@ -1,11 +1,3 @@
-ALTER TABLE users
-    ADD CONSTRAINT fk_user_teams
-        FOREIGN KEY (team_id) REFERENCES teams(id);
-
-ALTER TABLE users
-    ADD CONSTRAINT fk_user_id_roles
-        FOREIGN KEY (role_id) REFERENCES roles(id);
-
 ALTER TABLE tasks
     ADD CONSTRAINT fk_reporter_id_tasks
         FOREIGN KEY (reporter_id) REFERENCES users(id);
@@ -50,4 +42,19 @@ ALTER TABLE user_details
     ADD CONSTRAINT fk_user_id_details
         FOREIGN KEY (user_id) REFERENCES users(id);
 
+ALTER TABLE users_teams
+    ADD CONSTRAINT fk_user_id_teams
+        FOREIGN KEY (user_id) REFERENCES users(id);
+
+ALTER TABLE users_teams
+    ADD CONSTRAINT fk_team_id_teams
+        FOREIGN KEY (team_id) REFERENCES teams(id);
+
+ALTER TABLE users_roles
+    ADD CONSTRAINT fk_user_id_roles
+        FOREIGN KEY (user_id) REFERENCES users(id);
+
+ALTER TABLE users_roles
+    ADD CONSTRAINT fk_role_id_roles
+        FOREIGN KEY (role_id) REFERENCES roles(id);
 
