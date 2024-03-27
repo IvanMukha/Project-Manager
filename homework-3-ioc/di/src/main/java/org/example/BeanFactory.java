@@ -13,28 +13,25 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BeanFactory    {
-    private final Context context=Context.getInstance();
+    private final Context context;
     private Set<PostProcessor> postProcessors;
-    private static final BeanFactory instance=new BeanFactory();
-public static BeanFactory getInstance(){
-    return instance;
-}
-    public BeanFactory(){
-        postProcessors = scanPostProcessors("org.example");
 
+    public BeanFactory(Context context){
+        postProcessors = scanPostProcessors("org.example");
+        this.context = context;
     }
 
 
-
-
-
-
-public <T> T createObject(Class<T> clazz) {
+    public <T> T createObject(Class<T> clazz) {
     try {
         final T definition = create(clazz);
         postProcessors.forEach(processor -> {
             try{
-                processor.process(definition,context);
+                try {
+                    processor.process(definition,context);
+                } catch (InvocationTargetException | InstantiationException e) {
+                    throw new RuntimeException(e);
+                }
             }catch (IllegalAccessException e){
                 throw new RuntimeException();
             }

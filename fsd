@@ -1,0 +1,66 @@
+[33mcommit 0ba8b7ba8aa8327a3096b35e457c531a977a2429[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mhomework-3-ioc[m[33m, [m[1;31morigin/homework-3-ioc[m[33m)[m
+Author: IvanMukha <ivan.mukha228@gmail.com>
+Date:   Wed Mar 27 19:33:09 2024 +0300
+
+    homework-3-ioc not completed
+
+[33mcommit 9eb0b9d076eb199acd4dbc61cad1cf2cb6d63883[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Merge: eb06044 6f12065
+Author: SenlaCoursesAdmin <79982092+SenlaCoursesAdmin@users.noreply.github.com>
+Date:   Thu Mar 14 14:04:47 2024 +0300
+
+    Merge pull request #3 from IvanMukha/workhome-1-sql
+    
+    workhome-1-sql Done
+
+[33mcommit 6f1206597e5d9ddfb9bc9586c02fd9a75fdaa372[m[33m ([m[1;31morigin/workhome-1-sql[m[33m, [m[1;32mworkhome-1-sql[m[33m)[m
+Merge: 08c62fc e77cd59
+Author: IvanMukha <ivan.mukha228@gmail.com>
+Date:   Thu Mar 14 10:56:39 2024 +0300
+
+    fix conflict in exercise6
+
+[33mcommit 08c62fcabb159db943cfb7b8e3e24408654da8f3[m
+Author: IvanMukha <ivan.mukha228@gmail.com>
+Date:   Thu Mar 14 10:50:11 2024 +0300
+
+    add cd.members relationship
+
+[33mcommit e77cd599c210fd12b0260725803a02fbf936925d[m
+Author: IvanMukha <104124791+IvanMukha@users.noreply.github.com>
+Date:   Wed Mar 13 23:30:32 2024 +0300
+
+    fix relationship in exercise6.sql
+
+[33mcommit 0798442c54452669729e942808db32e2e9792bd8[m
+Author: IvanMukha <ivan.mukha228@gmail.com>
+Date:   Wed Mar 13 23:27:03 2024 +0300
+
+    add relationship
+
+[33mcommit eb060444635b800654f40f9206c4d19cdd4ad37f[m
+Merge: 9821581 d37ee59
+Author: SenlaCoursesAdmin <79982092+SenlaCoursesAdmin@users.noreply.github.com>
+Date:   Wed Mar 13 20:57:42 2024 +0300
+
+    Merge pull request #2 from IvanMukha/workhome-1-gitignore
+    
+    add .gitignore file
+
+[33mcommit 174ccf814138ce9018e9f52292d3598b1e0fa891[m
+Author: IvanMukha <ivan.mukha228@gmail.com>
+Date:   Wed Mar 13 19:03:28 2024 +0300
+
+    workhome-1-sql Done
+
+[33mcommit d37ee59689dc3f4a28b615574232208c23fa25c0[m[33m ([m[1;31morigin/workhome-1-gitignore[m[33m, [m[1;32mworkhome-1-gitignore[m[33m)[m
+Author: IvanMukha <ivan.mukha228@gmail.com>
+Date:   Tue Mar 12 13:27:12 2024 +0300
+
+    add .gitignore file
+
+[33mcommit 9821581618cb2056e2cd0bffcccf067d9651a691[m
+Author: IvanMukha <104124791+IvanMukha@users.noreply.github.com>
+Date:   Tue Mar 12 12:50:26 2024 +0300
+
+    Create README.md

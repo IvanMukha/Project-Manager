@@ -2,6 +2,9 @@ package org.example;
 
 import org.example.annotations.Component;
 
+import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import org.example.post_processors.AutowiredPostProcessor;
@@ -13,12 +16,13 @@ public class Context {
     private final Map<Class<?>,Object> beans= new HashMap<>();
     private final Map<Class<?>, List<Class<?>>> interface2implementations=new HashMap<>();
 
-private final BeanFactory beanFactory=BeanFactory.getInstance();
+private final BeanFactory beanFactory= new BeanFactory(this);
 public static Context getInstance(){
     return instance;
 }
     public void initContext(){
         Set<Class<?>> components = scanComponents("org.example");
+        fillInterfaces2implementations(components);
         createInstances(components);
             applyPostProcessors();
     }
@@ -30,10 +34,16 @@ public static Context getInstance(){
 
         for (Object component : getInstance().beans.values()) {
             try {
-                autowiredPostProcessor.process(component, getInstance());
+                try {
+                    autowiredPostProcessor.process(component, getInstance());
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
                 valuePostProcessor.process(component, getInstance());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
             }
         }
     }

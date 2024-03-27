@@ -16,8 +16,6 @@ public class ParametersHolder {
 
 
     public String getSomeText() {
-        System.out.println("ВЫВЕЛОСЬ");
-        System.out.println("SOMETEXT+>>>"+someText+" <<<<__");
         return someText;
 
     }
