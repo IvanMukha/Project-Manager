@@ -2,46 +2,52 @@ package org.example;
 
 import org.example.annotations.Component;
 
-import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.example.post_processors.AutowiredPostProcessor;
+
+import org.example.post_processors.AutowirePostProcessor;
 import org.example.post_processors.ValuePostProcessor;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Context {
 
     private final static Context instance=new Context();
-    private final Map<Class<?>,Object> beans= new HashMap<>();
-    private final Map<Class<?>, List<Class<?>>> interface2implementations=new HashMap<>();
+    private final Map<Class<?>,Object> beans= new ConcurrentHashMap<>();
+    private final Map<Class<?>, List<Class<?>>> interface2implementations=new ConcurrentHashMap<>();
+    private static final Logger log= LoggerFactory.getLogger(Context.class);
 
-private final BeanFactory beanFactory= new BeanFactory(this);
+    private final BeanFactory beanFactory= new BeanFactory(this);
+
 public static Context getInstance(){
     return instance;
 }
-    public void initContext(){
-        Set<Class<?>> components = scanComponents("org.example");
+    public void initContext(String packageToScan){
+        Set<Class<?>> components = scanComponents(packageToScan);
         fillInterfaces2implementations(components);
         createInstances(components);
             applyPostProcessors();
     }
 
 
-    private static void applyPostProcessors() {
-        AutowiredPostProcessor autowiredPostProcessor = new AutowiredPostProcessor();
+    private void applyPostProcessors() {
+        AutowirePostProcessor autowirePostProcessor = new AutowirePostProcessor();
         ValuePostProcessor valuePostProcessor = new ValuePostProcessor();
 
         for (Object component : getInstance().beans.values()) {
             try {
                 try {
-                    autowiredPostProcessor.process(component, getInstance());
+                    autowirePostProcessor.process(component, getInstance());
                 } catch (InvocationTargetException e) {
                     throw new RuntimeException(e);
                 }
                 valuePostProcessor.process(component, getInstance());
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                log.error("Error during autowiring post processors", e);
+
             } catch (InstantiationException e) {
                 throw new RuntimeException(e);
             }

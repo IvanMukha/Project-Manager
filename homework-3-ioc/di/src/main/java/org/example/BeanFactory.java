@@ -1,7 +1,10 @@
 package org.example;
 
 import org.example.post_processors.PostProcessor;
+import org.example.post_processors.ValuePostProcessor;
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -10,11 +13,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import java.util.stream.Collectors;
 
 public class BeanFactory    {
     private final Context context;
     private Set<PostProcessor> postProcessors;
+    private static final Logger log= LoggerFactory.getLogger(BeanFactory.class);
 
     public BeanFactory(Context context){
         postProcessors = scanPostProcessors("org.example");
@@ -24,7 +29,7 @@ public class BeanFactory    {
 
     public <T> T createObject(Class<T> clazz) {
     try {
-        final T definition = create(clazz);
+        final T definition = create(clazz,context);
         postProcessors.forEach(processor -> {
             try{
                 try {
@@ -38,16 +43,27 @@ public class BeanFactory    {
         });
         return definition;
         }catch (Exception e){
-        e.printStackTrace();
+        log.error( "Error during create object", e);
     }
     return null;
 }
-private <T> T create(Class<T>clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-    Constructor<?>constructor =clazz.getDeclaredConstructor();
-    List<Object> args= Arrays.stream(constructor.getParameterTypes())
-            .map(context::getObject).collect(Collectors.toList());
-    return (T) constructor.newInstance(args.toArray());
+    private <T> T create(Class<T> clazz, Context context) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+        for (Constructor<?> constructor : constructors) {
+            Class<?>[] parameterTypes = constructor.getParameterTypes();
+            Object[] args = new Object[parameterTypes.length];
+            for (int i = 0; i < parameterTypes.length; i++) {
+                args[i] = context.getObject(parameterTypes[i]);
+            }
+            try {
+                return (T) constructor.newInstance(args);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+             continue;
+            }
+        }
+        throw new NoSuchMethodException("Unable to find suitable constructor for class " + clazz.getName());
     }
+
 
     public static Set<PostProcessor> scanPostProcessors(String packageName) {
         Set<PostProcessor> postProcessors = new HashSet<>();
@@ -60,7 +76,8 @@ private <T> T create(Class<T>clazz) throws NoSuchMethodException, InvocationTarg
                     PostProcessor processor = clazz.getDeclaredConstructor().newInstance();
                     postProcessors.add(processor);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("Error during scan post processors", e);
+
                 }
             }
         }

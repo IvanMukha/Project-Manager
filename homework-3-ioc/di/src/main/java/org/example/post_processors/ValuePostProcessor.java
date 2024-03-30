@@ -2,6 +2,9 @@ package org.example.post_processors;
 
 import org.example.Context;
 import org.example.annotations.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +14,9 @@ import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
+
 public class ValuePostProcessor implements PostProcessor {
+    private static final Logger log = LoggerFactory.getLogger(ValuePostProcessor.class);
 
     @Override
     public void process(Object object, Context context) throws IllegalAccessException {
@@ -41,7 +46,7 @@ public class ValuePostProcessor implements PostProcessor {
                 return null;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error during Post processing", e);
             return null;
         }
     }

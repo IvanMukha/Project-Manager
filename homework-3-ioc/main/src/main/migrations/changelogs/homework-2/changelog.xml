@@ -76,5 +76,11 @@
     <changeSet id="homework-2-index-attachments" author="Ivan Mukha">
         <sqlFile encoding="utf8" path="./sql/18.add-index-attachments.sql" relativeToChangelogFile="true"/>
     </changeSet>
+    <changeSet id="change-users_teams_unique" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/19.change-users_teams-unique-field.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="change-users_roles_unique" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/20.change-users_roles-unique-field.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 
 </databaseChangeLog> 
