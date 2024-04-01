@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd"
+        logicalFilePath="homework-2">
+
+    <changeSet id="homework-2-user" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/01.create-users-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="homework-2-roles" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/02.create-roles-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="homework-2-tasks" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/03.create-tasks-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="homework-2-projects" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/04.create-projects-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="homework-2-teams" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/05.create-teams-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="homework-2-reports" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/06.create-reports-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="homework-2-attachments" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/07.create-attachments-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="homework-2-comments" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/08.create-comments-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="homework-2-user_details" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/09.create-user_details-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="homework-2-users_teams" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/10.create-users_teams-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="homework-2-users_roles" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/11.create-users_roles-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="homework-2-relationships" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/12.add-tables-relationships.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="homework-2-index-user_details" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/13.add-index-user_details.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="homework-2-index-comments" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/14.add-index-comments.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="homework-2-index-projects" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/15.add-index-projects.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="homework-2-index-tasks" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/16.add-index-tasks.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="homework-2-index-reports" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/17.add-index-reports.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="homework-2-index-attachments" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/18.add-index-attachments.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="change-users_teams_unique" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/19.change-users_teams-unique-field.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="change-users_roles_unique" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/20.change-users_roles-unique-field.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+</databaseChangeLog> 
