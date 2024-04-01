@@ -1,7 +1,7 @@
-org\example\controller\MyController.class
-org\example\Main.class
-org\example\service\ServiceInterface.class
-org\example\repository\DatabaseInterface.class
-org\example\repository\DatabaseRepository.class
-org\example\utils\ParametersHolder.class
-org\example\service\MyService.class
+org\example\application\repository\DatabaseRepository.class
+org\example\application\utils\ParametersHolder.class
+org\example\application\service\MyService.class
+org\example\application\service\ServiceInterface.class
+org\example\application\Application.class
+org\example\application\repository\DatabaseInterface.class
+org\example\application\controller\MyController.class

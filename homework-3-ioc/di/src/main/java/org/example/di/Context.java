@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class Context {
 
-    private final static Context instance = new Context();
+    private static final Context instance = new Context();
     private static final Logger log = LoggerFactory.getLogger(Context.class);
     private final Map<Class<?>, Object> beans = new ConcurrentHashMap<>();
     private final Map<Class<?>, List<Class<?>>> interface2implementations = new ConcurrentHashMap<>();
@@ -80,10 +80,6 @@ public class Context {
     private void createInstances(Set<Class<?>> components) {
         components.forEach(component -> beans.put(component, beanFactory.createObject(component)));
     }
-
-
-
-
 }
 
 

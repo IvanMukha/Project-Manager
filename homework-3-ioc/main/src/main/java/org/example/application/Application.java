@@ -11,6 +11,5 @@ public class Application {
         context.initContext(packageToScan);
         MyController myController = context.getObject(MyController.class);
         myController.execute();
-
     }
 }

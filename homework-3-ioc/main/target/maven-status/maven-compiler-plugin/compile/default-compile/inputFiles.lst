@@ -1,7 +1,7 @@
-D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\service\MyService.java
-D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\Main.java
-D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\repository\DatabaseRepository.java
-D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\utils\ParametersHolder.java
-D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\controller\MyController.java
-D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\repository\DatabaseInterface.java
-D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\service\ServiceInterface.java
+D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\application\repository\DatabaseRepository.java
+D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\application\service\MyService.java
+D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\application\service\ServiceInterface.java
+D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\application\controller\MyController.java
+D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\application\utils\ParametersHolder.java
+D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\application\Application.java
+D:\SenlaCourses\SenlaCourses\homework-3-ioc\main\src\main\java\org\example\application\repository\DatabaseInterface.java
