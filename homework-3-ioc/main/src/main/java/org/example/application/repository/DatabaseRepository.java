@@ -1,11 +1,14 @@
-package org.example.repository;
-import org.example.annotations.Autowire;
-import org.example.annotations.Component;
-import org.example.utils.ParametersHolder;
+package org.example.application.repository;
+
+import org.example.application.utils.ParametersHolder;
+import org.example.di.annotations.Autowired;
+import org.example.di.annotations.Component;
+
 @Component
 public class DatabaseRepository implements DatabaseInterface {
     private ParametersHolder parametersHolder;
-    @Autowire
+
+    @Autowired
     public DatabaseRepository(ParametersHolder parametersHolder) {
         this.parametersHolder = parametersHolder;
     }

@@ -1,7 +1,6 @@
-package org.example.post_processors;
+package org.example.di.post_processors;
 
-import org.example.Context;
-
+import org.example.di.Context;
 import java.lang.reflect.InvocationTargetException;
 
 @FunctionalInterface

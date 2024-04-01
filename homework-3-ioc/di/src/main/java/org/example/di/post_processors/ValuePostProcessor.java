@@ -1,11 +1,9 @@
-package org.example.post_processors;
+package org.example.di.post_processors;
 
-import org.example.Context;
-import org.example.annotations.Value;
+import org.example.di.Context;
+import org.example.di.annotations.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +15,7 @@ import java.util.Properties;
 
 public class ValuePostProcessor implements PostProcessor {
     private static final Logger log = LoggerFactory.getLogger(ValuePostProcessor.class);
+    private static final String PROPERTIES_FILE_PATH = "application.properties";
 
     @Override
     public void process(Object object, Context context) throws IllegalAccessException {
@@ -33,8 +32,6 @@ public class ValuePostProcessor implements PostProcessor {
         }
     }
 
-    private static final String PROPERTIES_FILE_PATH = "application.properties";
-
     private static String getValueFromProperties(String key) {
         Properties properties = new Properties();
         try (InputStream input = ValuePostProcessor.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE_PATH)) {
@@ -50,6 +47,7 @@ public class ValuePostProcessor implements PostProcessor {
             return null;
         }
     }
+
 
 
 
