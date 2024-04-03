@@ -6,12 +6,13 @@ import org.example.application.repository.ProjectRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class ProjectService {
+public class ProjectService implements BaseService<Project, ProjectDTO> {
     private final ModelMapper modelMapper;
     private final ProjectRepository projectRepository;
 
@@ -25,8 +26,8 @@ public class ProjectService {
         return projectRepository.getAll().stream().map(this::mapProjectToDTO).collect(Collectors.toList());
     }
 
-    public void save(ProjectDTO projectDTO) {
-        projectRepository.save(mapDTOToProject(projectDTO));
+    public ProjectDTO save(ProjectDTO projectDTO) {
+        return mapProjectToDTO(projectRepository.save(mapDTOToProject(projectDTO)));
     }
 
     public Optional<ProjectDTO> getById(int id) {
@@ -35,8 +36,9 @@ public class ProjectService {
     }
 
 
-    public void update(int id, ProjectDTO updatedProjectDTO) {
-        projectRepository.update(id, mapDTOToProject(updatedProjectDTO));
+    public Optional<ProjectDTO> update(int id, ProjectDTO updatedProjectDTO) {
+        Optional<Project> projectOptional = projectRepository.update(id, mapDTOToProject(updatedProjectDTO));
+        return projectOptional.map(this::mapProjectToDTO);
     }
 
     public void delete(int id) {

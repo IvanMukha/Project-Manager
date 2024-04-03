@@ -6,10 +6,11 @@ import org.example.application.dto.UserDetailsDTO;
 import org.example.application.service.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import java.util.Optional;
 
 @Controller
-public class UserDetailsController {
+public class UserDetailsController implements BaseController<UserDetailsDTO> {
     private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper;
 
@@ -19,21 +20,21 @@ public class UserDetailsController {
         this.objectMapper = objectMapper;
     }
 
-    public void save(UserDetailsDTO userDetailsDTO) {
-        userDetailsService.save(userDetailsDTO);
-    }
-
-    public String getById(int id) throws JsonProcessingException {
-        Optional<UserDetailsDTO> userDetailsOptional = userDetailsService.getById(id);
-        return objectMapper.writeValueAsString(userDetailsOptional.orElse(null));
-    }
-
     public String getAll() throws JsonProcessingException {
         return objectMapper.writeValueAsString(userDetailsService.getAll());
     }
 
-    public void update(int id, UserDetailsDTO userDetailsDTO) {
-        userDetailsService.update(id, userDetailsDTO);
+    public String save(UserDetailsDTO userDetailsDTO) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(userDetailsService.save(userDetailsDTO));
+    }
+
+    public String getById(int id) throws JsonProcessingException {
+        Optional<UserDetailsDTO> userDetailsDTOOptional = userDetailsService.getById(id);
+        return objectMapper.writeValueAsString(userDetailsDTOOptional.orElse(null));
+    }
+
+    public String update(int id, UserDetailsDTO userDetailsDTO) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(userDetailsService.update(id, userDetailsDTO));
     }
 
     public void delete(int id) {

@@ -5,6 +5,15 @@ public class AttachmentDTO {
     private String title;
     private int taskId;
 
+    public int getId() {
+        return id;
+    }
+
+    public AttachmentDTO setId(int id) {
+        this.id = id;
+        return this;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -20,15 +29,6 @@ public class AttachmentDTO {
 
     public AttachmentDTO setTaskId(int taskId) {
         this.taskId = taskId;
-        return this;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public AttachmentDTO setId(int id) {
-        this.id = id;
         return this;
     }
 }

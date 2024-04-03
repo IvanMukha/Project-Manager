@@ -6,12 +6,13 @@ import org.example.application.repository.TaskRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class TaskService {
+public class TaskService implements BaseService<Task, TaskDTO> {
     private final ModelMapper modelMapper;
     private final TaskRepository taskRepository;
 
@@ -25,8 +26,8 @@ public class TaskService {
         return taskRepository.getAll().stream().map(this::mapTaskToDTO).collect(Collectors.toList());
     }
 
-    public void save(TaskDTO taskDTO) {
-        taskRepository.save(mapDTOToTask(taskDTO));
+    public TaskDTO save(TaskDTO taskDTO) {
+        return mapTaskToDTO(taskRepository.save(mapDTOToTask(taskDTO)));
     }
 
     public Optional<TaskDTO> getById(int id) {
@@ -34,8 +35,10 @@ public class TaskService {
         return taskOptional.map(this::mapTaskToDTO);
     }
 
-    public void update(int id, TaskDTO updatedTaskDTO) {
-        taskRepository.update(id, mapDTOToTask(updatedTaskDTO));
+
+    public Optional<TaskDTO> update(int id, TaskDTO updatedTaskDTO) {
+        Optional<Task> taskOptional = taskRepository.update(id, mapDTOToTask(updatedTaskDTO));
+        return taskOptional.map(this::mapTaskToDTO);
     }
 
     public void delete(int id) {

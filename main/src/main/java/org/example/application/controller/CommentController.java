@@ -6,10 +6,11 @@ import org.example.application.dto.CommentDTO;
 import org.example.application.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import java.util.Optional;
 
 @Controller
-public class CommentController {
+public class CommentController implements BaseController<CommentDTO> {
     private final CommentService commentService;
     private final ObjectMapper objectMapper;
 
@@ -19,8 +20,12 @@ public class CommentController {
         this.objectMapper = objectMapper;
     }
 
-    public void save(CommentDTO commentDTO) {
-        commentService.save(commentDTO);
+    public String getAll() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(commentService.getAll());
+    }
+
+    public String save(CommentDTO commentDTO) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(commentService.save(commentDTO));
     }
 
     public String getById(int id) throws JsonProcessingException {
@@ -28,12 +33,8 @@ public class CommentController {
         return objectMapper.writeValueAsString(commentDTOOptional.orElse(null));
     }
 
-    public String getAll() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(commentService.getAll());
-    }
-
-    public void update(int id, CommentDTO commentDTO) {
-        commentService.update(id, commentDTO);
+    public String update(int id, CommentDTO commentDTO) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(commentService.update(id, commentDTO));
     }
 
     public void delete(int id) {

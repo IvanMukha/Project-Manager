@@ -1,8 +1,0 @@
-org\example\di\Context.class
-org\example\di\annotations\Autowired.class
-org\example\di\annotations\Component.class
-org\example\di\BeanFactory.class
-org\example\di\post_processors\ValuePostProcessor.class
-org\example\di\post_processors\AutowiredPostProcessor.class
-org\example\di\post_processors\PostProcessor.class
-org\example\di\annotations\Value.class

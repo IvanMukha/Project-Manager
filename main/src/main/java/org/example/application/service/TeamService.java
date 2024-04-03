@@ -6,12 +6,13 @@ import org.example.application.repository.TeamRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class TeamService {
+public class TeamService implements BaseService<Team, TeamDTO> {
     private final ModelMapper modelMapper;
     private final TeamRepository teamRepository;
 
@@ -25,8 +26,8 @@ public class TeamService {
         return teamRepository.getAll().stream().map(this::mapTeamToDTO).collect(Collectors.toList());
     }
 
-    public void save(TeamDTO teamDTO) {
-        teamRepository.save(mapDTOToTeam(teamDTO));
+    public TeamDTO save(TeamDTO teamDTO) {
+        return mapTeamToDTO(teamRepository.save(mapDTOToTeam(teamDTO)));
     }
 
     public Optional<TeamDTO> getById(int id) {
@@ -34,8 +35,10 @@ public class TeamService {
         return teamOptional.map(this::mapTeamToDTO);
     }
 
-    public void update(int id, TeamDTO updatedTeamDTO) {
-        teamRepository.update(id, mapDTOToTeam(updatedTeamDTO));
+
+    public Optional<TeamDTO> update(int id, TeamDTO updatedTeamDTO) {
+        Optional<Team> teamOptional = teamRepository.update(id, mapDTOToTeam(updatedTeamDTO));
+        return teamOptional.map(this::mapTeamToDTO);
     }
 
     public void delete(int id) {

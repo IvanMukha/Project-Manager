@@ -6,12 +6,13 @@ import org.example.application.repository.CommentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
-public class CommentService {
+public class CommentService implements BaseService<Comment, CommentDTO> {
     private final ModelMapper modelMapper;
     private final CommentRepository commentRepository;
 
@@ -25,18 +26,19 @@ public class CommentService {
         return commentRepository.getAll().stream().map(this::mapCommentToDTO).collect(Collectors.toList());
     }
 
-    public void save(CommentDTO commentDTO) {
-        commentRepository.save(mapDTOToComment(commentDTO));
+    public CommentDTO save(CommentDTO commentDTO) {
+        return mapCommentToDTO(commentRepository.save(mapDTOToComment(commentDTO)));
     }
 
     public Optional<CommentDTO> getById(int id) {
-        Optional<Comment> commentDTOOptional = commentRepository.getById(id);
-        return commentDTOOptional.map(this::mapCommentToDTO);
+        Optional<Comment> commentOptional = commentRepository.getById(id);
+        return commentOptional.map(this::mapCommentToDTO);
     }
 
 
-    public void update(int id, CommentDTO updatedCommentDTO) {
-        commentRepository.update(id, mapDTOToComment(updatedCommentDTO));
+    public Optional<CommentDTO> update(int id, CommentDTO updatedCommentDTO) {
+        Optional<Comment> commentOptional = commentRepository.update(id, mapDTOToComment(updatedCommentDTO));
+        return commentOptional.map(this::mapCommentToDTO);
     }
 
     public void delete(int id) {

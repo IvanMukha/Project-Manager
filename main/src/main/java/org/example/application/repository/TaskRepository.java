@@ -1,32 +1,45 @@
 package org.example.application.repository;
 
 import org.example.application.model.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class TaskRepository {
+public class TaskRepository implements BaseRepository<Task> {
+    private final Logger log = LoggerFactory.getLogger(TaskRepository.class);
     List<Task> tasks = new ArrayList<>();
 
-    public void save(Task task) {
-        tasks.add(task);
+    public List<Task> getAll() {
+        return tasks;
     }
 
-    public List<Task> getAll() {
-        return new ArrayList<>(tasks);
+    public Task save(Task task) {
+        tasks.add(task);
+        return task;
     }
 
     public Optional<Task> getById(int id) {
-        return tasks.stream().filter(task -> task.getId() == id).findFirst();
+        Optional<Task> optionalTask = tasks.stream()
+                .filter(task -> task.getId() == id)
+                .findFirst();
+        if (optionalTask.isEmpty()) {
+            log.error("Object with id " + id + " does not exist");
+        }
+        return optionalTask;
     }
 
-    public void update(int id, Task updatedTask) {
+
+    public Optional<Task> update(int id, Task updatedTask) {
         Optional<Task> optionalTask = getById(id);
         optionalTask.ifPresent(task -> task.setTitle(updatedTask.getTitle()).setStatus(updatedTask.getStatus()).setPriority(updatedTask.getPriority()).
                 setDueDate(updatedTask.getDueDate()).setCategory(updatedTask.getCategory()).setLabel(updatedTask.getLabel()).
                 setDescription(updatedTask.getDescription()));
+        return optionalTask;
     }
 
     public void delete(int id) {

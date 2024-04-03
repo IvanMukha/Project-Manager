@@ -6,10 +6,11 @@ import org.example.application.dto.ProjectDTO;
 import org.example.application.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import java.util.Optional;
 
 @Controller
-public class ProjectController {
+public class ProjectController implements BaseController<ProjectDTO> {
     private final ProjectService projectService;
     private final ObjectMapper objectMapper;
 
@@ -19,8 +20,12 @@ public class ProjectController {
         this.objectMapper = objectMapper;
     }
 
-    public void save(ProjectDTO projectDTO) {
-        projectService.save(projectDTO);
+    public String getAll() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(projectService.getAll());
+    }
+
+    public String save(ProjectDTO projectDTO) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(projectService.save(projectDTO));
     }
 
     public String getById(int id) throws JsonProcessingException {
@@ -28,12 +33,8 @@ public class ProjectController {
         return objectMapper.writeValueAsString(projectDTOOptional.orElse(null));
     }
 
-    public String getAll() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(projectService.getAll());
-    }
-
-    public void update(int id, ProjectDTO projectDTO) {
-        projectService.update(id, projectDTO);
+    public String update(int id, ProjectDTO projectDTO) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(projectService.update(id, projectDTO));
     }
 
     public void delete(int id) {

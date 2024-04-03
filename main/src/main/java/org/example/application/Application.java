@@ -2,6 +2,7 @@ package org.example.application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.example.application.controller.*;
 import org.example.application.dto.*;
@@ -18,9 +19,9 @@ import java.time.LocalDateTime;
 @Configuration
 @ComponentScan(basePackageClasses = Application.class)
 public class Application {
+    private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) throws JsonProcessingException {
-        Logger log = LoggerFactory.getLogger(Application.class);
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
         // attachment
         AttachmentController attachmentController = context.getBean(AttachmentController.class);
@@ -32,10 +33,9 @@ public class Application {
         attachmentDTO2.setTitle("updatedTitle1");
         attachmentController.save(attachmentDTO);
         attachmentController.save(attachmentDTO1);
-        log.info("Attachments: " + attachmentController.getAll());
+        log.info("Attachments: {}", attachmentController.getAll());
         attachmentController.delete(2);
-        attachmentController.update(1, attachmentDTO2);
-        log.info("Attachments: " + attachmentController.getAll());
+        log.info("Attachments: {}", attachmentController.getAll());
         //Comment
         CommentController commentController = context.getBean(CommentController.class);
         CommentDTO commentDTO = new CommentDTO();
@@ -46,10 +46,10 @@ public class Application {
         commentDTO2.setId(2).setText("updatedComment1");
         commentController.save(commentDTO);
         commentController.save(commentDTO1);
-        log.info("Comments: " + commentController.getAll());
+        log.info("Comments: {}", commentController.getAll());
         commentController.delete(2);
         commentController.update(1, commentDTO2);
-        log.info("Comments: " + commentController.getAll());
+        log.info("Comments: {}", commentController.getAll());
         //Project
         ProjectController projectController = context.getBean(ProjectController.class);
         ProjectDTO projectDTO = new ProjectDTO();
@@ -60,10 +60,10 @@ public class Application {
         projectDTO2.setDescription("updatedDescription1").setStatus("updatedStatus1").setTitle("updatedTitle1").setStartDate(LocalDateTime.now()).setManagerId(11).setTeamId(11);
         projectController.save(projectDTO);
         projectController.save(projectDTO1);
-        log.info("Projects: " + projectController.getAll());
+        log.info("Projects: {}", projectController.getAll());
         projectController.delete(2);
         projectController.update(1, projectDTO2);
-        log.info("Projects:" + projectController.getAll());
+        log.info("Projects: {}", projectController.getAll());
         //Report
         ReportController reportController = context.getBean(ReportController.class);
         ReportDTO reportDTO = new ReportDTO();
@@ -74,10 +74,10 @@ public class Application {
         reportDTO2.setText("updatedText1").setTitle("updatedTitle1");
         reportController.save(reportDTO);
         reportController.save(reportDTO1);
-        log.info("Reports: " + reportController.getAll());
+        log.info("Reports: {}", reportController.getAll());
         reportController.delete(2);
         reportController.update(1, reportDTO2);
-        log.info("Reports " + reportController.getAll());
+        log.info("Reports: {}", reportController.getAll());
         //Role
         RoleController roleController = context.getBean(RoleController.class);
         RoleDTO roleDTO = new RoleDTO();
@@ -88,10 +88,10 @@ public class Application {
         roleDTO2.setName("updatedName1");
         roleController.save(roleDTO);
         roleController.save(roleDTO1);
-        log.info("Roles: " + roleController.getAll());
+        log.info("Roles: {}", roleController.getAll());
         roleController.delete(2);
         roleController.update(1, roleDTO2);
-        log.info("Roles: " + roleController.getAll());
+        log.info("Roles: {}", roleController.getAll());
         //Task
         TaskController taskController = context.getBean(TaskController.class);
         TaskDTO taskDTO = new TaskDTO();
@@ -110,10 +110,10 @@ public class Application {
                 setPriority("updatedPriority1");
         taskController.save(taskDTO);
         taskController.save(taskDTO1);
-        log.info("Tasks: " + taskController.getAll());
+        log.info("Tasks: {}", taskController.getAll());
         taskController.delete(2);
         taskController.update(1, taskDTO2);
-        log.info("Tasks: " + taskController.getAll());
+        log.info("Tasks: {}", taskController.getAll());
         //Team
         TeamController teamController = context.getBean(TeamController.class);
         TeamDTO teamDTO = new TeamDTO();
@@ -124,10 +124,10 @@ public class Application {
         teamDTO2.setName("updatedName1");
         teamController.save(teamDTO);
         teamController.save(teamDTO1);
-        log.info("Teams: " + teamController.getAll());
+        log.info("Teams: {}", teamController.getAll());
         teamController.delete(2);
         teamController.update(1, teamDTO2);
-        log.info("Teams: " + teamController.getAll());
+        log.info("Teams: {}", teamController.getAll());
         //UserDetails
         UserDetailsController userDetailsController = context.getBean(UserDetailsController.class);
         UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
@@ -141,10 +141,10 @@ public class Application {
                 setPhone("updatedPhone1").setWorkPhone("updatedWorkPhone1").setWorkAddress("updatedWorkAddress1");
         userDetailsController.save(userDetailsDTO);
         userDetailsController.save(userDetailsDTO1);
-        log.info("UserDetails: " + userDetailsController.getAll());
+        log.info("UserDetails: {}", userDetailsController.getAll());
         userDetailsController.delete(2);
         userDetailsController.update(1, userDetailsDTO2);
-        log.info("UserDetails: " + userDetailsController.getAll());
+        log.info("UserDetails: {}", userDetailsController.getAll());
         //User
         UserController userController = context.getBean(UserController.class);
         UserDTO userDTO = new UserDTO();
@@ -155,10 +155,10 @@ public class Application {
         userDTO2.setUsername("updatedUsername1").setPassword("updatedPassword1").setEmail("UpdatedEmail1");
         userController.save(userDTO);
         userController.save(userDTO1);
-        log.info("Users: " + userController.getAll());
+        log.info("Users: {}", userController.getAll());
         userController.delete(2);
         userController.update(1, userDTO2);
-        log.info("Users: " + userController.getAll());
+        log.info("Users: {}", userController.getAll());
     }
 
     @Bean
@@ -171,6 +171,7 @@ public class Application {
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.registerModule(new Jdk8Module());
         return objectMapper;
     }
 }

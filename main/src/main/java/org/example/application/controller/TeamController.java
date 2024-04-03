@@ -6,10 +6,11 @@ import org.example.application.dto.TeamDTO;
 import org.example.application.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import java.util.Optional;
 
 @Controller
-public class TeamController {
+public class TeamController implements BaseController<TeamDTO> {
     private final TeamService teamService;
     private final ObjectMapper objectMapper;
 
@@ -19,8 +20,12 @@ public class TeamController {
         this.objectMapper = objectMapper;
     }
 
-    public void save(TeamDTO teamDTO) {
-        teamService.save(teamDTO);
+    public String getAll() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(teamService.getAll());
+    }
+
+    public String save(TeamDTO teamDTO) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(teamService.save(teamDTO));
     }
 
     public String getById(int id) throws JsonProcessingException {
@@ -28,12 +33,8 @@ public class TeamController {
         return objectMapper.writeValueAsString(teamDTOOptional.orElse(null));
     }
 
-    public String getAll() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(teamService.getAll());
-    }
-
-    public void update(int id, TeamDTO teamDTO) {
-        teamService.update(id, teamDTO);
+    public String update(int id, TeamDTO teamDTO) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(teamService.update(id, teamDTO));
     }
 
     public void delete(int id) {

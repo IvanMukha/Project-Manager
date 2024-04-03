@@ -6,12 +6,13 @@ import org.example.application.repository.AttachmentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class AttachmentService {
+public class AttachmentService implements BaseService<Attachment, AttachmentDTO> {
     private final ModelMapper modelMapper;
     private final AttachmentRepository attachmentRepository;
 
@@ -25,8 +26,8 @@ public class AttachmentService {
         return attachmentRepository.getAll().stream().map(this::mapAttachmentToDTO).collect(Collectors.toList());
     }
 
-    public void save(AttachmentDTO attachmentDTO) {
-        attachmentRepository.save(mapDTOToAttachment(attachmentDTO));
+    public AttachmentDTO save(AttachmentDTO attachmentDTO) {
+        return mapAttachmentToDTO(attachmentRepository.save(mapDTOToAttachment(attachmentDTO)));
     }
 
     public Optional<AttachmentDTO> getById(int id) {
@@ -35,8 +36,9 @@ public class AttachmentService {
     }
 
 
-    public void update(int id, AttachmentDTO updatedAttachmentDTO) {
-        attachmentRepository.update(id, mapDTOToAttachment(updatedAttachmentDTO));
+    public Optional<AttachmentDTO> update(int id, AttachmentDTO updatedAttachmentDTO) {
+        Optional<Attachment> attachmentOptional = attachmentRepository.update(id, mapDTOToAttachment(updatedAttachmentDTO));
+        return attachmentOptional.map(this::mapAttachmentToDTO);
     }
 
     public void delete(int id) {

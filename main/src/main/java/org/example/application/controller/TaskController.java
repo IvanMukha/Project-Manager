@@ -6,10 +6,11 @@ import org.example.application.dto.TaskDTO;
 import org.example.application.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import java.util.Optional;
 
 @Controller
-public class TaskController {
+public class TaskController implements BaseController<TaskDTO> {
     private final TaskService taskService;
     private final ObjectMapper objectMapper;
 
@@ -19,8 +20,12 @@ public class TaskController {
         this.objectMapper = objectMapper;
     }
 
-    public void save(TaskDTO taskDTO) {
-        taskService.save(taskDTO);
+    public String getAll() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(taskService.getAll());
+    }
+
+    public String save(TaskDTO taskDTO) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(taskService.save(taskDTO));
     }
 
     public String getById(int id) throws JsonProcessingException {
@@ -28,12 +33,8 @@ public class TaskController {
         return objectMapper.writeValueAsString(taskDTOOptional.orElse(null));
     }
 
-    public String getAll() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(taskService.getAll());
-    }
-
-    public void update(int id, TaskDTO taskDTO) {
-        taskService.update(id, taskDTO);
+    public String update(int id, TaskDTO taskDTO) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(taskService.update(id, taskDTO));
     }
 
     public void delete(int id) {

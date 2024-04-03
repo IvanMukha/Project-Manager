@@ -6,12 +6,13 @@ import org.example.application.repository.UserDetailsRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UserDetailsService {
+public class UserDetailsService implements BaseService<UserDetails, UserDetailsDTO> {
     private final ModelMapper modelMapper;
     private final UserDetailsRepository userDetailsRepository;
 
@@ -25,8 +26,8 @@ public class UserDetailsService {
         return userDetailsRepository.getAll().stream().map(this::mapUserDetailsToDTO).collect(Collectors.toList());
     }
 
-    public void save(UserDetailsDTO userDetailsDTO) {
-        userDetailsRepository.save(mapDTOToUserDetails(userDetailsDTO));
+    public UserDetailsDTO save(UserDetailsDTO userDetailsDTO) {
+        return mapUserDetailsToDTO(userDetailsRepository.save(mapDTOToUserDetails(userDetailsDTO)));
     }
 
     public Optional<UserDetailsDTO> getById(int id) {
@@ -34,8 +35,10 @@ public class UserDetailsService {
         return userDetailsOptional.map(this::mapUserDetailsToDTO);
     }
 
-    public void update(int id, UserDetailsDTO updatedUserDetailsDTO) {
-        userDetailsRepository.update(id, mapDTOToUserDetails(updatedUserDetailsDTO));
+
+    public Optional<UserDetailsDTO> update(int id, UserDetailsDTO updatedUserDetailsDTO) {
+        Optional<UserDetails> userDetailsOptional = userDetailsRepository.update(id, mapDTOToUserDetails(updatedUserDetailsDTO));
+        return userDetailsOptional.map(this::mapUserDetailsToDTO);
     }
 
     public void delete(int id) {

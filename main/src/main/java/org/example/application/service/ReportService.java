@@ -6,12 +6,13 @@ import org.example.application.repository.ReportRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class ReportService {
+public class ReportService implements BaseService<Report, ReportDTO> {
     private final ModelMapper modelMapper;
     private final ReportRepository reportRepository;
 
@@ -25,8 +26,8 @@ public class ReportService {
         return reportRepository.getAll().stream().map(this::mapReportToDTO).collect(Collectors.toList());
     }
 
-    public void save(ReportDTO reportDTO) {
-        reportRepository.save(mapDTOToReport(reportDTO));
+    public ReportDTO save(ReportDTO reportDTO) {
+        return mapReportToDTO(reportRepository.save(mapDTOToReport(reportDTO)));
     }
 
     public Optional<ReportDTO> getById(int id) {
@@ -34,8 +35,10 @@ public class ReportService {
         return reportOptional.map(this::mapReportToDTO);
     }
 
-    public void update(int id, ReportDTO updatedReportDTO) {
-        reportRepository.update(id, mapDTOToReport(updatedReportDTO));
+
+    public Optional<ReportDTO> update(int id, ReportDTO updatedReportDTO) {
+        Optional<Report> reportOptional = reportRepository.update(id, mapDTOToReport(updatedReportDTO));
+        return reportOptional.map(this::mapReportToDTO);
     }
 
     public void delete(int id) {

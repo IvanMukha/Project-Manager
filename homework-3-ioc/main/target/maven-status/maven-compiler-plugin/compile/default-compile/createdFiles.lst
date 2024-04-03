@@ -1,7 +1,0 @@
-org\example\application\repository\DatabaseRepository.class
-org\example\application\utils\ParametersHolder.class
-org\example\application\service\MyService.class
-org\example\application\service\ServiceInterface.class
-org\example\application\Application.class
-org\example\application\repository\DatabaseInterface.class
-org\example\application\controller\MyController.class

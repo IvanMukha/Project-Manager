@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import java.util.Optional;
 
 @Controller
-public class AttachmentController {
+public class AttachmentController implements BaseController<AttachmentDTO> {
     private final AttachmentService attachmentService;
     private final ObjectMapper objectMapper;
 
@@ -20,8 +20,12 @@ public class AttachmentController {
         this.objectMapper = objectMapper;
     }
 
-    public void save(AttachmentDTO attachmentDTO) {
-        attachmentService.save(attachmentDTO);
+    public String getAll() throws JsonProcessingException {
+        return objectMapper.writeValueAsString(attachmentService.getAll());
+    }
+
+    public String save(AttachmentDTO attachmentDTO) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(attachmentService.save(attachmentDTO));
     }
 
     public String getById(int id) throws JsonProcessingException {
@@ -29,12 +33,8 @@ public class AttachmentController {
         return objectMapper.writeValueAsString(attachmentDTOOptional.orElse(null));
     }
 
-    public String getAll() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(attachmentService.getAll());
-    }
-
-    public void update(int id, AttachmentDTO attachmentDTO) {
-        attachmentService.update(id, attachmentDTO);
+    public String update(int id, AttachmentDTO attachmentDTO) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(attachmentService.update(id, attachmentDTO));
     }
 
     public void delete(int id) {

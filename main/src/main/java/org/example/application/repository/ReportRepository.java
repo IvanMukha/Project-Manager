@@ -1,30 +1,42 @@
 package org.example.application.repository;
 
 import org.example.application.model.Report;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class ReportRepository {
+public class ReportRepository implements BaseRepository<Report> {
+    private final Logger log = LoggerFactory.getLogger(ReportRepository.class);
     List<Report> reports = new ArrayList<>();
 
     public List<Report> getAll() {
-        return new ArrayList<>(reports);
+        return reports;
     }
 
-    public void save(Report report) {
+    public Report save(Report report) {
         reports.add(report);
+        return report;
     }
 
     public Optional<Report> getById(int id) {
-        return reports.stream().filter(report -> report.getId() == id).findFirst();
+        Optional<Report> optionalReport = reports.stream()
+                .filter(report -> report.getId() == id)
+                .findFirst();
+        if (optionalReport.isEmpty()) {
+            log.error("Object with id " + id + " does not exist");
+        }
+        return optionalReport;
     }
 
-    public void update(int id, Report updatedreport) {
+    public Optional<Report> update(int id, Report updatedreport) {
         Optional<Report> optionalReport = getById(id);
         optionalReport.ifPresent(report -> report.setText(updatedreport.getText()).setTitle(updatedreport.getTitle()));
+        return optionalReport;
     }
 
     public void delete(int id) {

@@ -11,17 +11,12 @@
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <liquibase.version>4.25.0</liquibase.version>
+        <liquibase.version>4.27.0</liquibase.version>
         <liquibase.propertyFile>../liquibase.properties</liquibase.propertyFile>
-        <postgres.driverVersion>42.6.0</postgres.driverVersion>
+        <postgres.driverVersion>42.7.3</postgres.driverVersion>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-maven-plugin</artifactId>
-            <version>${liquibase.version}</version>
-        </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -58,6 +53,12 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.17.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>2.17.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -77,7 +78,7 @@
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
-                <version>4.25.0</version>
+                <version>${liquibase.version}</version>
                 <configuration>
                     <propertyFile>liquibase.properties</propertyFile>
                     <changeLogFile>src/main/migrations/changelog-master.xml</changeLogFile>

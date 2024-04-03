@@ -6,12 +6,13 @@ import org.example.application.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class RoleService {
+public class RoleService implements BaseService<Role, RoleDTO> {
     private final ModelMapper modelMapper;
     private final RoleRepository roleRepository;
 
@@ -25,8 +26,8 @@ public class RoleService {
         return roleRepository.getAll().stream().map(this::mapRoleToDTO).collect(Collectors.toList());
     }
 
-    public void save(RoleDTO roleDTO) {
-        roleRepository.save(mapDTOToRole(roleDTO));
+    public RoleDTO save(RoleDTO roleDTO) {
+        return mapRoleToDTO(roleRepository.save(mapDTOToRole(roleDTO)));
     }
 
     public Optional<RoleDTO> getById(int id) {
@@ -34,8 +35,9 @@ public class RoleService {
         return roleOptional.map(this::mapRoleToDTO);
     }
 
-    public void update(int id, RoleDTO updatedRoleDTO) {
-        roleRepository.update(id, mapDTOToRole(updatedRoleDTO));
+    public Optional<RoleDTO> update(int id, RoleDTO updatedRoleDTO) {
+        Optional<Role> roleOptional = roleRepository.update(id, mapDTOToRole(updatedRoleDTO));
+        return roleOptional.map(this::mapRoleToDTO);
     }
 
     public void delete(int id) {
