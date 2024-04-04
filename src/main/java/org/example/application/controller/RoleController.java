@@ -2,7 +2,7 @@ package org.example.application.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.application.serviceInterfaces.RoleServiceInterface;
+import org.example.application.service.RoleService;
 import org.example.application.dto.RoleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,11 +11,11 @@ import java.util.Optional;
 
 @Controller
 public class RoleController {
-    private final RoleServiceInterface roleService;
+    private final RoleService roleService;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public RoleController(RoleServiceInterface roleService, ObjectMapper objectMapper) {
+    public RoleController(RoleService roleService, ObjectMapper objectMapper) {
         this.roleService = roleService;
         this.objectMapper = objectMapper;
     }

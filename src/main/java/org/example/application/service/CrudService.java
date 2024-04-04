@@ -1,4 +1,4 @@
-package org.example.application.serviceInterfaces;
+package org.example.application.service;
 
 import java.util.List;
 import java.util.Optional;

@@ -2,7 +2,7 @@ package org.example.application.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.application.serviceInterfaces.ReportServiceInterface;
+import org.example.application.service.ReportService;
 import org.example.application.dto.ReportDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,11 +11,11 @@ import java.util.Optional;
 
 @Controller
 public class ReportController {
-    private final ReportServiceInterface reportService;
+    private final ReportService reportService;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public ReportController(ReportServiceInterface reportService, ObjectMapper objectMapper) {
+    public ReportController(ReportService reportService, ObjectMapper objectMapper) {
         this.reportService = reportService;
         this.objectMapper = objectMapper;
     }

@@ -2,7 +2,7 @@ package org.example.application.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.application.serviceInterfaces.CommentServiceInterface;
+import org.example.application.service.CommentService;
 import org.example.application.dto.CommentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,11 +11,11 @@ import java.util.Optional;
 
 @Controller
 public class CommentController {
-    private final CommentServiceInterface commentService;
+    private final CommentService commentService;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public CommentController(CommentServiceInterface commentService, ObjectMapper objectMapper) {
+    public CommentController(CommentService commentService, ObjectMapper objectMapper) {
         this.commentService = commentService;
         this.objectMapper = objectMapper;
     }

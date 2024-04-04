@@ -2,7 +2,7 @@ package org.example.application.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.application.serviceInterfaces.TeamServiceInterface;
+import org.example.application.service.TeamService;
 import org.example.application.dto.TeamDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,11 +11,11 @@ import java.util.Optional;
 
 @Controller
 public class TeamController {
-    private final TeamServiceInterface teamService;
+    private final TeamService teamService;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public TeamController(TeamServiceInterface teamService, ObjectMapper objectMapper) {
+    public TeamController(TeamService teamService, ObjectMapper objectMapper) {
         this.teamService = teamService;
         this.objectMapper = objectMapper;
     }

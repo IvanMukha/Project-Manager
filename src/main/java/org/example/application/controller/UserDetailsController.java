@@ -2,7 +2,7 @@ package org.example.application.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.application.serviceInterfaces.UserDetailsServiceInterface;
+import org.example.application.service.UserDetailsService;
 import org.example.application.dto.UserDetailsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,11 +11,11 @@ import java.util.Optional;
 
 @Controller
 public class UserDetailsController {
-    private final UserDetailsServiceInterface userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public UserDetailsController(UserDetailsServiceInterface userDetailsService, ObjectMapper objectMapper) {
+    public UserDetailsController(UserDetailsService userDetailsService, ObjectMapper objectMapper) {
         this.userDetailsService = userDetailsService;
         this.objectMapper = objectMapper;
     }

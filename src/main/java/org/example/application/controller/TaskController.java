@@ -2,7 +2,7 @@ package org.example.application.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.application.serviceInterfaces.TaskServiceInterface;
+import org.example.application.service.TaskService;
 import org.example.application.dto.TaskDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,11 +11,11 @@ import java.util.Optional;
 
 @Controller
 public class TaskController {
-    private final TaskServiceInterface taskService;
+    private final TaskService taskService;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public TaskController(TaskServiceInterface taskService, ObjectMapper objectMapper) {
+    public TaskController(TaskService taskService, ObjectMapper objectMapper) {
         this.taskService = taskService;
         this.objectMapper = objectMapper;
     }

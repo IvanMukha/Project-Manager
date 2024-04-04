@@ -2,7 +2,7 @@ package org.example.application.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.application.serviceInterfaces.AttachmentServiceInterface;
+import org.example.application.service.AttachmentService;
 import org.example.application.dto.AttachmentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,11 +11,11 @@ import java.util.Optional;
 
 @Controller
 public class AttachmentController {
-    private final AttachmentServiceInterface attachmentService;
+    private final AttachmentService attachmentService;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public AttachmentController(AttachmentServiceInterface attachmentService, ObjectMapper objectMapper) {
+    public AttachmentController(AttachmentService attachmentService, ObjectMapper objectMapper) {
         this.attachmentService = attachmentService;
         this.objectMapper = objectMapper;
     }
