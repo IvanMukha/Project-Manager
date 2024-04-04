@@ -1,4 +1,4 @@
-package org.example.application.ServiceInterfaces;
+package org.example.application.serviceInterfaces;
 
 import org.example.application.dto.CommentDTO;
 

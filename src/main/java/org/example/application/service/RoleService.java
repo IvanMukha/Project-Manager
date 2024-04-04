@@ -1,7 +1,7 @@
 package org.example.application.service;
 
-import org.example.application.RepositoryInterfaces.RoleRepositoryInterface;
-import org.example.application.ServiceInterfaces.RoleServiceInterface;
+import org.example.application.repositoryInterfaces.RoleRepositoryInterface;
+import org.example.application.serviceInterfaces.RoleServiceInterface;
 import org.example.application.dto.RoleDTO;
 import org.example.application.model.Role;
 import org.modelmapper.ModelMapper;

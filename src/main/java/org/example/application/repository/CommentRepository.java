@@ -1,6 +1,6 @@
 package org.example.application.repository;
 
-import org.example.application.RepositoryInterfaces.CommentRepositoryInterface;
+import org.example.application.repositoryInterfaces.CommentRepositoryInterface;
 import org.example.application.model.Comment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

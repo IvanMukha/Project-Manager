@@ -1,6 +1,6 @@
 package org.example.application.repository;
 
-import org.example.application.RepositoryInterfaces.AttachmentRepositoryInterface;
+import org.example.application.repositoryInterfaces.AttachmentRepositoryInterface;
 import org.example.application.model.Attachment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

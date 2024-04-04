@@ -1,7 +1,7 @@
 package org.example.application.service;
 
-import org.example.application.RepositoryInterfaces.TaskRepositoryInterface;
-import org.example.application.ServiceInterfaces.TaskServiceInterface;
+import org.example.application.repositoryInterfaces.TaskRepositoryInterface;
+import org.example.application.serviceInterfaces.TaskServiceInterface;
 import org.example.application.dto.TaskDTO;
 import org.example.application.model.Task;
 import org.modelmapper.ModelMapper;

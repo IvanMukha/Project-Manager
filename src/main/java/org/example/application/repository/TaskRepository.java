@@ -1,6 +1,6 @@
 package org.example.application.repository;
 
-import org.example.application.RepositoryInterfaces.TaskRepositoryInterface;
+import org.example.application.repositoryInterfaces.TaskRepositoryInterface;
 import org.example.application.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

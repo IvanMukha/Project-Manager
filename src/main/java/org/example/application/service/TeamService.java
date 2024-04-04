@@ -1,7 +1,7 @@
 package org.example.application.service;
 
-import org.example.application.RepositoryInterfaces.TeamRepositoryInterface;
-import org.example.application.ServiceInterfaces.TeamServiceInterface;
+import org.example.application.repositoryInterfaces.TeamRepositoryInterface;
+import org.example.application.serviceInterfaces.TeamServiceInterface;
 import org.example.application.dto.TeamDTO;
 import org.example.application.model.Team;
 import org.modelmapper.ModelMapper;

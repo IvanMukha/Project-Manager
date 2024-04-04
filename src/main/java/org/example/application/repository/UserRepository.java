@@ -1,6 +1,6 @@
 package org.example.application.repository;
 
-import org.example.application.RepositoryInterfaces.UserRepositoryInterface;
+import org.example.application.repositoryInterfaces.UserRepositoryInterface;
 import org.example.application.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

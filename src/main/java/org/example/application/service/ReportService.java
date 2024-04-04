@@ -1,7 +1,7 @@
 package org.example.application.service;
 
-import org.example.application.RepositoryInterfaces.ReportRepositoryInterface;
-import org.example.application.ServiceInterfaces.ReportServiceInterface;
+import org.example.application.repositoryInterfaces.ReportRepositoryInterface;
+import org.example.application.serviceInterfaces.ReportServiceInterface;
 import org.example.application.dto.ReportDTO;
 import org.example.application.model.Report;
 import org.modelmapper.ModelMapper;

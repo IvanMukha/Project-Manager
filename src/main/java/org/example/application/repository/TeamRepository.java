@@ -1,6 +1,6 @@
 package org.example.application.repository;
 
-import org.example.application.RepositoryInterfaces.TeamRepositoryInterface;
+import org.example.application.repositoryInterfaces.TeamRepositoryInterface;
 import org.example.application.model.Team;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

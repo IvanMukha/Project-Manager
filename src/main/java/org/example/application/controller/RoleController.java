@@ -2,7 +2,7 @@ package org.example.application.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.application.ServiceInterfaces.RoleServiceInterface;
+import org.example.application.serviceInterfaces.RoleServiceInterface;
 import org.example.application.dto.RoleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

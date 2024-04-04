@@ -1,6 +1,6 @@
 package org.example.application.repository;
 
-import org.example.application.RepositoryInterfaces.RoleRepositoryInterface;
+import org.example.application.repositoryInterfaces.RoleRepositoryInterface;
 import org.example.application.model.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

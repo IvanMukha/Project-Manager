@@ -2,7 +2,7 @@ package org.example.application.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.application.ServiceInterfaces.TaskServiceInterface;
+import org.example.application.serviceInterfaces.TaskServiceInterface;
 import org.example.application.dto.TaskDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

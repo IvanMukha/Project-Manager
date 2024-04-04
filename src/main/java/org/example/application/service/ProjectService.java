@@ -1,7 +1,7 @@
 package org.example.application.service;
 
-import org.example.application.RepositoryInterfaces.ProjectRepositoryInterface;
-import org.example.application.ServiceInterfaces.ProjectServiceInterface;
+import org.example.application.repositoryInterfaces.ProjectRepositoryInterface;
+import org.example.application.serviceInterfaces.ProjectServiceInterface;
 import org.example.application.dto.ProjectDTO;
 import org.example.application.model.Project;
 import org.modelmapper.ModelMapper;

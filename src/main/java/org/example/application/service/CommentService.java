@@ -1,7 +1,7 @@
 package org.example.application.service;
 
-import org.example.application.RepositoryInterfaces.CommentRepositoryInterface;
-import org.example.application.ServiceInterfaces.CommentServiceInterface;
+import org.example.application.repositoryInterfaces.CommentRepositoryInterface;
+import org.example.application.serviceInterfaces.CommentServiceInterface;
 import org.example.application.dto.CommentDTO;
 import org.example.application.model.Comment;
 import org.modelmapper.ModelMapper;

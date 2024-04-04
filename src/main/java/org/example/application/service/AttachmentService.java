@@ -1,7 +1,7 @@
 package org.example.application.service;
 
-import org.example.application.RepositoryInterfaces.AttachmentRepositoryInterface;
-import org.example.application.ServiceInterfaces.AttachmentServiceInterface;
+import org.example.application.repositoryInterfaces.AttachmentRepositoryInterface;
+import org.example.application.serviceInterfaces.AttachmentServiceInterface;
 import org.example.application.dto.AttachmentDTO;
 import org.example.application.model.Attachment;
 import org.modelmapper.ModelMapper;
