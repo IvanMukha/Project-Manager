@@ -47,7 +47,6 @@ public class JdbcProjectRepository implements ProjectRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get all projects", e);
         }
-        connectionHolder.releaseConnection();
         return projects;
     }
 
@@ -67,14 +66,8 @@ public class JdbcProjectRepository implements ProjectRepository {
             if (affectedRows == 0) {
                 throw new SQLException("Creating project failed, no rows affected.");
             }
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    project.setId(generatedKeys.getInt(1));
-                } else {
-                    throw new SQLException("Creating project failed, no ID obtained.");
-                }
-            }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e){
             throw new RuntimeException("Failed to save project", e);
         }
         return project;
@@ -102,7 +95,6 @@ public class JdbcProjectRepository implements ProjectRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get project by id", e);
         }
-        connectionHolder.releaseConnection();
         return Optional.empty();
     }
 

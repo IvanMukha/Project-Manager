@@ -6,12 +6,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ivan.projectManager.Application;
 import com.ivan.projectManager.utils.ConnectionHolder;
 import liquibase.integration.spring.SpringLiquibase;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.modelmapper.ModelMapper;
+import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 
 import javax.sql.DataSource;
@@ -20,10 +21,8 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackageClasses = Application.class)
 @PropertySource("classpath:application.properties")
+@EnableAspectJAutoProxy
 public class ApplicationConfig {
-
-    @Value("${driver}")
-    private String driver;
 
     @Value("${url}")
     private String url;
@@ -50,10 +49,9 @@ public class ApplicationConfig {
 
     @Bean
     public DataSource dataSource() {
-        BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(driver);
+        PGSimpleDataSource dataSource = new PGSimpleDataSource();
         dataSource.setUrl(url);
-        dataSource.setUsername(username);
+        dataSource.setUser(username);
         dataSource.setPassword(password);
         return dataSource;
     }

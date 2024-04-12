@@ -42,7 +42,6 @@ public class JdbcUserRepository implements UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get All Users", e);
         }
-        connectionHolder.releaseConnection();
         return users;
     }
 
@@ -62,7 +61,6 @@ public class JdbcUserRepository implements UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to save user", e);
         }
-        connectionHolder.releaseConnection();
         return user;
     }
 
@@ -85,7 +83,6 @@ public class JdbcUserRepository implements UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get user by id", e);
         }
-        connectionHolder.releaseConnection();
         return Optional.empty();
     }
 
@@ -100,7 +97,6 @@ public class JdbcUserRepository implements UserRepository {
             if (affectedRows == 0) {
                 return Optional.empty();
             }
-            connectionHolder.releaseConnection();
             return Optional.of(updatedUser);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to update user", e);
@@ -118,6 +114,5 @@ public class JdbcUserRepository implements UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete user", e);
         }
-        connectionHolder.releaseConnection();
     }
 }

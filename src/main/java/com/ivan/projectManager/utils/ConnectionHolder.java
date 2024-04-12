@@ -69,7 +69,6 @@ public class ConnectionHolder {
                 if (threadTransactionMap.get(currentThread) && connection.isClosed()) {
                     throw new RuntimeException("Connection used in transaction was closed");
                 }
-                connection.close();
             } catch (SQLException e) {
                 throw new RuntimeException("Failed to release connection", e);
             }

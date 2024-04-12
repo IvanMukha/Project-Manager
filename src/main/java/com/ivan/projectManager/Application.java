@@ -12,8 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Application {
     private static final Logger log = LoggerFactory.getLogger(Application.class);
@@ -47,7 +49,6 @@ public class Application {
 
         TaskController taskController = context.getBean(TaskController.class);
 
-
         Runnable saveTaskWithRelatedEntities1 = () -> {
 
             try {
@@ -72,11 +73,24 @@ public class Application {
                 throw new RuntimeException(e);
             }
         };
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        executorService.submit(saveTaskWithRelatedEntities1);
-        executorService.submit(saveTaskWithRelatedEntities2);
-        executorService.submit(getAllTasks);
 
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        Future<?> future1 = executorService.submit(saveTaskWithRelatedEntities1);
+        Future<?> future2 = executorService.submit(saveTaskWithRelatedEntities2);
+        Future<?> future3 = executorService.submit(getAllTasks);
+        try {
+            future1.get();
+            future2.get();
+            future3.get();
+        } catch (ExecutionException e) {
+            Throwable rootCause = e.getCause();
+            if (rootCause != null) {
+
+                rootCause.printStackTrace();
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         executorService.shutdown();
         while (!executorService.isTerminated()) {
         }

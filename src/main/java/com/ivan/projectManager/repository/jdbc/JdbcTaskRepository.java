@@ -52,7 +52,6 @@ public class JdbcTaskRepository implements TaskRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get all tasks", e);
         }
-        connectionHolder.releaseConnection();
         return tasks;
     }
 
@@ -110,7 +109,6 @@ public class JdbcTaskRepository implements TaskRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get task by id", e);
         }
-        connectionHolder.releaseConnection();
         return Optional.empty();
     }
 

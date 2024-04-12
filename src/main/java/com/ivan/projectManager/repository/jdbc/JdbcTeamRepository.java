@@ -41,7 +41,6 @@ public class JdbcTeamRepository implements TeamRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get all teams", e);
         }
-        connectionHolder.releaseConnection();
         return teams;
     }
 
@@ -55,13 +54,6 @@ public class JdbcTeamRepository implements TeamRepository {
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
                 throw new SQLException("Creating team failed, no rows affected.");
-            }
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    team.setId(generatedKeys.getInt(1));
-                } else {
-                    throw new SQLException("Creating team failed, no ID obtained.");
-                }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to save team", e);
@@ -86,7 +78,6 @@ public class JdbcTeamRepository implements TeamRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get team by id", e);
         }
-        connectionHolder.releaseConnection();
         return Optional.empty();
     }
 
