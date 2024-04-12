@@ -2,6 +2,7 @@ package com.ivan.projectManager.repository.jdbc;
 
 import com.ivan.projectManager.model.Task;
 import com.ivan.projectManager.repository.TaskRepository;
+import com.ivan.projectManager.repository.repositoryMapper.TaskMapper;
 import com.ivan.projectManager.utils.ConnectionHolder;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -20,10 +21,12 @@ import java.util.Optional;
 public class JdbcTaskRepository implements TaskRepository {
 
     private final ConnectionHolder connectionHolder;
+    private final TaskMapper taskMapper;
 
 
-    public JdbcTaskRepository(ConnectionHolder connectionHolder) {
+    public JdbcTaskRepository(ConnectionHolder connectionHolder,TaskMapper taskMapper) {
         this.connectionHolder = connectionHolder;
+        this.taskMapper=taskMapper;
 
     }
 
@@ -33,33 +36,22 @@ public class JdbcTaskRepository implements TaskRepository {
         try (Connection connection = connectionHolder.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM tasks");
              ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                Task task = new Task();
-                task.setId(resultSet.getInt("id"));
-                task.setTitle(resultSet.getString("title"));
-                task.setStatus(resultSet.getString("status"));
-                task.setPriority(resultSet.getString("priority"));
-                task.setStartDate(resultSet.getObject("start_date", LocalDateTime.class));
-                task.setDueDate(resultSet.getObject("due_date", LocalDateTime.class));
-                task.setReporter(resultSet.getInt("reporter_id"));
-                task.setAssignee(resultSet.getInt("assignee_id"));
-                task.setCategory(resultSet.getString("category"));
-                task.setLabel(resultSet.getString("label"));
-                task.setDescription(resultSet.getString("description"));
-                task.setProjectId(resultSet.getInt("project_id"));
-                tasks.add(task);
-            }
+            tasks = taskMapper.mapTasks(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get all tasks", e);
         }
+        connectionHolder.releaseConnection();
         return tasks;
     }
 
     @Override
     public Task save(Task task) {
-        String sql = "INSERT INTO tasks (id,title, status, priority, start_date, due_date, reporter_id, assignee_id, category, label, description, project_id) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection connection = connectionHolder.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        String sql = "INSERT INTO tasks (id, title, status, priority, start_date, due_date, reporter_id, assignee_id, category, label, description, project_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = connectionHolder.getConnection();
+            statement = connection.prepareStatement(sql);
             statement.setInt(1, task.getId());
             statement.setString(2, task.getTitle());
             statement.setString(3, task.getStatus());
@@ -78,9 +70,18 @@ public class JdbcTaskRepository implements TaskRepository {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to save task", e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException("Failed to close statement", e);
+                }
+            }
         }
         return task;
     }
+
 
     @Override
     public Optional<Task> getById(int id) {
@@ -89,27 +90,13 @@ public class JdbcTaskRepository implements TaskRepository {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    Task task = new Task();
-                    task.setId(resultSet.getInt("id"));
-                    task.setTitle(resultSet.getString("title"));
-                    task.setStatus(resultSet.getString("status"));
-                    task.setPriority(resultSet.getString("priority"));
-                    task.setStartDate(resultSet.getObject("start_date", LocalDateTime.class));
-                    task.setDueDate(resultSet.getObject("due_date", LocalDateTime.class));
-                    task.setReporter(resultSet.getInt("reporter_id"));
-                    task.setAssignee(resultSet.getInt("assignee_id"));
-                    task.setCategory(resultSet.getString("category"));
-                    task.setLabel(resultSet.getString("label"));
-                    task.setDescription(resultSet.getString("description"));
-                    task.setProjectId(resultSet.getInt("project_id"));
-                    return Optional.of(task);
-                }
+                return Optional.ofNullable(taskMapper.mapTask(resultSet));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get task by id", e);
+        }finally {
+            connectionHolder.releaseConnection();
         }
-        return Optional.empty();
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.ivan.projectManager.repository.jdbc;
 
 import com.ivan.projectManager.model.User;
 import com.ivan.projectManager.repository.UserRepository;
+import com.ivan.projectManager.repository.repositoryMapper.UserMapper;
 import com.ivan.projectManager.utils.ConnectionHolder;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -20,9 +21,11 @@ import java.util.Optional;
 public class JdbcUserRepository implements UserRepository {
 
     private final ConnectionHolder connectionHolder;
+    private final UserMapper userMapper;
 
-    public JdbcUserRepository(ConnectionHolder connectionHolder) {
+    public JdbcUserRepository(ConnectionHolder connectionHolder,UserMapper userMapper) {
         this.connectionHolder = connectionHolder;
+        this.userMapper=userMapper;
     }
 
     @Override
@@ -31,38 +34,46 @@ public class JdbcUserRepository implements UserRepository {
         try (Connection connection = connectionHolder.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT * FROM users")) {
-            while (resultSet.next()) {
-                User user = new User();
-                user.setId(resultSet.getInt("id"));
-                user.setUsername(resultSet.getString("username"));
-                user.setEmail(resultSet.getString("email"));
-                users.add(user);
-            }
-
+            users=userMapper.mapUsers(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get All Users", e);
         }
+        connectionHolder.releaseConnection();
         return users;
     }
 
     @Override
     public User save(User user) {
         String sql = "INSERT INTO users (id, username, password, email) VALUES (?, ?, ?, ?)";
-        try (Connection connection = connectionHolder.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = connectionHolder.getConnection();
+            statement = connection.prepareStatement(sql);
             statement.setInt(1, user.getId());
             statement.setString(2, user.getUsername());
             statement.setString(3, user.getPassword());
             statement.setString(4, user.getEmail());
             int affectedRows = statement.executeUpdate();
+
             if (affectedRows == 0) {
                 throw new SQLException("Creating user failed, no rows affected.");
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to save user", e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException("failed to close statement",e);
+                }
+            }
         }
         return user;
     }
+
+
 
 
     @Override
@@ -72,19 +83,15 @@ public class JdbcUserRepository implements UserRepository {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    User user = new User();
-                    user.setId(resultSet.getInt("id"));
-                    user.setUsername(resultSet.getString("username"));
-                    user.setEmail(resultSet.getString("email"));
-                    return Optional.of(user);
-                }
+                return Optional.ofNullable(userMapper.mapUser(resultSet));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get user by id", e);
+        } finally {
+            connectionHolder.releaseConnection();
         }
-        return Optional.empty();
     }
+
 
     @Override
     public Optional<User> update(int id, User updatedUser) {
@@ -101,7 +108,6 @@ public class JdbcUserRepository implements UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to update user", e);
         }
-
     }
 
     @Override

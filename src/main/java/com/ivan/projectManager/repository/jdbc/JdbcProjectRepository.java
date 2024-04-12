@@ -2,6 +2,7 @@ package com.ivan.projectManager.repository.jdbc;
 
 import com.ivan.projectManager.model.Project;
 import com.ivan.projectManager.repository.ProjectRepository;
+import com.ivan.projectManager.repository.repositoryMapper.ProjectMapper;
 import com.ivan.projectManager.utils.ConnectionHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -21,10 +22,12 @@ import java.util.Optional;
 public class JdbcProjectRepository implements ProjectRepository {
 
     private final ConnectionHolder connectionHolder;
+    private final ProjectMapper projectMapper;
 
     @Autowired
-    public JdbcProjectRepository(ConnectionHolder connectionHolder) {
+    public JdbcProjectRepository(ConnectionHolder connectionHolder,ProjectMapper projectMapper) {
         this.connectionHolder = connectionHolder;
+        this.projectMapper=projectMapper;
     }
 
     @Override
@@ -33,28 +36,23 @@ public class JdbcProjectRepository implements ProjectRepository {
         try (Connection connection = connectionHolder.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM projects");
              ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                Project project = new Project();
-                project.setId(resultSet.getInt("id"));
-                project.setTitle(resultSet.getString("title"));
-                project.setDescription(resultSet.getString("description"));
-                project.setStartDate(resultSet.getObject("start_date", LocalDateTime.class));
-                project.setStatus(resultSet.getString("status"));
-                project.setTeamId(resultSet.getInt("team_id"));
-                project.setManagerId(resultSet.getInt("manager_id"));
-                projects.add(project);
-            }
+            projects = projectMapper.mapProjects(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get all projects", e);
+        } finally {
+            connectionHolder.releaseConnection();
         }
         return projects;
     }
 
     @Override
     public Project save(Project project) {
-        String sql = "INSERT INTO projects (id,title, description, start_date, status, team_id, manager_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection connection = connectionHolder.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        String sql = "INSERT INTO projects (id, title, description, start_date, status, team_id, manager_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = connectionHolder.getConnection();
+            statement = connection.prepareStatement(sql);
             statement.setInt(1, project.getId());
             statement.setString(2, project.getTitle());
             statement.setString(3, project.getDescription());
@@ -66,12 +64,20 @@ public class JdbcProjectRepository implements ProjectRepository {
             if (affectedRows == 0) {
                 throw new SQLException("Creating project failed, no rows affected.");
             }
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException("Failed to save project", e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException("Failed to close statement", e);
+                }
+            }
         }
         return project;
     }
+
 
     @Override
     public Optional<Project> getById(int id) {
@@ -80,22 +86,14 @@ public class JdbcProjectRepository implements ProjectRepository {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    Project project = new Project();
-                    project.setId(resultSet.getInt("id"));
-                    project.setTitle(resultSet.getString("title"));
-                    project.setDescription(resultSet.getString("description"));
-                    project.setStartDate(resultSet.getObject("start_date", LocalDateTime.class));
-                    project.setStatus(resultSet.getString("status"));
-                    project.setTeamId(resultSet.getInt("team_id"));
-                    project.setManagerId(resultSet.getInt("manager_id"));
-                    return Optional.of(project);
+              return Optional.ofNullable(projectMapper.mapProject(resultSet));
                 }
-            }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get project by id", e);
         }
-        return Optional.empty();
+        finally {
+            connectionHolder.releaseConnection();
+        }
     }
 
     @Override

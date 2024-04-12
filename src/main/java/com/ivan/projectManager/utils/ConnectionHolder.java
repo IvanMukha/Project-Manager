@@ -4,6 +4,7 @@ import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -41,7 +42,6 @@ public class ConnectionHolder {
                     }
                 }
             }
-
             if (connection == null) {
                 connection = dataSource.getConnection();
                 threadConnectionMap.put(currentThread, connection);

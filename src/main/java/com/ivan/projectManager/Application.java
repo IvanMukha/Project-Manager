@@ -85,8 +85,7 @@ public class Application {
         } catch (ExecutionException e) {
             Throwable rootCause = e.getCause();
             if (rootCause != null) {
-
-                rootCause.printStackTrace();
+                log.info("rootCause is null",e);
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

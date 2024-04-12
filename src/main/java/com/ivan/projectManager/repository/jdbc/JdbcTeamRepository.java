@@ -2,6 +2,7 @@ package com.ivan.projectManager.repository.jdbc;
 
 import com.ivan.projectManager.model.Team;
 import com.ivan.projectManager.repository.TeamRepository;
+import com.ivan.projectManager.repository.repositoryMapper.TeamMapper;
 import com.ivan.projectManager.utils.ConnectionHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -20,10 +21,12 @@ import java.util.Optional;
 public class JdbcTeamRepository implements TeamRepository {
 
     private final ConnectionHolder connectionHolder;
+    private final TeamMapper teamMapper;
 
     @Autowired
-    public JdbcTeamRepository(ConnectionHolder connectionHolder) {
+    public JdbcTeamRepository(ConnectionHolder connectionHolder,TeamMapper teamMapper) {
         this.connectionHolder = connectionHolder;
+        this.teamMapper=teamMapper;
     }
 
     @Override
@@ -32,23 +35,22 @@ public class JdbcTeamRepository implements TeamRepository {
         try (Connection connection = connectionHolder.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM teams");
              ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                Team team = new Team();
-                team.setId(resultSet.getInt("id"));
-                team.setName(resultSet.getString("name"));
-                teams.add(team);
-            }
+            teams = teamMapper.mapTeams(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get all teams", e);
         }
+        connectionHolder.releaseConnection();
         return teams;
     }
 
     @Override
     public Team save(Team team) {
-        String sql = "INSERT INTO teams (id,name) VALUES (?,?)";
-        try (Connection connection = connectionHolder.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+        String sql = "INSERT INTO teams (id, name) VALUES (?, ?)";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = connectionHolder.getConnection();
+            statement = connection.prepareStatement(sql);
             statement.setInt(1, team.getId());
             statement.setString(2, team.getName());
             int affectedRows = statement.executeUpdate();
@@ -57,9 +59,18 @@ public class JdbcTeamRepository implements TeamRepository {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to save team", e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException("Failed to close statement", e);
+                }
+            }
         }
         return team;
     }
+
 
     @Override
     public Optional<Team> getById(int id) {
@@ -68,17 +79,13 @@ public class JdbcTeamRepository implements TeamRepository {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    Team team = new Team();
-                    team.setId(resultSet.getInt("id"));
-                    team.setName(resultSet.getString("name"));
-                    return Optional.of(team);
-                }
+                return Optional.ofNullable(teamMapper.mapTeam(resultSet));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get team by id", e);
+        } finally {
+            connectionHolder.releaseConnection();
         }
-        return Optional.empty();
     }
 
     @Override
