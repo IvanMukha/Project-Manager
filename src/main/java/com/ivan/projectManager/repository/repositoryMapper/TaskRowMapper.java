@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 @Component
-public class TaskMapper {
-    public List<Task> mapTasks(ResultSet resultSet) {
+public class TaskRowMapper implements RowMapper<Task> {
+    public List<Task> mapAll(ResultSet resultSet) {
         List<Task> tasks = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                Task task = new Task();
-                mapTask(resultSet, task);
+                Task task =map(resultSet);;
+
                 tasks.add(task);
             }
         } catch (SQLException e) {
@@ -24,7 +24,7 @@ public class TaskMapper {
         return tasks;
     }
 
-    public Task mapTask(ResultSet resultSet) {
+    public Task map(ResultSet resultSet) {
         try {
             if (resultSet.next()) {
                 Task task = new Task();

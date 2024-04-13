@@ -2,7 +2,8 @@ package com.ivan.projectManager.repository.jdbc;
 
 import com.ivan.projectManager.model.Team;
 import com.ivan.projectManager.repository.TeamRepository;
-import com.ivan.projectManager.repository.repositoryMapper.TeamMapper;
+import com.ivan.projectManager.repository.repositoryMapper.RowMapper;
+import com.ivan.projectManager.repository.repositoryMapper.TeamRowMapper;
 import com.ivan.projectManager.utils.ConnectionHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -21,12 +22,12 @@ import java.util.Optional;
 public class JdbcTeamRepository implements TeamRepository {
 
     private final ConnectionHolder connectionHolder;
-    private final TeamMapper teamMapper;
+    private final RowMapper<Team> rowMapper;
 
     @Autowired
-    public JdbcTeamRepository(ConnectionHolder connectionHolder,TeamMapper teamMapper) {
+    public JdbcTeamRepository(ConnectionHolder connectionHolder, RowMapper<Team> rowMapper) {
         this.connectionHolder = connectionHolder;
-        this.teamMapper=teamMapper;
+        this.rowMapper=rowMapper;
     }
 
     @Override
@@ -35,7 +36,7 @@ public class JdbcTeamRepository implements TeamRepository {
         try (Connection connection = connectionHolder.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM teams");
              ResultSet resultSet = statement.executeQuery()) {
-            teams = teamMapper.mapTeams(resultSet);
+            teams = rowMapper.mapAll(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get all teams", e);
         }
@@ -79,7 +80,7 @@ public class JdbcTeamRepository implements TeamRepository {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
-                return Optional.ofNullable(teamMapper.mapTeam(resultSet));
+                return Optional.ofNullable(rowMapper.map(resultSet));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get team by id", e);

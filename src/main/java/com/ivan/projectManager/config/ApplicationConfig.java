@@ -24,15 +24,6 @@ import javax.sql.DataSource;
 @EnableAspectJAutoProxy
 public class ApplicationConfig {
 
-    @Value("${url}")
-    private String url;
-
-    @Value("${usernameValue}")
-    private String username;
-
-    @Value("${password}")
-    private String password;
-
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
@@ -48,7 +39,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource(@Value("${url}") String url, @Value("${usernameValue}") String username, @Value("${password}") String password) {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         dataSource.setUrl(url);
         dataSource.setUser(username);
@@ -57,17 +48,17 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public SpringLiquibase liquibase(
+    public SpringLiquibase liquibase(DataSource dataSource,
             @Value("${liquibase.changelog-master}") String liquibaseChangeLog) {
         SpringLiquibase liquibase = new SpringLiquibase();
-        liquibase.setDataSource(dataSource());
+        liquibase.setDataSource(dataSource);
         liquibase.setChangeLog(liquibaseChangeLog);
         return liquibase;
     }
 
     @Bean
-    public ConnectionHolder connectionHolder() {
-        return new ConnectionHolder(dataSource());
+    public ConnectionHolder connectionHolder(DataSource dataSource) {
+        return new ConnectionHolder(dataSource);
     }
 
 

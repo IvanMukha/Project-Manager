@@ -2,7 +2,8 @@ package com.ivan.projectManager.repository.jdbc;
 
 import com.ivan.projectManager.model.User;
 import com.ivan.projectManager.repository.UserRepository;
-import com.ivan.projectManager.repository.repositoryMapper.UserMapper;
+import com.ivan.projectManager.repository.repositoryMapper.RowMapper;
+import com.ivan.projectManager.repository.repositoryMapper.UserRowMapper;
 import com.ivan.projectManager.utils.ConnectionHolder;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -21,11 +22,11 @@ import java.util.Optional;
 public class JdbcUserRepository implements UserRepository {
 
     private final ConnectionHolder connectionHolder;
-    private final UserMapper userMapper;
+    private final RowMapper<User> rowMapper;
 
-    public JdbcUserRepository(ConnectionHolder connectionHolder,UserMapper userMapper) {
+    public JdbcUserRepository(ConnectionHolder connectionHolder, RowMapper<User> rowMapper) {
         this.connectionHolder = connectionHolder;
-        this.userMapper=userMapper;
+        this.rowMapper=rowMapper;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class JdbcUserRepository implements UserRepository {
         try (Connection connection = connectionHolder.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT * FROM users")) {
-            users=userMapper.mapUsers(resultSet);
+            users=rowMapper.mapAll(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get All Users", e);
         }
@@ -83,7 +84,7 @@ public class JdbcUserRepository implements UserRepository {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
-                return Optional.ofNullable(userMapper.mapUser(resultSet));
+                return Optional.ofNullable(rowMapper.map(resultSet));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get user by id", e);

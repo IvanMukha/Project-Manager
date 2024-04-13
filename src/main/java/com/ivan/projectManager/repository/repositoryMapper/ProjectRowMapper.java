@@ -11,12 +11,12 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProjectMapper {
-    public List<Project> mapProjects(ResultSet resultSet) {
+public class ProjectRowMapper implements RowMapper<Project> {
+    public List<Project> mapAll(ResultSet resultSet) {
         List<Project> projects = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                Project project = mapProject(resultSet);
+                Project project = map(resultSet);
                 projects.add(project);
             }
         } catch (SQLException e) {
@@ -25,7 +25,7 @@ public class ProjectMapper {
         return projects;
     }
 
-    public Project mapProject(ResultSet resultSet) {
+    public Project map(ResultSet resultSet) {
         try {
             Project project = new Project();
             project.setId(resultSet.getInt("id"));

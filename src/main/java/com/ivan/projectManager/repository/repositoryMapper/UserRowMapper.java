@@ -8,15 +8,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 @Component
-public class UserMapper {
-    public List<User> mapUsers(ResultSet resultSet) {
+public class UserRowMapper implements RowMapper<User>{
+    public List<User> mapAll(ResultSet resultSet) {
         List<User> users = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                User user = new User();
-                user.setId(resultSet.getInt("id"));
-                user.setUsername(resultSet.getString("username"));
-                user.setEmail(resultSet.getString("email"));
+                User user = map(resultSet);
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -25,7 +22,7 @@ public class UserMapper {
         return users;
     }
 
-    public User mapUser(ResultSet resultSet) {
+    public User map(ResultSet resultSet) {
         try {
             if (resultSet.next()) {
                 User user = new User();

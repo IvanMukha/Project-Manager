@@ -2,7 +2,8 @@ package com.ivan.projectManager.repository.jdbc;
 
 import com.ivan.projectManager.model.Project;
 import com.ivan.projectManager.repository.ProjectRepository;
-import com.ivan.projectManager.repository.repositoryMapper.ProjectMapper;
+import com.ivan.projectManager.repository.repositoryMapper.ProjectRowMapper;
+import com.ivan.projectManager.repository.repositoryMapper.RowMapper;
 import com.ivan.projectManager.utils.ConnectionHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -12,7 +13,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,12 +22,12 @@ import java.util.Optional;
 public class JdbcProjectRepository implements ProjectRepository {
 
     private final ConnectionHolder connectionHolder;
-    private final ProjectMapper projectMapper;
+    private final RowMapper<Project> rowMapper;
 
     @Autowired
-    public JdbcProjectRepository(ConnectionHolder connectionHolder,ProjectMapper projectMapper) {
+    public JdbcProjectRepository(ConnectionHolder connectionHolder, RowMapper<Project> rowMapper) {
         this.connectionHolder = connectionHolder;
-        this.projectMapper=projectMapper;
+        this.rowMapper=rowMapper;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class JdbcProjectRepository implements ProjectRepository {
         try (Connection connection = connectionHolder.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM projects");
              ResultSet resultSet = statement.executeQuery()) {
-            projects = projectMapper.mapProjects(resultSet);
+            projects = rowMapper.mapAll(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get all projects", e);
         } finally {
@@ -86,7 +86,7 @@ public class JdbcProjectRepository implements ProjectRepository {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
-              return Optional.ofNullable(projectMapper.mapProject(resultSet));
+              return Optional.ofNullable(rowMapper.map(resultSet));
                 }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get project by id", e);

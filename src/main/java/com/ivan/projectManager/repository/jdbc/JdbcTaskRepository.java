@@ -2,7 +2,8 @@ package com.ivan.projectManager.repository.jdbc;
 
 import com.ivan.projectManager.model.Task;
 import com.ivan.projectManager.repository.TaskRepository;
-import com.ivan.projectManager.repository.repositoryMapper.TaskMapper;
+import com.ivan.projectManager.repository.repositoryMapper.RowMapper;
+import com.ivan.projectManager.repository.repositoryMapper.TaskRowMapper;
 import com.ivan.projectManager.utils.ConnectionHolder;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -11,7 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,12 +21,12 @@ import java.util.Optional;
 public class JdbcTaskRepository implements TaskRepository {
 
     private final ConnectionHolder connectionHolder;
-    private final TaskMapper taskMapper;
+    private final RowMapper<Task> rowMapper;
 
 
-    public JdbcTaskRepository(ConnectionHolder connectionHolder,TaskMapper taskMapper) {
+    public JdbcTaskRepository(ConnectionHolder connectionHolder, RowMapper<Task> rowMapper) {
         this.connectionHolder = connectionHolder;
-        this.taskMapper=taskMapper;
+        this.rowMapper=rowMapper;
 
     }
 
@@ -36,7 +36,7 @@ public class JdbcTaskRepository implements TaskRepository {
         try (Connection connection = connectionHolder.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM tasks");
              ResultSet resultSet = statement.executeQuery()) {
-            tasks = taskMapper.mapTasks(resultSet);
+            tasks = rowMapper.mapAll(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get all tasks", e);
         }
@@ -90,7 +90,7 @@ public class JdbcTaskRepository implements TaskRepository {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
-                return Optional.ofNullable(taskMapper.mapTask(resultSet));
+                return Optional.ofNullable(rowMapper.map(resultSet));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get task by id", e);
