@@ -1,0 +1,159 @@
+package com.ivan.projectmanager.repository.jdbc;
+
+import com.ivan.projectmanager.model.User;
+import com.ivan.projectmanager.repository.UserRepository;
+import com.ivan.projectmanager.repository.rowmapper.RowMapper;
+import com.ivan.projectmanager.utils.ConnectionHolder;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+@Primary
+public class JdbcUserRepository implements UserRepository {
+
+    private final ConnectionHolder connectionHolder;
+    private final RowMapper<User> rowMapper;
+
+    public JdbcUserRepository(ConnectionHolder connectionHolder, RowMapper<User> rowMapper) {
+        this.connectionHolder = connectionHolder;
+        this.rowMapper = rowMapper;
+    }
+
+    @Override
+    public List<User> getAll() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users";
+        PreparedStatement statement = null;
+        try {
+            Connection connection = connectionHolder.getConnection();
+            statement = connection.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery(sql);
+            users = rowMapper.mapAll(resultSet);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to get All Users", e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException("failed to close statement", e);
+                }
+            }
+            connectionHolder.releaseConnection();
+        }
+        return users;
+    }
+
+    @Override
+    public User save(User user) {
+        String sql = "INSERT INTO users (id, username, password, email) VALUES (?, ?, ?, ?)";
+        PreparedStatement statement = null;
+        try {
+            Connection connection = connectionHolder.getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, user.getId());
+            statement.setString(2, user.getUsername());
+            statement.setString(3, user.getPassword());
+            statement.setString(4, user.getEmail());
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to save user", e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException("failed to close statement", e);
+                }
+            }
+        }
+        return user;
+    }
+
+
+    @Override
+    public Optional<User> getById(int id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        PreparedStatement statement = null;
+        try {
+            Connection connection = connectionHolder.getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return Optional.ofNullable(rowMapper.map(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to get user by id", e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException("failed to close statement", e);
+                }
+            }
+            connectionHolder.releaseConnection();
+        }
+    }
+
+
+    @Override
+    public Optional<User> update(int id, User updatedUser) {
+        String sql = "UPDATE users SET username = ?, email = ? WHERE id = ?";
+        PreparedStatement statement = null;
+        try {
+            Connection connection = connectionHolder.getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, updatedUser.getUsername());
+            statement.setString(2, updatedUser.getEmail());
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                return Optional.empty();
+            }
+            return Optional.of(updatedUser);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update user", e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException("failed to close statement", e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void delete(int id) {
+        String sql = "DELETE FROM users WHERE id = ?";
+        PreparedStatement statement = null;
+        try {
+            Connection connection = connectionHolder.getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete user", e);
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException("failed to close statement", e);
+                }
+            }
+        }
+    }
+}
