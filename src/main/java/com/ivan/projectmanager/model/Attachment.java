@@ -1,10 +1,21 @@
 package com.ivan.projectmanager.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "attachments")
 public class Attachment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+    @Column(name = "title")
     private String title;
+    @Column(name = "path")
     private String path;
-    private int taskId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Task task;
+
 
     public int getId() {
         return id;
@@ -33,12 +44,12 @@ public class Attachment {
         return this;
     }
 
-    public int getTaskId() {
-        return taskId;
+    public Task getTask() {
+        return task;
     }
 
-    public Attachment setTaskId(int taskId) {
-        this.taskId = taskId;
+    public Attachment setTask(Task task) {
+        this.task = task;
         return this;
     }
 }

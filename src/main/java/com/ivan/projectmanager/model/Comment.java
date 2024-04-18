@@ -1,13 +1,25 @@
 package com.ivan.projectmanager.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "comments")
 public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "text")
     private String text;
+    @Column(name = "add_time")
     private LocalDateTime addTime;
-    private int userId;
-    private int taskId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id")
+    private Task task;
 
     public int getId() {
         return id;
@@ -36,21 +48,21 @@ public class Comment {
         return this;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public Comment setUserId(int userId) {
-        this.userId = userId;
+    public Comment setUser(User user) {
+        this.user = user;
         return this;
     }
 
-    public int getTaskId() {
-        return taskId;
+    public Task getTask() {
+        return task;
     }
 
-    public Comment setTaskId(int taskId) {
-        this.taskId = taskId;
+    public Comment setTask(Task task) {
+        this.task = task;
         return this;
     }
 }

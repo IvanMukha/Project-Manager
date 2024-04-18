@@ -1,21 +1,40 @@
 package com.ivan.projectmanager.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
+
+@Entity
+@Table(name = "user_details")
 public class UserDetails {
-    private int userId;
+    @Id
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    @Column(name = "name")
     private String name;
+    @Column(name = "surname")
     private String surname;
+    @Column(name = "phone")
     private String phone;
+    @Column(name = "work_phone")
     private String workPhone;
+    @Column(name = "work_address")
     private String workAddress;
+    @Column(name = "department")
     private String department;
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public UserDetails setUserId(int userId) {
-        this.userId = userId;
-        return this;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getName() {

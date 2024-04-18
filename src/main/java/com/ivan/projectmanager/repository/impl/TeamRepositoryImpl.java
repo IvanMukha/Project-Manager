@@ -12,36 +12,29 @@ import java.util.Optional;
 
 @Repository
 public class TeamRepositoryImpl implements TeamRepository {
-    private static final Logger log = LoggerFactory.getLogger(TeamRepositoryImpl.class);
-    List<Team> teams = new ArrayList<>();
 
+    @Override
     public List<Team> getAll() {
-        return teams;
+        return List.of();
     }
 
-    public Team save(Team team) {
-        teams.add(team);
-        return team;
+    @Override
+    public Team save(Team entity) {
+        return null;
     }
 
-    public Optional<Team> getById(int id) {
-        Optional<Team> optionalTeam = teams.stream()
-                .filter(team -> team.getId() == id)
-                .findFirst();
-        if (optionalTeam.isEmpty()) {
-            log.error("Object with id: {} does not exist", id);
-        }
-        return optionalTeam;
+    @Override
+    public Optional<Team> getById(Integer integer) {
+        return Optional.empty();
     }
 
-
-    public Optional<Team> update(int id, Team updatedTeam) {
-        Optional<Team> optionalTeam = getById(id);
-        optionalTeam.ifPresent(team -> team.setName(updatedTeam.getName()));
-        return optionalTeam;
+    @Override
+    public Optional<Team> update(Integer integer, Team updatedEntity) {
+        return Optional.empty();
     }
 
-    public void delete(int id) {
-        teams.removeIf(team -> team.getId() == id);
+    @Override
+    public void delete(Integer integer) {
+
     }
 }

@@ -12,35 +12,29 @@ import java.util.Optional;
 
 @Repository
 public class CommentRepositoryImpl implements CommentRepository {
-    private static final Logger log = LoggerFactory.getLogger(CommentRepositoryImpl.class);
-    List<Comment> comments = new ArrayList<>();
 
+    @Override
     public List<Comment> getAll() {
-        return comments;
+        return List.of();
     }
 
-    public Comment save(Comment comment) {
-        comments.add(comment);
-        return comment;
+    @Override
+    public Comment save(Comment entity) {
+        return null;
     }
 
-    public Optional<Comment> getById(int id) {
-        Optional<Comment> optionalComment = comments.stream()
-                .filter(comment -> comment.getId() == id)
-                .findFirst();
-        if (optionalComment.isEmpty()) {
-            log.error("Object with id: {} does not exist", id);
-        }
-        return optionalComment;
+    @Override
+    public Optional<Comment> getById(Integer integer) {
+        return Optional.empty();
     }
 
-    public Optional<Comment> update(int id, Comment updatedComment) {
-        Optional<Comment> optionalComment = getById(id);
-        optionalComment.ifPresent(comment -> comment.setText(updatedComment.getText()));
-        return optionalComment;
+    @Override
+    public Optional<Comment> update(Integer integer, Comment updatedEntity) {
+        return Optional.empty();
     }
 
-    public void delete(int id) {
-        comments.removeIf(comment -> comment.getId() == id);
+    @Override
+    public void delete(Integer integer) {
+
     }
 }

@@ -1,14 +1,29 @@
 package com.ivan.projectmanager.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "reports")
 public class Report {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+    @Column(name = "title")
     private String title;
+    @Column(name = "text")
     private String text;
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    private int userId;
-    private int taskId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id")
+    private Task task;
+
 
     public int getId() {
         return id;
@@ -46,21 +61,21 @@ public class Report {
         return this;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public Report setUserId(int userId) {
-        this.userId = userId;
+    public Report setUser(User user) {
+        this.user = user;
         return this;
     }
 
-    public int getTaskId() {
-        return taskId;
+    public Task getTask() {
+        return task;
     }
 
-    public Report setTaskId(int taskId) {
-        this.taskId = taskId;
+    public Report setTask(Task task) {
+        this.task = task;
         return this;
     }
 }

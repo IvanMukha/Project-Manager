@@ -12,35 +12,29 @@ import java.util.Optional;
 
 @Repository
 public class RoleRepositoryImpl implements RoleRepository {
-    private static final Logger log = LoggerFactory.getLogger(RoleRepositoryImpl.class);
-    List<Role> roles = new ArrayList<>();
 
+    @Override
     public List<Role> getAll() {
-        return roles;
+        return List.of();
     }
 
-    public Role save(Role role) {
-        roles.add(role);
-        return role;
+    @Override
+    public Role save(Role entity) {
+        return null;
     }
 
-    public Optional<Role> getById(int id) {
-        Optional<Role> optionalRole = roles.stream()
-                .filter(role -> role.getId() == id)
-                .findFirst();
-        if (optionalRole.isEmpty()) {
-            log.error("Object with id: {} does not exist", id);
-        }
-        return optionalRole;
+    @Override
+    public Optional<Role> getById(Integer integer) {
+        return Optional.empty();
     }
 
-    public Optional<Role> update(int id, Role updatedRole) {
-        Optional<Role> optionalRole = getById(id);
-        optionalRole.ifPresent(role -> role.setName(updatedRole.getName()));
-        return optionalRole;
+    @Override
+    public Optional<Role> update(Integer integer, Role updatedEntity) {
+        return Optional.empty();
     }
 
-    public void delete(int id) {
-        roles.removeIf(role -> role.getId() == id);
+    @Override
+    public void delete(Integer integer) {
+
     }
 }

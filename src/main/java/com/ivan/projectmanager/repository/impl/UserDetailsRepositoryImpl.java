@@ -12,38 +12,29 @@ import java.util.Optional;
 
 @Repository
 public class UserDetailsRepositoryImpl implements UserDetailsRepository {
-    private static final Logger log = LoggerFactory.getLogger(UserDetailsRepositoryImpl.class);
-    List<UserDetails> usersDetails = new ArrayList<>();
 
+    @Override
     public List<UserDetails> getAll() {
-        return usersDetails;
+        return List.of();
     }
 
-    public UserDetails save(UserDetails userDetails) {
-        usersDetails.add(userDetails);
-        return userDetails;
+    @Override
+    public UserDetails save(UserDetails entity) {
+        return null;
     }
 
-    public Optional<UserDetails> getById(int id) {
-        Optional<UserDetails> optionalUserDetails = usersDetails.stream()
-                .filter(userDetails -> userDetails.getUserId() == id)
-                .findFirst();
-        if (optionalUserDetails.isEmpty()) {
-            log.error("Object with id: {} does not exist", id);
-        }
-        return optionalUserDetails;
+    @Override
+    public Optional<UserDetails> getById(Integer integer) {
+        return Optional.empty();
     }
 
-
-    public Optional<UserDetails> update(int id, UserDetails updatedUserDetails) {
-        Optional<UserDetails> optionalUserDetails = getById(id);
-        optionalUserDetails.ifPresent(userDetails -> userDetails.setName(updatedUserDetails.getName()).setSurname(updatedUserDetails.getSurname()).
-                setPhone(updatedUserDetails.getPhone()).setWorkPhone(updatedUserDetails.getWorkPhone()).
-                setWorkAddress(updatedUserDetails.getWorkAddress()).setDepartment(updatedUserDetails.getDepartment()));
-        return optionalUserDetails;
+    @Override
+    public Optional<UserDetails> update(Integer integer, UserDetails updatedEntity) {
+        return Optional.empty();
     }
 
-    public void delete(int userId) {
-        usersDetails.removeIf(userDetails -> userDetails.getUserId() == userId);
+    @Override
+    public void delete(Integer integer) {
+
     }
 }

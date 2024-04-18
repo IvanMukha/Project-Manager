@@ -1,6 +1,5 @@
 package com.ivan.projectmanager.service.impl;
 
-import com.ivan.projectmanager.annotations.Transaction;
 import com.ivan.projectmanager.dto.AttachmentDTO;
 import com.ivan.projectmanager.model.Attachment;
 import com.ivan.projectmanager.repository.AttachmentRepository;
@@ -28,7 +27,6 @@ public class AttachmentServiceImpl implements AttachmentService {
         return attachmentRepository.getAll().stream().map(this::mapAttachmentToDTO).collect(Collectors.toList());
     }
 
-    @Transaction
     public AttachmentDTO save(AttachmentDTO attachmentDTO) {
         return mapAttachmentToDTO(attachmentRepository.save(mapDTOToAttachment(attachmentDTO)));
     }
@@ -38,13 +36,11 @@ public class AttachmentServiceImpl implements AttachmentService {
         return attachmentOptional.map(this::mapAttachmentToDTO);
     }
 
-    @Transaction
     public Optional<AttachmentDTO> update(int id, AttachmentDTO updatedAttachmentDTO) {
         Optional<Attachment> attachmentOptional = attachmentRepository.update(id, mapDTOToAttachment(updatedAttachmentDTO));
         return attachmentOptional.map(this::mapAttachmentToDTO);
     }
 
-    @Transaction
     public void delete(int id) {
         attachmentRepository.delete(id);
     }
