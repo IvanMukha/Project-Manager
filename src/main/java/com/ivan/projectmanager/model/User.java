@@ -1,16 +1,13 @@
 package com.ivan.projectmanager.model;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 import java.util.HashSet;
@@ -21,30 +18,30 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-    @Column(name = "username")
+    @Column()
+    private Long id;
+    @Column()
     private String username;
-    @Column(name = "password")
+    @Column()
     private String password;
-    @Column(name = "email")
+    @Column()
     private String email;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
+    @ManyToMany()
+    @JoinTable(name = "users_roles",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Set<Role> roles = new HashSet<>();
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_teams",
+    @ManyToMany()
+    @JoinTable(name = "users_teams",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "team_id")})
     private Set<Team> teams = new HashSet<>();
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public User setId(int id) {
+    public User setId(Long id) {
         this.id = id;
         return this;
     }

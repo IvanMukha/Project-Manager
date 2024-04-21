@@ -7,6 +7,7 @@ import com.ivan.projectmanager.service.UserDetailsService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,22 +28,24 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return userDetailsRepository.getAll().stream().map(this::mapUserDetailsToDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     public UserDetailsDTO save(UserDetailsDTO userDetailsDTO) {
         return mapUserDetailsToDTO(userDetailsRepository.save(mapDTOToUserDetails(userDetailsDTO)));
     }
 
-    public Optional<UserDetailsDTO> getById(int id) {
+    public Optional<UserDetailsDTO> getById(Long id) {
         Optional<UserDetails> userDetailsOptional = userDetailsRepository.getById(id);
         return userDetailsOptional.map(this::mapUserDetailsToDTO);
     }
 
-
-    public Optional<UserDetailsDTO> update(int id, UserDetailsDTO updatedUserDetailsDTO) {
+    @Transactional
+    public Optional<UserDetailsDTO> update(Long id, UserDetailsDTO updatedUserDetailsDTO) {
         Optional<UserDetails> userDetailsOptional = userDetailsRepository.update(id, mapDTOToUserDetails(updatedUserDetailsDTO));
         return userDetailsOptional.map(this::mapUserDetailsToDTO);
     }
 
-    public void delete(int id) {
+    @Transactional
+    public void delete(Long id) {
         userDetailsRepository.delete(id);
     }
 

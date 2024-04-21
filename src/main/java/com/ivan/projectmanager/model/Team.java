@@ -2,7 +2,6 @@ package com.ivan.projectmanager.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,18 +16,18 @@ import java.util.Set;
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-    @Column(name = "name")
+    @Column()
+    private Long id;
+    @Column()
     private String name;
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "teams")
+    @ManyToMany(mappedBy = "teams")
     private Set<User> users = new HashSet<>();
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public Team setId(int id) {
+    public Team setId(Long id) {
         this.id = id;
         return this;
     }

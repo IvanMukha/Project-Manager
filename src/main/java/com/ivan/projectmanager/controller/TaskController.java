@@ -2,10 +2,7 @@ package com.ivan.projectmanager.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ivan.projectmanager.dto.ProjectDTO;
 import com.ivan.projectmanager.dto.TaskDTO;
-import com.ivan.projectmanager.dto.TeamDTO;
-import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,16 +28,16 @@ public class TaskController {
         return objectMapper.writeValueAsString(taskService.save(taskDTO));
     }
 
-    public String getById(int id) throws JsonProcessingException {
+    public String getById(Long id) throws JsonProcessingException {
         Optional<TaskDTO> taskDTOOptional = taskService.getById(id);
         return objectMapper.writeValueAsString(taskDTOOptional.orElse(null));
     }
 
-    public String update(int id, TaskDTO taskDTO) throws JsonProcessingException {
+    public String update(Long id, TaskDTO taskDTO) throws JsonProcessingException {
         return objectMapper.writeValueAsString(taskService.update(id, taskDTO));
     }
 
-    public void delete(int id) {
+    public void delete(Long id) {
         taskService.delete(id);
     }
 

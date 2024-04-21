@@ -1,6 +1,7 @@
 package com.ivan.projectmanager.repository.impl;
 
 import com.ivan.projectmanager.model.Attachment;
+import com.ivan.projectmanager.model.Attachment_;
 import com.ivan.projectmanager.repository.AbstractRepository;
 import com.ivan.projectmanager.repository.AttachmentRepository;
 import jakarta.persistence.EntityGraph;
@@ -8,17 +9,13 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class AttachmentRepositoryImpl extends AbstractRepository<Attachment,Integer> implements AttachmentRepository {
-    private static final Logger log = LoggerFactory.getLogger(AttachmentRepositoryImpl.class);
+public class AttachmentRepositoryImpl extends AbstractRepository<Attachment, Long> implements AttachmentRepository {
 
     public AttachmentRepositoryImpl(EntityManager entityManager) {
         super(entityManager, Attachment.class);
@@ -26,16 +23,16 @@ public class AttachmentRepositoryImpl extends AbstractRepository<Attachment,Inte
 
     @Override
     public List<Attachment> getAll() {
-       return super.getAll();
+        return super.getAll();
     }
 
     @Override
-    public Optional<Attachment> getById(Integer id) {
+    public Optional<Attachment> getById(Long id) {
         return super.getById(id);
     }
 
     @Override
-    public Optional<Attachment> update(Integer id, Attachment updatedEntity) {
+    public Optional<Attachment> update(Long id, Attachment updatedEntity) {
         Attachment existingAttachment = entityManager.find(Attachment.class, id);
         if (existingAttachment != null) {
             existingAttachment.setTitle(updatedEntity.getTitle());
@@ -49,7 +46,7 @@ public class AttachmentRepositoryImpl extends AbstractRepository<Attachment,Inte
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         super.delete(id);
     }
 
@@ -57,7 +54,7 @@ public class AttachmentRepositoryImpl extends AbstractRepository<Attachment,Inte
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Attachment> query = cb.createQuery(Attachment.class);
         Root<Attachment> root = query.from(Attachment.class);
-        query.select(root).where(cb.equal(root.get("title"), title));
+        query.select(root).where(cb.equal(root.get(Attachment_.TITLE), title));
         return entityManager.createQuery(query).getResultList();
     }
 
@@ -71,7 +68,7 @@ public class AttachmentRepositoryImpl extends AbstractRepository<Attachment,Inte
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Attachment> query = cb.createQuery(Attachment.class);
         Root<Attachment> root = query.from(Attachment.class);
-        root.fetch("task");
+        root.fetch(Attachment_.TASK);
         query.select(root).where(cb.equal(root.get("title"), title));
         return entityManager.createQuery(query).getResultList();
     }

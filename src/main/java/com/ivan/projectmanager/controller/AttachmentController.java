@@ -28,16 +28,16 @@ public class AttachmentController {
         return objectMapper.writeValueAsString(attachmentService.save(attachmentDTO));
     }
 
-    public String getById(int id) throws JsonProcessingException {
+    public String getById(Long id) throws JsonProcessingException {
         Optional<AttachmentDTO> attachmentDTOOptional = attachmentService.getById(id);
         return objectMapper.writeValueAsString(attachmentDTOOptional.orElse(null));
     }
 
-    public String update(int id, AttachmentDTO attachmentDTO) throws JsonProcessingException {
+    public String update(Long id, AttachmentDTO attachmentDTO) throws JsonProcessingException {
         return objectMapper.writeValueAsString(attachmentService.update(id, attachmentDTO));
     }
 
-    public void delete(int id) {
+    public void delete(Long id) {
         attachmentService.delete(id);
     }
 }

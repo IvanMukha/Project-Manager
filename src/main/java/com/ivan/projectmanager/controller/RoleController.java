@@ -28,16 +28,16 @@ public class RoleController {
         return objectMapper.writeValueAsString(roleService.save(roleDTO));
     }
 
-    public String getById(int id) throws JsonProcessingException {
+    public String getById(Long id) throws JsonProcessingException {
         Optional<RoleDTO> roleDTOOptional = roleService.getById(id);
         return objectMapper.writeValueAsString(roleDTOOptional.orElse(null));
     }
 
-    public String update(int id, RoleDTO roleDTO) throws JsonProcessingException {
+    public String update(Long id, RoleDTO roleDTO) throws JsonProcessingException {
         return objectMapper.writeValueAsString(roleService.update(id, roleDTO));
     }
 
-    public void delete(int id) {
+    public void delete(Long id) {
         roleService.delete(id);
     }
 }

@@ -1,16 +1,16 @@
 package com.ivan.projectmanager.dto;
 
 public class UserDTO {
-    private int id;
+    private Long id;
     private String username;
     private String password;
     private String email;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public UserDTO setId(int id) {
+    public UserDTO setId(Long id) {
         this.id = id;
         return this;
     }

@@ -1,15 +1,15 @@
 package com.ivan.projectmanager.dto;
 
 public class AttachmentDTO {
-    private int id;
+    private Long id;
     private String title;
-    private int taskId;
+    private Long taskId;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public AttachmentDTO setId(int id) {
+    public AttachmentDTO setId(Long id) {
         this.id = id;
         return this;
     }
@@ -23,11 +23,11 @@ public class AttachmentDTO {
         return this;
     }
 
-    public int getTaskId() {
+    public Long getTaskId() {
         return taskId;
     }
 
-    public AttachmentDTO setTaskId(int taskId) {
+    public AttachmentDTO setTaskId(Long taskId) {
         this.taskId = taskId;
         return this;
     }

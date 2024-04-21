@@ -1,27 +1,35 @@
 package com.ivan.projectmanager.model;
 
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "attachments")
 public class Attachment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-    @Column(name = "title")
+    @Column()
+    private Long id;
+    @Column()
     private String title;
-    @Column(name = "path")
+    @Column()
     private String path;
     @ManyToOne(fetch = FetchType.LAZY)
     private Task task;
 
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public Attachment setId(int id) {
+    public Attachment setId(Long id) {
         this.id = id;
         return this;
     }

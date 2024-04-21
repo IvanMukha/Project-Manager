@@ -7,6 +7,7 @@ import com.ivan.projectmanager.service.AttachmentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,21 +28,24 @@ public class AttachmentServiceImpl implements AttachmentService {
         return attachmentRepository.getAll().stream().map(this::mapAttachmentToDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     public AttachmentDTO save(AttachmentDTO attachmentDTO) {
         return mapAttachmentToDTO(attachmentRepository.save(mapDTOToAttachment(attachmentDTO)));
     }
 
-    public Optional<AttachmentDTO> getById(int id) {
+    public Optional<AttachmentDTO> getById(Long id) {
         Optional<Attachment> attachmentOptional = attachmentRepository.getById(id);
         return attachmentOptional.map(this::mapAttachmentToDTO);
     }
 
-    public Optional<AttachmentDTO> update(int id, AttachmentDTO updatedAttachmentDTO) {
+    @Transactional
+    public Optional<AttachmentDTO> update(Long id, AttachmentDTO updatedAttachmentDTO) {
         Optional<Attachment> attachmentOptional = attachmentRepository.update(id, mapDTOToAttachment(updatedAttachmentDTO));
         return attachmentOptional.map(this::mapAttachmentToDTO);
     }
 
-    public void delete(int id) {
+    @Transactional
+    public void delete(Long id) {
         attachmentRepository.delete(id);
     }
 

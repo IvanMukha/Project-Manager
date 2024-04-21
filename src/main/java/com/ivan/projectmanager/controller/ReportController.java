@@ -28,16 +28,16 @@ public class ReportController {
         return objectMapper.writeValueAsString(reportService.save(reportDTO));
     }
 
-    public String getById(int id) throws JsonProcessingException {
+    public String getById(Long id) throws JsonProcessingException {
         Optional<ReportDTO> reportDTOOptional = reportService.getById(id);
         return objectMapper.writeValueAsString(reportDTOOptional.orElse(null));
     }
 
-    public String update(int id, ReportDTO reportDTO) throws JsonProcessingException {
+    public String update(Long id, ReportDTO reportDTO) throws JsonProcessingException {
         return objectMapper.writeValueAsString(reportService.update(id, reportDTO));
     }
 
-    public void delete(int id) {
+    public void delete(Long id) {
         reportService.delete(id);
     }
 }

@@ -3,18 +3,18 @@ package com.ivan.projectmanager.dto;
 import java.time.LocalDateTime;
 
 public class ReportDTO {
-    private int id;
+    private Long id;
     private String title;
     private String text;
     private LocalDateTime createdAt;
-    private int userId;
-    private int taskId;
+    private Long userId;
+    private Long taskId;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public ReportDTO setId(int id) {
+    public ReportDTO setId(Long id) {
         this.id = id;
         return this;
     }
@@ -46,20 +46,20 @@ public class ReportDTO {
         return this;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public ReportDTO setUserId(int userId) {
+    public ReportDTO setUserId(Long userId) {
         this.userId = userId;
         return this;
     }
 
-    public int getTaskId() {
+    public Long getTaskId() {
         return taskId;
     }
 
-    public ReportDTO setTaskId(int taskId) {
+    public ReportDTO setTaskId(Long taskId) {
         this.taskId = taskId;
         return this;
     }

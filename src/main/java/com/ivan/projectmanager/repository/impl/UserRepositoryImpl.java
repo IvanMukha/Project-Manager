@@ -6,19 +6,19 @@ import com.ivan.projectmanager.repository.AbstractRepository;
 import com.ivan.projectmanager.repository.UserRepository;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Fetch;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.ivan.projectmanager.model.User_.username;
-
 @Repository
-public class UserRepositoryImpl extends AbstractRepository<User,Integer> implements  UserRepository {
+public class UserRepositoryImpl extends AbstractRepository<User, Long> implements UserRepository {
 
     public UserRepositoryImpl(EntityManager entityManager) {
         super(entityManager, User.class);
@@ -30,12 +30,12 @@ public class UserRepositoryImpl extends AbstractRepository<User,Integer> impleme
     }
 
     @Override
-    public Optional<User> getById(Integer id) {
+    public Optional<User> getById(Long id) {
         return super.getById(id);
     }
 
     @Override
-    public Optional<User> update(Integer id, User updatedEntity) {
+    public Optional<User> update(Long id, User updatedEntity) {
         return super.getById(id).map(user -> {
             user.setUsername(updatedEntity.getUsername());
             user.setPassword(updatedEntity.getPassword());
@@ -46,7 +46,7 @@ public class UserRepositoryImpl extends AbstractRepository<User,Integer> impleme
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         super.delete(id);
     }
 
@@ -54,7 +54,7 @@ public class UserRepositoryImpl extends AbstractRepository<User,Integer> impleme
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> query = builder.createQuery(User.class);
         Root<User> root = query.from(User.class);
-        Predicate predicate = builder.equal(root.get(User_.username), username);
+        Predicate predicate = builder.equal(root.get(User_.USERNAME), username);
         query.select(root).where(predicate);
         return entityManager.createQuery(query).getResultList();
     }
@@ -78,11 +78,12 @@ public class UserRepositoryImpl extends AbstractRepository<User,Integer> impleme
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> query = cb.createQuery(User.class);
         Root<User> root = query.from(User.class);
-        Fetch<User, ?> rolesFetch = root.fetch("roles", JoinType.LEFT);
-        Fetch<User, ?> teamsFetch = root.fetch("teams", JoinType.LEFT);
+        Fetch<User, ?> rolesFetch = root.fetch(User_.ROLES, JoinType.LEFT);
+        Fetch<User, ?> teamsFetch = root.fetch(User_.TEAMS, JoinType.LEFT);
         query.select(root).distinct(true);
         return entityManager.createQuery(query).getResultList();
     }
+
     public List<User> getAllGraphFetch() {
         EntityGraph<User> entityGraph = entityManager.createEntityGraph(User.class);
         entityGraph.addAttributeNodes("roles", "teams");

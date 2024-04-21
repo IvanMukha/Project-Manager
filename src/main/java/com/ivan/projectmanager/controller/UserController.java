@@ -28,16 +28,16 @@ public class UserController {
         return objectMapper.writeValueAsString(userService.save(userDTO));
     }
 
-    public String getById(int id) throws JsonProcessingException {
+    public String getById(Long id) throws JsonProcessingException {
         Optional<UserDTO> userDTOOptional = userService.getById(id);
         return objectMapper.writeValueAsString(userDTOOptional.orElse(null));
     }
 
-    public String update(int id, UserDTO userDTO) throws JsonProcessingException {
+    public String update(Long id, UserDTO userDTO) throws JsonProcessingException {
         return objectMapper.writeValueAsString(userService.update(id, userDTO));
     }
 
-    public void delete(int id) {
+    public void delete(Long id) {
         userService.delete(id);
     }
 }

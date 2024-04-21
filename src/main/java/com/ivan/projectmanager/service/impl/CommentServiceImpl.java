@@ -7,6 +7,7 @@ import com.ivan.projectmanager.service.CommentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,22 +28,24 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.getAll().stream().map(this::mapCommentToDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     public CommentDTO save(CommentDTO commentDTO) {
         return mapCommentToDTO(commentRepository.save(mapDTOToComment(commentDTO)));
     }
 
-    public Optional<CommentDTO> getById(int id) {
+    public Optional<CommentDTO> getById(Long id) {
         Optional<Comment> commentOptional = commentRepository.getById(id);
         return commentOptional.map(this::mapCommentToDTO);
     }
 
-
-    public Optional<CommentDTO> update(int id, CommentDTO updatedCommentDTO) {
+    @Transactional
+    public Optional<CommentDTO> update(Long id, CommentDTO updatedCommentDTO) {
         Optional<Comment> commentOptional = commentRepository.update(id, mapDTOToComment(updatedCommentDTO));
         return commentOptional.map(this::mapCommentToDTO);
     }
 
-    public void delete(int id) {
+    @Transactional
+    public void delete(Long id) {
         commentRepository.delete(id);
     }
 

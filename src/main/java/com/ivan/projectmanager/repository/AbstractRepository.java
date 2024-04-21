@@ -4,18 +4,16 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
-@Repository
-public abstract class AbstractRepository<T, ID extends Serializable> implements CrudRepository<T,ID> {
 
+@Repository
+public abstract class AbstractRepository<T, ID> implements CrudRepository<T, ID> {
+
+    protected final EntityManager entityManager;
     private final Class<T> entityClass;
-    protected EntityManager entityManager;
 
     public AbstractRepository(EntityManager entityManager, Class<T> entityClass) {
         this.entityManager = entityManager;
@@ -34,9 +32,9 @@ public abstract class AbstractRepository<T, ID extends Serializable> implements 
         return entityManager.createQuery(query).getResultList();
     }
 
-    public T update(T entity) {
+    public Optional<T> update(ID id, T entity) {
         entityManager.merge(entity);
-        return entity;
+        return Optional.of(entity);
     }
 
     public T save(T entity) {

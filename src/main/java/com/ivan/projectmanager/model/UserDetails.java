@@ -14,19 +14,19 @@ import jakarta.persistence.Table;
 public class UserDetails {
     @Id
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn()
     private User user;
-    @Column(name = "name")
+    @Column()
     private String name;
-    @Column(name = "surname")
+    @Column()
     private String surname;
-    @Column(name = "phone")
+    @Column()
     private String phone;
-    @Column(name = "work_phone")
+    @Column()
     private String workPhone;
-    @Column(name = "work_address")
+    @Column()
     private String workAddress;
-    @Column(name = "department")
+    @Column()
     private String department;
 
     public User getUser() {

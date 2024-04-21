@@ -1,34 +1,39 @@
 package com.ivan.projectmanager.repository.impl;
 
 import com.ivan.projectmanager.model.Task;
+import com.ivan.projectmanager.model.Task_;
 import com.ivan.projectmanager.repository.AbstractRepository;
 import com.ivan.projectmanager.repository.TaskRepository;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class TaskRepositoryImpl extends AbstractRepository<Task,Integer> implements TaskRepository {
+public class TaskRepositoryImpl extends AbstractRepository<Task, Long> implements TaskRepository {
     public TaskRepositoryImpl(EntityManager entityManager) {
         super(entityManager, Task.class);
     }
+
     @Override
     public List<Task> getAll() {
         return super.getAll();
     }
+
     @Override
-    public Optional<Task> getById(Integer id) {
+    public Optional<Task> getById(Long id) {
         return super.getById(id);
     }
+
     @Override
-    public Optional<Task> update(Integer id, Task updatedEntity) {
+    public Optional<Task> update(Long id, Task updatedEntity) {
         Task task = entityManager.find(Task.class, id);
         if (task != null) {
             task.setTitle(updatedEntity.getTitle());
@@ -44,18 +49,20 @@ public class TaskRepositoryImpl extends AbstractRepository<Task,Integer> impleme
             return Optional.empty();
         }
     }
+
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         Task task = entityManager.find(Task.class, id);
         if (task != null) {
             entityManager.remove(task);
         }
     }
+
     public List<Task> getByStatusCriteria(String status) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Task> query = builder.createQuery(Task.class);
         Root<Task> root = query.from(Task.class);
-        Predicate predicate = builder.equal(root.get("status"), status);
+        Predicate predicate = builder.equal(root.get(Task_.STATUS), status);
         query.select(root).where(predicate);
         return entityManager.createQuery(query).getResultList();
     }
@@ -65,6 +72,7 @@ public class TaskRepositoryImpl extends AbstractRepository<Task,Integer> impleme
                 .setParameter("category", category)
                 .getResultList();
     }
+
     public List<Task> getAllJpqlFetch() {
         return entityManager.createQuery(
                         "SELECT DISTINCT t FROM Task t " +
@@ -74,13 +82,14 @@ public class TaskRepositoryImpl extends AbstractRepository<Task,Integer> impleme
                                 "WHERE t.id IS NOT NULL", Task.class)
                 .getResultList();
     }
+
     public List<Task> getAllCriteriaFetch() {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Task> query = cb.createQuery(Task.class);
         Root<Task> root = query.from(Task.class);
-        root.fetch("reporter", JoinType.LEFT);
-        root.fetch("assignee", JoinType.LEFT);
-        root.fetch("project", JoinType.LEFT);
+        root.fetch(Task_.REPORTER, JoinType.LEFT);
+        root.fetch(Task_.ASSIGNEE, JoinType.LEFT);
+        root.fetch(Task_.PROJECT, JoinType.LEFT);
         query.select(root).distinct(true);
         return entityManager.createQuery(query).getResultList();
     }

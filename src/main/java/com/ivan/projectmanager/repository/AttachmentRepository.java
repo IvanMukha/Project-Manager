@@ -1,11 +1,10 @@
 package com.ivan.projectmanager.repository;
 
-import com.ivan.projectmanager.dto.AttachmentDTO;
 import com.ivan.projectmanager.model.Attachment;
 
 import java.util.List;
 
-public interface AttachmentRepository extends CrudRepository<Attachment,Integer> {
+public interface AttachmentRepository extends CrudRepository<Attachment, Long> {
 
     List<Attachment> findByTitleCriteria(String title);
 

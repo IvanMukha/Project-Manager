@@ -7,6 +7,7 @@ import com.ivan.projectmanager.service.TeamService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,22 +28,24 @@ public class TeamServiceImpl implements TeamService {
         return teamRepository.getAll().stream().map(this::mapTeamToDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     public TeamDTO save(TeamDTO teamDTO) {
         return mapTeamToDTO(teamRepository.save(mapDTOToTeam(teamDTO)));
     }
 
-    public Optional<TeamDTO> getById(int id) {
+    public Optional<TeamDTO> getById(Long id) {
         Optional<Team> teamOptional = teamRepository.getById(id);
         return teamOptional.map(this::mapTeamToDTO);
     }
 
-
-    public Optional<TeamDTO> update(int id, TeamDTO updatedTeamDTO) {
+    @Transactional
+    public Optional<TeamDTO> update(Long id, TeamDTO updatedTeamDTO) {
         Optional<Team> teamOptional = teamRepository.update(id, mapDTOToTeam(updatedTeamDTO));
         return teamOptional.map(this::mapTeamToDTO);
     }
 
-    public void delete(int id) {
+    @Transactional
+    public void delete(Long id) {
         teamRepository.delete(id);
     }
 

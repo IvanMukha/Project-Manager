@@ -7,6 +7,7 @@ import com.ivan.projectmanager.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,21 +30,24 @@ public class UserServiceImpl implements UserService {
         return userRepository.getAll().stream().map(this::mapUserToDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     public UserDTO save(UserDTO userDTO) {
         return mapUserToDTO(userRepository.save(mapDTOToUser(userDTO)));
     }
 
-    public Optional<UserDTO> getById(int id) {
+    public Optional<UserDTO> getById(Long id) {
         Optional<User> userOptional = userRepository.getById(id);
         return userOptional.map(this::mapUserToDTO);
     }
 
-    public Optional<UserDTO> update(int id, UserDTO updatedUserDTO) {
+    @Transactional
+    public Optional<UserDTO> update(Long id, UserDTO updatedUserDTO) {
         Optional<User> userOptional = userRepository.update(id, mapDTOToUser(updatedUserDTO));
         return userOptional.map(this::mapUserToDTO);
     }
 
-    public void delete(int id) {
+    @Transactional
+    public void delete(Long id) {
         userRepository.delete(id);
     }
 

@@ -20,13 +20,13 @@ import java.util.List;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-    @Column(name = "title")
+    @Column()
+    private Long id;
+    @Column()
     private String title;
-    @Column(name = "status")
+    @Column()
     private String status;
-    @Column(name = "priority")
+    @Column()
     private String priority;
     @Column(name = "start_date")
     private LocalDateTime startDate;
@@ -36,25 +36,25 @@ public class Task {
     private User reporter;
     @ManyToOne(fetch = FetchType.LAZY)
     private User assignee;
-    @Column(name = "category")
+    @Column()
     private String category;
-    @Column(name = "label")
+    @Column()
     private String label;
-    @Column(name = "description")
+    @Column()
     private String description;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
-    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "task")
     private List<Attachment> attachments;
-    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "task")
     private List<Report> reports;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public Task setId(int id) {
+    public Task setId(Long id) {
         this.id = id;
         return this;
     }
