@@ -69,7 +69,7 @@ public class TaskRepositoryImpl extends AbstractRepository<Task, Long> implement
 
     public List<Task> getByCategoryJpql(String category) {
         return entityManager.createQuery("SELECT t FROM Task t WHERE t.category = :category", Task.class)
-                .setParameter("category", category)
+                .setParameter(Task_.CATEGORY, category)
                 .getResultList();
     }
 
@@ -96,7 +96,7 @@ public class TaskRepositoryImpl extends AbstractRepository<Task, Long> implement
 
     public List<Task> getAllEntityGraph() {
         EntityGraph<Task> entityGraph = entityManager.createEntityGraph(Task.class);
-        entityGraph.addAttributeNodes("reporter", "assignee", "project");
+        entityGraph.addAttributeNodes(Task_.REPORTER, Task_.ASSIGNEE, Task_.PROJECT);
 
         return entityManager.createQuery(
                         "SELECT t FROM Task t WHERE t.id IS NOT NULL", Task.class)

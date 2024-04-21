@@ -18,15 +18,15 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
+    @Column
     private Long id;
-    @Column()
+    @Column
     private String username;
-    @Column()
+    @Column
     private String password;
-    @Column()
+    @Column
     private String email;
-    @ManyToMany()
+    @ManyToMany
     @JoinTable(name = "users_roles",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})

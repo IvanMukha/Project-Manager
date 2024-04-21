@@ -7,14 +7,11 @@ import com.ivan.projectmanager.repository.AbstractRepository;
 import com.ivan.projectmanager.repository.ReportRepository;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Subgraph;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,7 +20,6 @@ import java.util.Optional;
 @Repository
 public class ReportRepositoryImpl extends AbstractRepository<Report, Long> implements ReportRepository {
 
-    private static final Logger log = LoggerFactory.getLogger(ReportRepositoryImpl.class);
 
     public ReportRepositoryImpl(EntityManager entityManager) {
         super(entityManager, Report.class);
@@ -60,7 +56,7 @@ public class ReportRepositoryImpl extends AbstractRepository<Report, Long> imple
     public List<Report> getReportsByUserJpql(User user) {
         TypedQuery<Report> query = entityManager.createQuery(
                 "SELECT r FROM Report r WHERE r.user = :user", Report.class);
-        query.setParameter("user", user);
+        query.setParameter(Report_.USER, user);
         return query.getResultList();
     }
 
@@ -76,7 +72,7 @@ public class ReportRepositoryImpl extends AbstractRepository<Report, Long> imple
     public List<Report> getReportsByUserJpqlFetch(User user) {
         return entityManager.createQuery(
                         "SELECT r FROM Report r JOIN FETCH r.user WHERE r.user = :user", Report.class)
-                .setParameter("user", user)
+                .setParameter(Report_.USER, user)
                 .getResultList();
     }
 
@@ -84,19 +80,17 @@ public class ReportRepositoryImpl extends AbstractRepository<Report, Long> imple
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Report> cq = cb.createQuery(Report.class);
         Root<Report> root = cq.from(Report.class);
-        root.fetch("user", JoinType.LEFT);
+        root.fetch(Report_.USER, JoinType.LEFT);
         cq.select(root).where(cb.equal(root.get(Report_.USER), user));
         return entityManager.createQuery(cq).getResultList();
     }
 
     public List<Report> getReportsByUserEntityGraph(User user) {
         EntityGraph<Report> entityGraph = entityManager.createEntityGraph(Report.class);
-        entityGraph.addAttributeNodes("user");
-        Subgraph<User> userSubgraph = entityGraph.addSubgraph("user");
-
+        entityGraph.addAttributeNodes(Report_.USER);
         return entityManager.createQuery(
                         "SELECT r FROM Report r WHERE r.user = :user", Report.class)
-                .setParameter("user", user)
+                .setParameter(Report_.USER, user)
                 .setHint("javax.persistence.fetchgraph", entityGraph)
                 .getResultList();
     }

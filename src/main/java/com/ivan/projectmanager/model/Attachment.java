@@ -15,11 +15,11 @@ import jakarta.persistence.Table;
 public class Attachment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
+    @Column
     private Long id;
-    @Column()
+    @Column
     private String title;
-    @Column()
+    @Column
     private String path;
     @ManyToOne(fetch = FetchType.LAZY)
     private Task task;

@@ -17,14 +17,14 @@ import java.time.LocalDateTime;
 public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
+    @Column
     private Long id;
-    @Column()
+    @Column
     private String title;
-    @Column()
+    @Column
     private String text;
-    @Column(name = "create_at")
-    private LocalDateTime createdAt;
+    @Column
+    private LocalDateTime createAt;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -60,12 +60,12 @@ public class Report {
         return this;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getCreateAt() {
+        return createAt;
     }
 
-    public Report setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public Report setCreateAt(LocalDateTime createdAt) {
+        this.createAt = createdAt;
         return this;
     }
 

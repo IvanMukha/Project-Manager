@@ -65,7 +65,7 @@ public class ProjectRepositoryImpl extends AbstractRepository<Project, Long> imp
 
     public List<Project> findByTitleJpql(String title) {
         return entityManager.createQuery("SELECT p FROM Project p WHERE p.title = :title", Project.class)
-                .setParameter("title", title)
+                .setParameter(Project_.TITLE, title)
                 .getResultList();
     }
 
@@ -85,8 +85,7 @@ public class ProjectRepositoryImpl extends AbstractRepository<Project, Long> imp
 
     public List<Project> findAllEntityGraphFetch() {
         EntityGraph<Project> graph = entityManager.createEntityGraph(Project.class);
-        graph.addAttributeNodes("team");
-
+        graph.addAttributeNodes(Project_.TEAM);
         return entityManager.createQuery("SELECT p FROM Project p", Project.class)
                 .setHint("javax.persistence.fetchgraph", graph)
                 .getResultList();

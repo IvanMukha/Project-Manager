@@ -60,7 +60,7 @@ public class AttachmentRepositoryImpl extends AbstractRepository<Attachment, Lon
 
     public List<Attachment> findByTitleJpql(String title) {
         return entityManager.createQuery("SELECT a FROM Attachment a WHERE a.title = :title", Attachment.class)
-                .setParameter("title", title)
+                .setParameter(Attachment_.TITLE, title)
                 .getResultList();
     }
 
@@ -69,22 +69,22 @@ public class AttachmentRepositoryImpl extends AbstractRepository<Attachment, Lon
         CriteriaQuery<Attachment> query = cb.createQuery(Attachment.class);
         Root<Attachment> root = query.from(Attachment.class);
         root.fetch(Attachment_.TASK);
-        query.select(root).where(cb.equal(root.get("title"), title));
+        query.select(root).where(cb.equal(root.get(Attachment_.TITLE), title));
         return entityManager.createQuery(query).getResultList();
     }
 
     public List<Attachment> findByTitleJpqlFetch(String title) {
         return entityManager.createQuery("SELECT a FROM Attachment a JOIN FETCH a.task WHERE a.title = :title", Attachment.class)
-                .setParameter("title", title)
+                .setParameter(Attachment_.TITLE, title)
                 .getResultList();
     }
 
     public List<Attachment> findByTitleWithEntityGraphFetch(String title) {
         EntityGraph<Attachment> graph = entityManager.createEntityGraph(Attachment.class);
-        graph.addAttributeNodes("task");
+        graph.addAttributeNodes(Attachment_.TASK);
 
         return entityManager.createQuery("SELECT a FROM Attachment a WHERE a.title = :title", Attachment.class)
-                .setParameter("title", title)
+                .setParameter(Attachment_.TITLE, title)
                 .setHint("javax.persistence.fetchgraph", graph)
                 .getResultList();
     }

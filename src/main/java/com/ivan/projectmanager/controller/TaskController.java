@@ -2,7 +2,11 @@ package com.ivan.projectmanager.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ivan.projectmanager.dto.ProjectDTO;
 import com.ivan.projectmanager.dto.TaskDTO;
+import com.ivan.projectmanager.dto.TeamDTO;
+import com.ivan.projectmanager.dto.UserDTO;
+import com.ivan.projectmanager.service.EntityCreationService;
 import com.ivan.projectmanager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,11 +17,13 @@ import java.util.Optional;
 public class TaskController {
     private final TaskService taskService;
     private final ObjectMapper objectMapper;
+    private final EntityCreationService entityCreationService;
 
     @Autowired
-    public TaskController(TaskService taskService, ObjectMapper objectMapper) {
+    public TaskController(TaskService taskService, ObjectMapper objectMapper, EntityCreationService entityCreationService) {
         this.taskService = taskService;
         this.objectMapper = objectMapper;
+        this.entityCreationService = entityCreationService;
     }
 
     public String getAll() throws JsonProcessingException {
@@ -41,4 +47,7 @@ public class TaskController {
         taskService.delete(id);
     }
 
+    public String createTaskWithRelatedEntities(TaskDTO taskDTO, UserDTO userDTO, TeamDTO teamDTO, ProjectDTO projectDTO) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(entityCreationService.createTaskWithRelatedEntities(taskDTO, userDTO, teamDTO, projectDTO));
+    }
 }

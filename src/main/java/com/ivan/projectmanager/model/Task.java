@@ -20,27 +20,27 @@ import java.util.List;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
+    @Column
     private Long id;
-    @Column()
+    @Column
     private String title;
-    @Column()
+    @Column
     private String status;
-    @Column()
+    @Column
     private String priority;
-    @Column(name = "start_date")
+    @Column
     private LocalDateTime startDate;
-    @Column(name = "due_date")
+    @Column
     private LocalDateTime dueDate;
     @ManyToOne(fetch = FetchType.LAZY)
     private User reporter;
     @ManyToOne(fetch = FetchType.LAZY)
     private User assignee;
-    @Column()
+    @Column
     private String category;
-    @Column()
+    @Column
     private String label;
-    @Column()
+    @Column
     private String description;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")

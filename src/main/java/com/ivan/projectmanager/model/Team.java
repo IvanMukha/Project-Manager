@@ -16,9 +16,9 @@ import java.util.Set;
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
+    @Column
     private Long id;
-    @Column()
+    @Column
     private String name;
     @ManyToMany(mappedBy = "teams")
     private Set<User> users = new HashSet<>();

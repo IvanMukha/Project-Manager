@@ -71,6 +71,7 @@ public class ApplicationConfig {
         emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         Properties jpaProperties = new Properties();
         jpaProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        jpaProperties.setProperty("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
         jpaProperties.setProperty("hibernate.hbm2ddl.auto", "none");
         emf.setJpaProperties(jpaProperties);
         emf.setPackagesToScan("com.ivan.projectmanager");

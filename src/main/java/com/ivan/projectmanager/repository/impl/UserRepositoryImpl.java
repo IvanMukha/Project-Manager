@@ -8,8 +8,6 @@ import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Fetch;
-import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
@@ -61,7 +59,7 @@ public class UserRepositoryImpl extends AbstractRepository<User, Long> implement
 
     public List<User> getByUsernameJPQL(String username) {
         return entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
-                .setParameter("username", username)
+                .setParameter(User_.USERNAME, username)
                 .getResultList();
     }
 
@@ -78,15 +76,13 @@ public class UserRepositoryImpl extends AbstractRepository<User, Long> implement
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> query = cb.createQuery(User.class);
         Root<User> root = query.from(User.class);
-        Fetch<User, ?> rolesFetch = root.fetch(User_.ROLES, JoinType.LEFT);
-        Fetch<User, ?> teamsFetch = root.fetch(User_.TEAMS, JoinType.LEFT);
         query.select(root).distinct(true);
         return entityManager.createQuery(query).getResultList();
     }
 
     public List<User> getAllGraphFetch() {
         EntityGraph<User> entityGraph = entityManager.createEntityGraph(User.class);
-        entityGraph.addAttributeNodes("roles", "teams");
+        entityGraph.addAttributeNodes(User_.ROLES, User_.TEAMS);
 
         return entityManager.createQuery(
                         "SELECT u FROM User u WHERE u.id IS NOT NULL", User.class)

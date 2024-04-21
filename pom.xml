@@ -29,12 +29,6 @@
                             <groupId>org.hibernate.orm</groupId>
                             <artifactId>hibernate-jpamodelgen</artifactId>
                             <version>${hibernate.version}</version>
-                            <exclusions>
-                                <exclusion>
-                                    <groupId>org.sample</groupId>
-                                    <artifactId>sample-dependency</artifactId>
-                                </exclusion>
-                            </exclusions>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

@@ -17,15 +17,15 @@ import java.time.LocalDateTime;
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
+    @Column
     private Long id;
-    @Column()
+    @Column
     private String title;
-    @Column()
+    @Column
     private String description;
-    @Column(name = "start_date")
+    @Column
     private LocalDateTime startDate;
-    @Column()
+    @Column
     private String status;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
