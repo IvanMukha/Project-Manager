@@ -56,7 +56,7 @@ public class ReportRepositoryImpl extends AbstractRepository<Report, Long> imple
     public List<Report> getReportsByUserJpql(User user) {
         TypedQuery<Report> query = entityManager.createQuery(
                 "SELECT r FROM Report r WHERE r.user = :user", Report.class);
-        query.setParameter(Report_.USER, user);
+        query.setParameter("user", user);
         return query.getResultList();
     }
 
@@ -72,7 +72,7 @@ public class ReportRepositoryImpl extends AbstractRepository<Report, Long> imple
     public List<Report> getReportsByUserJpqlFetch(User user) {
         return entityManager.createQuery(
                         "SELECT r FROM Report r JOIN FETCH r.user WHERE r.user = :user", Report.class)
-                .setParameter(Report_.USER, user)
+                .setParameter("user", user)
                 .getResultList();
     }
 
@@ -90,7 +90,7 @@ public class ReportRepositoryImpl extends AbstractRepository<Report, Long> imple
         entityGraph.addAttributeNodes(Report_.USER);
         return entityManager.createQuery(
                         "SELECT r FROM Report r WHERE r.user = :user", Report.class)
-                .setParameter(Report_.USER, user)
+                .setParameter("user", user)
                 .setHint("javax.persistence.fetchgraph", entityGraph)
                 .getResultList();
     }

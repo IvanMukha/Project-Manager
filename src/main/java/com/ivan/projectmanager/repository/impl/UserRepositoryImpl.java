@@ -59,7 +59,7 @@ public class UserRepositoryImpl extends AbstractRepository<User, Long> implement
 
     public List<User> getByUsernameJPQL(String username) {
         return entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
-                .setParameter(User_.USERNAME, username)
+                .setParameter("username", username)
                 .getResultList();
     }
 

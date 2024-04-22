@@ -69,7 +69,7 @@ public class TaskRepositoryImpl extends AbstractRepository<Task, Long> implement
 
     public List<Task> getByCategoryJpql(String category) {
         return entityManager.createQuery("SELECT t FROM Task t WHERE t.category = :category", Task.class)
-                .setParameter(Task_.CATEGORY, category)
+                .setParameter("category", category)
                 .getResultList();
     }
 

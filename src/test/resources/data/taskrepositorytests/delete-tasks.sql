@@ -1,4 +1,8 @@
-delete from tasks;
-delete from projects;
-delete from teams;
-delete from users;
+delete
+from tasks;
+delete
+from projects;
+delete
+from teams;
+delete
+from users;

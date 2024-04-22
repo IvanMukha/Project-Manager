@@ -1,7 +1,6 @@
 package com.ivan.projectmanager.model;
 
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -15,11 +14,8 @@ import jakarta.persistence.Table;
 public class Attachment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long id;
-    @Column
     private String title;
-    @Column
     private String path;
     @ManyToOne(fetch = FetchType.LAZY)
     private Task task;

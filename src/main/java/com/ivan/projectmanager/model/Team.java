@@ -1,6 +1,5 @@
 package com.ivan.projectmanager.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,9 +15,7 @@ import java.util.Set;
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long id;
-    @Column
     private String name;
     @ManyToMany(mappedBy = "teams")
     private Set<User> users = new HashSet<>();

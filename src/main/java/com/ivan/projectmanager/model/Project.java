@@ -1,6 +1,5 @@
 package com.ivan.projectmanager.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,15 +16,10 @@ import java.time.LocalDateTime;
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long id;
-    @Column
     private String title;
-    @Column
     private String description;
-    @Column
     private LocalDateTime startDate;
-    @Column
     private String status;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")

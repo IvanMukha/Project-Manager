@@ -1,7 +1,6 @@
 package com.ivan.projectmanager.model;
 
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -20,27 +19,18 @@ import java.util.List;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long id;
-    @Column
     private String title;
-    @Column
     private String status;
-    @Column
     private String priority;
-    @Column
     private LocalDateTime startDate;
-    @Column
     private LocalDateTime dueDate;
     @ManyToOne(fetch = FetchType.LAZY)
     private User reporter;
     @ManyToOne(fetch = FetchType.LAZY)
     private User assignee;
-    @Column
     private String category;
-    @Column
     private String label;
-    @Column
     private String description;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")

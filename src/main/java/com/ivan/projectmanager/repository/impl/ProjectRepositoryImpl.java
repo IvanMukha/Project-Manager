@@ -65,7 +65,7 @@ public class ProjectRepositoryImpl extends AbstractRepository<Project, Long> imp
 
     public List<Project> findByTitleJpql(String title) {
         return entityManager.createQuery("SELECT p FROM Project p WHERE p.title = :title", Project.class)
-                .setParameter(Project_.TITLE, title)
+                .setParameter("title", title)
                 .getResultList();
     }
 

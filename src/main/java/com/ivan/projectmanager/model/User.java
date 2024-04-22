@@ -1,6 +1,5 @@
 package com.ivan.projectmanager.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,13 +17,9 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long id;
-    @Column
     private String username;
-    @Column
     private String password;
-    @Column
     private String email;
     @ManyToMany
     @JoinTable(name = "users_roles",
