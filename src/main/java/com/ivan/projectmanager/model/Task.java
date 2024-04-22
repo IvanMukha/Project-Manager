@@ -1,27 +1,50 @@
 package com.ivan.projectmanager.model;
 
 
-import java.time.LocalDateTime;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Table(name = "tasks")
 public class Task {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
     private String status;
     private String priority;
     private LocalDateTime startDate;
     private LocalDateTime dueDate;
-    private int reporter;
-    private int assignee;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User reporter;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User assignee;
     private String category;
     private String label;
     private String description;
-    private int projectId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
+    @OneToMany(mappedBy = "task")
+    private List<Attachment> attachments;
+    @OneToMany(mappedBy = "task")
+    private List<Report> reports;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public Task setId(int id) {
+    public Task setId(Long id) {
         this.id = id;
         return this;
     }
@@ -71,20 +94,20 @@ public class Task {
         return this;
     }
 
-    public int getReporter() {
+    public User getReporter() {
         return reporter;
     }
 
-    public Task setReporter(int reporter) {
+    public Task setReporter(User reporter) {
         this.reporter = reporter;
         return this;
     }
 
-    public int getAssignee() {
+    public User getAssignee() {
         return assignee;
     }
 
-    public Task setAssignee(int assignee) {
+    public Task setAssignee(User assignee) {
         this.assignee = assignee;
         return this;
     }
@@ -116,12 +139,28 @@ public class Task {
         return this;
     }
 
-    public int getProjectId() {
-        return projectId;
+    public Project getProject() {
+        return project;
     }
 
-    public Task setProjectId(int projectId) {
-        this.projectId = projectId;
+    public Task setProject(Project project) {
+        this.project = project;
         return this;
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
+    public List<Report> getReports() {
+        return reports;
+    }
+
+    public void setReports(List<Report> reports) {
+        this.reports = reports;
     }
 }

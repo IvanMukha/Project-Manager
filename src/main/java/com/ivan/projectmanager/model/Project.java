@@ -1,21 +1,38 @@
 package com.ivan.projectmanager.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "projects")
 public class Project {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
     private String description;
     private LocalDateTime startDate;
     private String status;
-    private int teamId;
-    private int managerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
+    private User manager;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public Project setId(int id) {
+    public Project setId(Long id) {
         this.id = id;
         return this;
     }
@@ -56,21 +73,23 @@ public class Project {
         return this;
     }
 
-    public int getTeamId() {
-        return teamId;
+    public Team getTeam() {
+        return team;
     }
 
-    public Project setTeamId(int teamId) {
-        this.teamId = teamId;
+    public Project setTeam(Team team) {
+        this.team = team;
         return this;
     }
 
-    public int getManagerId() {
-        return managerId;
+    public User getManager() {
+        return manager;
     }
 
-    public Project setManagerId(int managerId) {
-        this.managerId = managerId;
+    public Project setManager(User manager) {
+        this.manager = manager;
         return this;
     }
+
+
 }

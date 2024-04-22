@@ -7,6 +7,7 @@ import com.ivan.projectmanager.service.ProjectService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,22 +28,24 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.getAll().stream().map(this::mapProjectToDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     public ProjectDTO save(ProjectDTO projectDTO) {
         return mapProjectToDTO(projectRepository.save(mapDTOToProject(projectDTO)));
     }
 
-    public Optional<ProjectDTO> getById(int id) {
+    public Optional<ProjectDTO> getById(Long id) {
         Optional<Project> projectOptional = projectRepository.getById(id);
         return projectOptional.map(this::mapProjectToDTO);
     }
 
-
-    public Optional<ProjectDTO> update(int id, ProjectDTO updatedProjectDTO) {
+    @Transactional
+    public Optional<ProjectDTO> update(Long id, ProjectDTO updatedProjectDTO) {
         Optional<Project> projectOptional = projectRepository.update(id, mapDTOToProject(updatedProjectDTO));
         return projectOptional.map(this::mapProjectToDTO);
     }
 
-    public void delete(int id) {
+    @Transactional
+    public void delete(Long id) {
         projectRepository.delete(id);
     }
 

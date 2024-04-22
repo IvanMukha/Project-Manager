@@ -1,20 +1,38 @@
 package com.ivan.projectmanager.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "reports")
 public class Report {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
     private String text;
-    private LocalDateTime createdAt;
-    private int userId;
-    private int taskId;
+    private LocalDateTime createAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id")
+    private Task task;
 
-    public int getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public Report setId(int id) {
+    public Report setId(Long id) {
         this.id = id;
         return this;
     }
@@ -37,30 +55,30 @@ public class Report {
         return this;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getCreateAt() {
+        return createAt;
     }
 
-    public Report setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public Report setCreateAt(LocalDateTime createdAt) {
+        this.createAt = createdAt;
         return this;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public Report setUserId(int userId) {
-        this.userId = userId;
+    public Report setUser(User user) {
+        this.user = user;
         return this;
     }
 
-    public int getTaskId() {
-        return taskId;
+    public Task getTask() {
+        return task;
     }
 
-    public Report setTaskId(int taskId) {
-        this.taskId = taskId;
+    public Report setTask(Task task) {
+        this.task = task;
         return this;
     }
 }

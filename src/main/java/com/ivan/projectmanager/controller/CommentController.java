@@ -28,16 +28,16 @@ public class CommentController {
         return objectMapper.writeValueAsString(commentService.save(commentDTO));
     }
 
-    public String getById(int id) throws JsonProcessingException {
+    public String getById(Long id) throws JsonProcessingException {
         Optional<CommentDTO> commentDTOOptional = commentService.getById(id);
         return objectMapper.writeValueAsString(commentDTOOptional.orElse(null));
     }
 
-    public String update(int id, CommentDTO commentDTO) throws JsonProcessingException {
+    public String update(Long id, CommentDTO commentDTO) throws JsonProcessingException {
         return objectMapper.writeValueAsString(commentService.update(id, commentDTO));
     }
 
-    public void delete(int id) {
+    public void delete(Long id) {
         commentService.delete(id);
     }
 }

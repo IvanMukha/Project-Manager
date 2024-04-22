@@ -28,16 +28,16 @@ public class TeamController {
         return objectMapper.writeValueAsString(teamService.save(teamDTO));
     }
 
-    public String getById(int id) throws JsonProcessingException {
+    public String getById(Long id) throws JsonProcessingException {
         Optional<TeamDTO> teamDTOOptional = teamService.getById(id);
         return objectMapper.writeValueAsString(teamDTOOptional.orElse(null));
     }
 
-    public String update(int id, TeamDTO teamDTO) throws JsonProcessingException {
+    public String update(Long id, TeamDTO teamDTO) throws JsonProcessingException {
         return objectMapper.writeValueAsString(teamService.update(id, teamDTO));
     }
 
-    public void delete(int id) {
+    public void delete(Long id) {
         teamService.delete(id);
     }
 }

@@ -7,6 +7,7 @@ import com.ivan.projectmanager.service.RoleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,21 +28,24 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.getAll().stream().map(this::mapRoleToDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     public RoleDTO save(RoleDTO roleDTO) {
         return mapRoleToDTO(roleRepository.save(mapDTOToRole(roleDTO)));
     }
 
-    public Optional<RoleDTO> getById(int id) {
+    public Optional<RoleDTO> getById(Long id) {
         Optional<Role> roleOptional = roleRepository.getById(id);
         return roleOptional.map(this::mapRoleToDTO);
     }
 
-    public Optional<RoleDTO> update(int id, RoleDTO updatedRoleDTO) {
+    @Transactional
+    public Optional<RoleDTO> update(Long id, RoleDTO updatedRoleDTO) {
         Optional<Role> roleOptional = roleRepository.update(id, mapDTOToRole(updatedRoleDTO));
         return roleOptional.map(this::mapRoleToDTO);
     }
 
-    public void delete(int id) {
+    @Transactional
+    public void delete(Long id) {
         roleRepository.delete(id);
     }
 

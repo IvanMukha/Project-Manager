@@ -1,16 +1,31 @@
 package com.ivan.projectmanager.model;
 
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "attachments")
 public class Attachment {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String title;
     private String path;
-    private int taskId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Task task;
 
-    public int getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public Attachment setId(int id) {
+    public Attachment setId(Long id) {
         this.id = id;
         return this;
     }
@@ -33,12 +48,12 @@ public class Attachment {
         return this;
     }
 
-    public int getTaskId() {
-        return taskId;
+    public Task getTask() {
+        return task;
     }
 
-    public Attachment setTaskId(int taskId) {
-        this.taskId = taskId;
+    public Attachment setTask(Task task) {
+        this.task = task;
         return this;
     }
 }

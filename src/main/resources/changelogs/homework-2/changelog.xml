@@ -74,10 +74,16 @@
         <sqlFile encoding="utf8" path="./sql/18.add-index-attachments.sql" relativeToChangelogFile="true"/>
     </changeSet>
     <changeSet id="change-users_teams_unique" author="Ivan Mukha">
-        <sqlFile encoding="utf8" path="./sql/19.change-users_teams-unique-field.sql" relativeToChangelogFile="true"/>
+        <sqlFile encoding="utf8" path="./sql/19.change-users_teams-unique-field.sql" relativeToChangelogFile="true" dbms="postgresql"/>
     </changeSet>
     <changeSet id="change-users_roles_unique" author="Ivan Mukha">
-        <sqlFile encoding="utf8" path="./sql/20.change-users_roles-unique-field.sql" relativeToChangelogFile="true"/>
+        <sqlFile encoding="utf8" path="./sql/20.change-users_roles-unique-field.sql" relativeToChangelogFile="true" dbms="postgresql"/>
+    </changeSet>
+    <changeSet id="change-users_teams_unique-h2" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/21.change-users_teams-unique-field-h2.sql" relativeToChangelogFile="true" dbms="h2"/>
+    </changeSet>
+    <changeSet id="change-users_roles_unique-h2" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/22.change-users_roles-unique-field-h2.sql" relativeToChangelogFile="true" dbms="h2"/>
     </changeSet>
 
 </databaseChangeLog> 

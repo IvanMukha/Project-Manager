@@ -1,19 +1,36 @@
 package com.ivan.projectmanager.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "comments")
 public class Comment {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String text;
     private LocalDateTime addTime;
-    private int userId;
-    private int taskId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id")
+    private Task task;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public Comment setId(int id) {
+    public Comment setId(Long id) {
         this.id = id;
         return this;
     }
@@ -36,21 +53,21 @@ public class Comment {
         return this;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public Comment setUserId(int userId) {
-        this.userId = userId;
+    public Comment setUser(User user) {
+        this.user = user;
         return this;
     }
 
-    public int getTaskId() {
-        return taskId;
+    public Task getTask() {
+        return task;
     }
 
-    public Comment setTaskId(int taskId) {
-        this.taskId = taskId;
+    public Comment setTask(Task task) {
+        this.task = task;
         return this;
     }
 }

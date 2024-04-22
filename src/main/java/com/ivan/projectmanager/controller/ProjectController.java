@@ -28,16 +28,16 @@ public class ProjectController {
         return objectMapper.writeValueAsString(projectService.save(projectDTO));
     }
 
-    public String getById(int id) throws JsonProcessingException {
+    public String getById(Long id) throws JsonProcessingException {
         Optional<ProjectDTO> projectDTOOptional = projectService.getById(id);
         return objectMapper.writeValueAsString(projectDTOOptional.orElse(null));
     }
 
-    public String update(int id, ProjectDTO projectDTO) throws JsonProcessingException {
+    public String update(Long id, ProjectDTO projectDTO) throws JsonProcessingException {
         return objectMapper.writeValueAsString(projectService.update(id, projectDTO));
     }
 
-    public void delete(int id) {
+    public void delete(Long id) {
         projectService.delete(id);
     }
 }

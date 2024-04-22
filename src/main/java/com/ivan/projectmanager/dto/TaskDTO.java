@@ -3,24 +3,24 @@ package com.ivan.projectmanager.dto;
 import java.time.LocalDateTime;
 
 public class TaskDTO {
-    private int id;
+    private Long id;
     private String title;
     private String status;
     private String priority;
     private LocalDateTime startDate;
     private LocalDateTime dueDate;
-    private int reporter;
-    private int assignee;
+    private Long reporter;
+    private Long assignee;
     private String category;
     private String label;
     private String description;
-    private int projectId;
+    private Long projectId;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public TaskDTO setId(int id) {
+    public TaskDTO setId(Long id) {
         this.id = id;
         return this;
     }
@@ -70,20 +70,20 @@ public class TaskDTO {
         return this;
     }
 
-    public int getReporter() {
+    public Long getReporter() {
         return reporter;
     }
 
-    public TaskDTO setReporter(int reporter) {
+    public TaskDTO setReporter(Long reporter) {
         this.reporter = reporter;
         return this;
     }
 
-    public int getAssignee() {
+    public Long getAssignee() {
         return assignee;
     }
 
-    public TaskDTO setAssignee(int assignee) {
+    public TaskDTO setAssignee(Long assignee) {
         this.assignee = assignee;
         return this;
     }
@@ -115,11 +115,11 @@ public class TaskDTO {
         return this;
     }
 
-    public int getProjectId() {
+    public Long getProjectId() {
         return projectId;
     }
 
-    public TaskDTO setProjectId(int projectId) {
+    public TaskDTO setProjectId(Long projectId) {
         this.projectId = projectId;
         return this;
     }

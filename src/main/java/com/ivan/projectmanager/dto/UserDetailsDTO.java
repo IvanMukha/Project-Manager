@@ -1,7 +1,7 @@
 package com.ivan.projectmanager.dto;
 
 public class UserDetailsDTO {
-    private int id;
+    private Long id;
     private String name;
     private String surname;
     private String phone;
@@ -9,11 +9,11 @@ public class UserDetailsDTO {
     private String workAddress;
     private String department;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public UserDetailsDTO setId(int id) {
+    public UserDetailsDTO setId(Long id) {
         this.id = id;
         return this;
     }

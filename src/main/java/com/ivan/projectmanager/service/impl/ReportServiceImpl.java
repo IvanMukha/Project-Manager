@@ -7,6 +7,7 @@ import com.ivan.projectmanager.service.ReportService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,22 +28,24 @@ public class ReportServiceImpl implements ReportService {
         return reportRepository.getAll().stream().map(this::mapReportToDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     public ReportDTO save(ReportDTO reportDTO) {
         return mapReportToDTO(reportRepository.save(mapDTOToReport(reportDTO)));
     }
 
-    public Optional<ReportDTO> getById(int id) {
+    public Optional<ReportDTO> getById(Long id) {
         Optional<Report> reportOptional = reportRepository.getById(id);
         return reportOptional.map(this::mapReportToDTO);
     }
 
-
-    public Optional<ReportDTO> update(int id, ReportDTO updatedReportDTO) {
+    @Transactional
+    public Optional<ReportDTO> update(Long id, ReportDTO updatedReportDTO) {
         Optional<Report> reportOptional = reportRepository.update(id, mapDTOToReport(updatedReportDTO));
         return reportOptional.map(this::mapReportToDTO);
     }
 
-    public void delete(int id) {
+    @Transactional
+    public void delete(Long id) {
         reportRepository.delete(id);
     }
 

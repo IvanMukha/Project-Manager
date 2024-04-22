@@ -8,9 +8,9 @@ public interface CrudService<D> {
 
     D save(D dto);
 
-    Optional<D> getById(int id);
+    Optional<D> getById(Long id);
 
-    Optional<D> update(int id, D updatedDto);
+    Optional<D> update(Long id, D updatedDto);
 
-    void delete(int id);
+    void delete(Long id);
 }

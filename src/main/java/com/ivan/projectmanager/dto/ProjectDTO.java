@@ -3,19 +3,19 @@ package com.ivan.projectmanager.dto;
 import java.time.LocalDateTime;
 
 public class ProjectDTO {
-    private int id;
+    private Long id;
     private String title;
     private String description;
     private LocalDateTime startDate;
     private String status;
-    private int teamId;
-    private int managerId;
+    private Long teamId;
+    private Long managerId;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public ProjectDTO setId(int id) {
+    public ProjectDTO setId(Long id) {
         this.id = id;
         return this;
     }
@@ -56,20 +56,20 @@ public class ProjectDTO {
         return this;
     }
 
-    public int getTeamId() {
+    public Long getTeamId() {
         return teamId;
     }
 
-    public ProjectDTO setTeamId(int teamId) {
+    public ProjectDTO setTeamId(Long teamId) {
         this.teamId = teamId;
         return this;
     }
 
-    public int getManagerId() {
+    public Long getManagerId() {
         return managerId;
     }
 
-    public ProjectDTO setManagerId(int managerId) {
+    public ProjectDTO setManagerId(Long managerId) {
         this.managerId = managerId;
         return this;
     }

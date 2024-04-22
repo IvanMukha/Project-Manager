@@ -1,14 +1,14 @@
 package com.ivan.projectmanager.dto;
 
 public class RoleDTO {
-    private int id;
+    private Long id;
     private String name;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public RoleDTO setId(int id) {
+    public RoleDTO setId(Long id) {
         this.id = id;
         return this;
     }

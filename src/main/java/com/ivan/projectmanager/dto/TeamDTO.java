@@ -1,14 +1,14 @@
 package com.ivan.projectmanager.dto;
 
 public class TeamDTO {
-    private int id;
+    private Long id;
     private String name;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public TeamDTO setId(int id) {
+    public TeamDTO setId(Long id) {
         this.id = id;
         return this;
     }

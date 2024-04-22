@@ -1,6 +1,5 @@
 package com.ivan.projectmanager.service.entitycreation;
 
-import com.ivan.projectmanager.annotations.Transaction;
 import com.ivan.projectmanager.dto.ProjectDTO;
 import com.ivan.projectmanager.dto.TaskDTO;
 import com.ivan.projectmanager.dto.TeamDTO;
@@ -16,6 +15,7 @@ import com.ivan.projectmanager.repository.UserRepository;
 import com.ivan.projectmanager.service.EntityCreationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EntityCreationImpl implements EntityCreationService {
@@ -33,7 +33,7 @@ public class EntityCreationImpl implements EntityCreationService {
         this.projectRepository = projectRepository;
     }
 
-    @Transaction
+    @Transactional
     public TaskDTO createTaskWithRelatedEntities(TaskDTO taskDTO, UserDTO userDTO, TeamDTO teamDTO, ProjectDTO projectDTO) {
         userRepository.save(mapDTOToUser(userDTO));
         teamRepository.save(mapDTOToTeam(teamDTO));
@@ -63,4 +63,3 @@ public class EntityCreationImpl implements EntityCreationService {
     }
 
 }
-

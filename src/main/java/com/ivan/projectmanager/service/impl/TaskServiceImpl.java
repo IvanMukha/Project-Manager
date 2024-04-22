@@ -7,6 +7,7 @@ import com.ivan.projectmanager.service.TaskService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,21 +28,24 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.getAll().stream().map(this::mapTaskToDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     public TaskDTO save(TaskDTO taskDTO) {
         return mapTaskToDTO(taskRepository.save(mapDTOToTask(taskDTO)));
     }
 
-    public Optional<TaskDTO> getById(int id) {
+    public Optional<TaskDTO> getById(Long id) {
         Optional<Task> taskOptional = taskRepository.getById(id);
         return taskOptional.map(this::mapTaskToDTO);
     }
 
-    public Optional<TaskDTO> update(int id, TaskDTO updatedTaskDTO) {
+    @Transactional
+    public Optional<TaskDTO> update(Long id, TaskDTO updatedTaskDTO) {
         Optional<Task> taskOptional = taskRepository.update(id, mapDTOToTask(updatedTaskDTO));
         return taskOptional.map(this::mapTaskToDTO);
     }
 
-    public void delete(int id) {
+    @Transactional
+    public void delete(Long id) {
         taskRepository.delete(id);
     }
 

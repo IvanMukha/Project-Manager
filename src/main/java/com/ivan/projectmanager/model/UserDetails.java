@@ -1,7 +1,20 @@
 package com.ivan.projectmanager.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
+
+@Entity
+@Table(name = "user_details")
 public class UserDetails {
-    private int userId;
+    @Id
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private User user;
     private String name;
     private String surname;
     private String phone;
@@ -9,13 +22,12 @@ public class UserDetails {
     private String workAddress;
     private String department;
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public UserDetails setUserId(int userId) {
-        this.userId = userId;
-        return this;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getName() {
