@@ -9,11 +9,17 @@ import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.service.EntityCreationService;
 import com.ivan.projectmanager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
-@Controller
+@RestController
+@RequestMapping("/projects/{id}/tasks")
 public class TaskController {
     private final TaskService taskService;
     private final ObjectMapper objectMapper;
@@ -26,23 +32,28 @@ public class TaskController {
         this.entityCreationService = entityCreationService;
     }
 
+    @GetMapping()
     public String getAll() throws JsonProcessingException {
         return objectMapper.writeValueAsString(taskService.getAll());
     }
 
+    @PostMapping("/new")
     public String save(TaskDTO taskDTO) throws JsonProcessingException {
         return objectMapper.writeValueAsString(taskService.save(taskDTO));
     }
 
+    @GetMapping("/{id}")
     public String getById(Long id) throws JsonProcessingException {
         Optional<TaskDTO> taskDTOOptional = taskService.getById(id);
         return objectMapper.writeValueAsString(taskDTOOptional.orElse(null));
     }
 
+    @PatchMapping("/{id}")
     public String update(Long id, TaskDTO taskDTO) throws JsonProcessingException {
         return objectMapper.writeValueAsString(taskService.update(id, taskDTO));
     }
 
+    @DeleteMapping("/{id}")
     public void delete(Long id) {
         taskService.delete(id);
     }
