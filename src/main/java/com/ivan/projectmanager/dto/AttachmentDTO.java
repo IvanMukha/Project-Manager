@@ -1,9 +1,11 @@
 package com.ivan.projectmanager.dto;
 
+import com.ivan.projectmanager.model.Task;
+
 public class AttachmentDTO {
     private Long id;
     private String title;
-    private Long taskId;
+    private Task task;
 
     public Long getId() {
         return id;
@@ -23,12 +25,12 @@ public class AttachmentDTO {
         return this;
     }
 
-    public Long getTaskId() {
-        return taskId;
+    public Task getTask() {
+        return task;
     }
 
-    public AttachmentDTO setTaskId(Long taskId) {
-        this.taskId = taskId;
+    public AttachmentDTO setTask(Task task) {
+        this.task = task;
         return this;
     }
 }

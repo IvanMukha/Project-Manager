@@ -43,6 +43,6 @@ public abstract class AbstractRepository<T, ID> implements CrudRepository<T, ID>
     }
 
     public void delete(ID id) {
-        getById(id).ifPresent(entity -> entityManager.remove(entity));
+        getById(id).ifPresent(entityManager::remove);
     }
 }

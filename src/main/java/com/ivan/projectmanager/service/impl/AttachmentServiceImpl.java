@@ -73,10 +73,10 @@ public class AttachmentServiceImpl implements AttachmentService {
         if (attachmentDTO.getTitle().isEmpty()) {
             throw new HandleCustomIllegalArgumentException("Attachment title cannot be empty");
         }
-        if (attachmentDTO.getTaskId() == null) {
+        if (attachmentDTO.getTask() == null) {
             throw new HandleCustomNullPointerException("Task id cannot be null");
         }
-        if (attachmentDTO.getTaskId() <= 0) {
+        if (attachmentDTO.getTask().getId() <= 0) {
             throw new HandleCustomIllegalArgumentException("Task id must be greater than 0");
         }
     }

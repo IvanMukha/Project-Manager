@@ -22,11 +22,6 @@ public class AttachmentRepositoryImpl extends AbstractRepository<Attachment, Lon
     }
 
     @Override
-    public List<Attachment> getAll() {
-        return super.getAll();
-    }
-
-    @Override
     public Optional<Attachment> getById(Long id) {
         return super.getById(id);
     }
@@ -43,11 +38,6 @@ public class AttachmentRepositoryImpl extends AbstractRepository<Attachment, Lon
         } else {
             return Optional.empty();
         }
-    }
-
-    @Override
-    public void delete(Long id) {
-        super.delete(id);
     }
 
     public List<Attachment> findByTitleCriteria(String title) {
