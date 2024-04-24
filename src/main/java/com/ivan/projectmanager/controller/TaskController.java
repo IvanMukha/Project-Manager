@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/projects/{id}/tasks")
+@RequestMapping("/projects/{projectId}/tasks")
 public class TaskController {
     private final TaskService taskService;
     private final ObjectMapper objectMapper;

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("projects/{id}/tasks/{id}/attachments")
+@RequestMapping("projects/{projectId}/tasks/{taskId}/attachments")
 public class AttachmentController {
     private final AttachmentService attachmentService;
     private final ObjectMapper objectMapper;
@@ -27,7 +28,6 @@ public class AttachmentController {
     }
 
     @GetMapping()
-
     public String getAll() throws JsonProcessingException {
         return objectMapper.writeValueAsString(attachmentService.getAll());
     }
@@ -38,18 +38,18 @@ public class AttachmentController {
     }
 
     @GetMapping("/{id}")
-    public String getById(Long id) throws JsonProcessingException {
+    public String getById(@PathVariable("id") Long id) throws JsonProcessingException {
         Optional<AttachmentDTO> attachmentDTOOptional = attachmentService.getById(id);
         return objectMapper.writeValueAsString(attachmentDTOOptional.orElse(null));
     }
 
     @PatchMapping("/{id}")
-    public String update(Long id, AttachmentDTO attachmentDTO) throws JsonProcessingException {
+    public String update(@PathVariable("id") Long id, AttachmentDTO attachmentDTO) throws JsonProcessingException {
         return objectMapper.writeValueAsString(attachmentService.update(id, attachmentDTO));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(Long id) {
+    public void delete(@PathVariable("id") Long id) {
         attachmentService.delete(id);
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users/{id}/userDetails")
+@RequestMapping("/users/{userId}/userDetails")
 public class UserDetailsController {
     private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper;

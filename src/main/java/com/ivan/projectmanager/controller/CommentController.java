@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/projects/{id}/tasks/{id}/comments")
+@RequestMapping("/projects/{projectId}/tasks/{taskId}/comments")
 public class CommentController {
     private final CommentService commentService;
     private final ObjectMapper objectMapper;

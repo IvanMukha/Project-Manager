@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/projects/{id}/tasks/{id}/reports")
+@RequestMapping("/projects/{projectId}/tasks/{taskId}/reports")
 public class ReportController {
     private final ReportService reportService;
     private final ObjectMapper objectMapper;
