@@ -10,10 +10,12 @@ import liquibase.integration.spring.SpringLiquibase;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.modelmapper.ModelMapper;
 import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -55,7 +57,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public SpringLiquibase liquibase(DataSource dataSource,
+    public SpringLiquibase liquibase( DataSource dataSource,
                                      @Value("${liquibase.changelog-master}") String liquibaseChangeLog) {
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource);
@@ -64,7 +66,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(DataSource dataSource) {
+    LocalContainerEntityManagerFactoryBean entityManagerFactoryBean( DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(dataSource);
         emf.setPersistenceProviderClass(HibernatePersistenceProvider.class);

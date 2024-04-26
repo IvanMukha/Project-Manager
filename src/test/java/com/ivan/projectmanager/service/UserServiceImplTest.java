@@ -3,14 +3,18 @@ package com.ivan.projectmanager.service;
 import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.repository.UserRepository;
+import com.ivan.projectmanager.service.impl.UserServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,26 +26,54 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = TestServiceConfiguration.class)
+@WebAppConfiguration
 public class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
-
+    @Mock
+    private ModelMapper modelMapper;
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userService;
+
+    private User user;
+    private UserDTO userDTO;
+
+    @BeforeEach
+    void seUp() {
+        user = new User()
+                .setUsername("testUser")
+                .setPassword("testPassword")
+                .setEmail("test@example.com");
+
+        userDTO = new UserDTO()
+                .setUsername("testUser")
+                .setPassword("testPassword")
+                .setEmail("test@example.com");
+    }
+
+    @Test
+    void getAllUsers() {
+        User user2 = user;
+        UserDTO userDTO2 = userDTO;
+        when(modelMapper.map(user, UserDTO.class)).thenReturn(userDTO);
+        when(modelMapper.map(user2, UserDTO.class)).thenReturn(userDTO2);
+        when(userRepository.getAll()).thenReturn(List.of(user, user2));
+        List<UserDTO> result = userService.getAll();
+        assertEquals(2, result.size());
+        assertEquals(user.getUsername(), result.getFirst().getUsername());
+        assertEquals(user.getPassword(), result.getFirst().getPassword());
+        assertEquals(user.getEmail(), result.getFirst().getEmail());
+        assertEquals(user2.getUsername(), result.getLast().getUsername());
+        assertEquals(user2.getPassword(), result.getLast().getPassword());
+        assertEquals(user2.getEmail(), result.getLast().getEmail());
+    }
 
     @Test
     void testSaveUser() {
-        User user = new User()
-                .setUsername("testUser")
-                .setPassword("testPassword")
-                .setEmail("test@example.com");
-
-        UserDTO userDTO = new UserDTO()
-                .setUsername("testUser")
-                .setPassword("testPassword")
-                .setEmail("test@example.com");
-        Mockito.when(userRepository.save(user)).thenReturn(user);
+        when(modelMapper.map(user, UserDTO.class)).thenReturn(userDTO);
+        when(modelMapper.map(userDTO, User.class)).thenReturn(user);
+        when(userRepository.save(user)).thenReturn(user);
         UserDTO savedUserDTO = userService.save(userDTO);
         assertNotNull(savedUserDTO);
         assertEquals(user.getUsername(), savedUserDTO.getUsername());
@@ -52,12 +84,7 @@ public class UserServiceImplTest {
 
     @Test
     void testGetUserById() {
-        User user = new User()
-                .setId(1L)
-                .setUsername("testUser")
-                .setPassword("testPassword")
-                .setEmail("test@example.com");
-
+        when(modelMapper.map(user, UserDTO.class)).thenReturn(userDTO);
         when(userRepository.getById(1L)).thenReturn(Optional.of(user));
         Optional<UserDTO> result = userService.getById(1L);
         assertTrue(result.isPresent());

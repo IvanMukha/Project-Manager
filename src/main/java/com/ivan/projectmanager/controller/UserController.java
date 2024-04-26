@@ -5,50 +5,59 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-    private final ObjectMapper objectMapper;
 
     @Autowired
-    public UserController(UserService userService, ObjectMapper objectMapper) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.objectMapper = objectMapper;
     }
 
     @GetMapping()
-    public String getAll() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(userService.getAll());
+    public ResponseEntity<List<UserDTO>> getAll() {
+        List<UserDTO> users = userService.getAll();
+        return ResponseEntity.ok().body(users);
     }
 
     @PostMapping("/new")
-    public String save(UserDTO userDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(userService.save(userDTO));
+    public ResponseEntity<UserDTO> save(@RequestBody UserDTO userDTO) {
+        UserDTO savedUser = userService.save(userDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
     @GetMapping("/{id}")
-    public String getById(Long id) throws JsonProcessingException {
+    public ResponseEntity<UserDTO> getById(@PathVariable("id") Long id) {
         Optional<UserDTO> userDTOOptional = userService.getById(id);
-        return objectMapper.writeValueAsString(userDTOOptional.orElse(null));
+        return userDTOOptional.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PatchMapping("/{id}")
-    public String update(Long id, UserDTO userDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(userService.update(id, userDTO));
+    public ResponseEntity<UserDTO> update(@PathVariable("id") Long id, @RequestBody UserDTO userDTO) {
+        Optional<UserDTO> updatedUser = userService.update(id, userDTO);
+        return updatedUser.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public void delete(Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

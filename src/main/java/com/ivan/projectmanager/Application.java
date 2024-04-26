@@ -1,8 +1,13 @@
 package com.ivan.projectmanager;
 
 import com.ivan.projectmanager.config.ApplicationConfig;
+import com.ivan.projectmanager.controller.AttachmentController;
 import com.ivan.projectmanager.dto.AttachmentDTO;
+import com.ivan.projectmanager.model.Attachment;
+import com.ivan.projectmanager.model.Task;
+import com.ivan.projectmanager.repository.AttachmentRepository;
 import com.ivan.projectmanager.service.AttachmentService;
+import org.hibernate.annotations.processing.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -84,13 +89,6 @@ public class Application {
 //        while (!executorService.isTerminated()) {
 //        }
 //        context.close();
-        AttachmentService attachmentService = context.getBean(AttachmentService.class);
-        AttachmentDTO attachmentDTO = new AttachmentDTO();
-        attachmentDTO.setTitle("title");
-        AttachmentDTO attachmentDTO2 = new AttachmentDTO();
-        attachmentDTO2.setTitle("title2");
-        attachmentService.save(attachmentDTO);
-        attachmentService.save(attachmentDTO2);
 
     }
 }

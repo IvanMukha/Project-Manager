@@ -5,9 +5,12 @@ import com.ivan.projectmanager.exeptions.HandleCustomIllegalArgumentException;
 import com.ivan.projectmanager.exeptions.HandleCustomNotFoundException;
 import com.ivan.projectmanager.exeptions.HandleCustomNullPointerException;
 import com.ivan.projectmanager.model.Task;
+import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.repository.TaskRepository;
 import com.ivan.projectmanager.service.TaskService;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +28,14 @@ public class TaskServiceImpl implements TaskService {
     public TaskServiceImpl(ModelMapper modelMapper, TaskRepository taskRepository) {
         this.modelMapper = modelMapper;
         this.taskRepository = taskRepository;
+
+        Converter<User, Long> userToIdConverter = context -> context.getSource() != null ? context.getSource().getId() : null;
+
+        TypeMap<Task, TaskDTO> taskTypeMap = modelMapper.typeMap(Task.class, TaskDTO.class);
+        taskTypeMap.addMappings(mapper -> {
+            mapper.using(userToIdConverter).map(Task::getReporter, TaskDTO::setReporterId);
+            mapper.using(userToIdConverter).map(Task::getAssignee, TaskDTO::setAssigneeId);
+        });
     }
 
     public List<TaskDTO> getAll() {
@@ -78,7 +89,7 @@ public class TaskServiceImpl implements TaskService {
         if (taskDTO.getTitle().isEmpty()) {
             throw new HandleCustomIllegalArgumentException("Title cannot be empty");
         }
-        if (taskDTO.getReporter() == null) {
+        if (taskDTO.getReporterId() == null) {
             throw new HandleCustomNullPointerException("Reporter cannot be null");
         }
         if (taskDTO.getProjectId() == null) {

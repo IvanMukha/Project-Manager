@@ -29,6 +29,7 @@ public class AttachmentRepositoryImpl extends AbstractRepository<Attachment, Lon
     @Override
     public Optional<Attachment> update(Long id, Attachment updatedEntity) {
         Attachment existingAttachment = entityManager.find(Attachment.class, id);
+        System.out.println("IN REPO"+existingAttachment.getId()+existingAttachment.getTitle()+existingAttachment.getTask());
         if (existingAttachment != null) {
             existingAttachment.setTitle(updatedEntity.getTitle());
             existingAttachment.setPath(updatedEntity.getPath());

@@ -19,7 +19,7 @@ public class UserDetails {
     private String surname;
     private String phone;
     private String workPhone;
-    private String workAddress;
+    private String workAdress;
     private String department;
 
     public User getUser() {
@@ -66,12 +66,12 @@ public class UserDetails {
         return this;
     }
 
-    public String getWorkAddress() {
-        return workAddress;
+    public String getWorkAdress() {
+        return workAdress;
     }
 
-    public UserDetails setWorkAddress(String workAddress) {
-        this.workAddress = workAddress;
+    public UserDetails setWorkAdress(String workAddress) {
+        this.workAdress = workAddress;
         return this;
     }
 

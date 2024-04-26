@@ -9,56 +9,66 @@ import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.service.EntityCreationService;
 import com.ivan.projectmanager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/projects/{projectId}/tasks")
 public class TaskController {
     private final TaskService taskService;
-    private final ObjectMapper objectMapper;
     private final EntityCreationService entityCreationService;
 
     @Autowired
-    public TaskController(TaskService taskService, ObjectMapper objectMapper, EntityCreationService entityCreationService) {
+    public TaskController(TaskService taskService, EntityCreationService entityCreationService) {
         this.taskService = taskService;
-        this.objectMapper = objectMapper;
         this.entityCreationService = entityCreationService;
     }
 
     @GetMapping()
-    public String getAll() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(taskService.getAll());
+    public ResponseEntity<List<TaskDTO>> getAll() {
+        List<TaskDTO> tasks = taskService.getAll();
+        return ResponseEntity.ok().body(tasks);
     }
 
     @PostMapping("/new")
-    public String save(TaskDTO taskDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(taskService.save(taskDTO));
+    public ResponseEntity<TaskDTO> save(@RequestBody TaskDTO taskDTO) {
+        TaskDTO savedTask = taskService.save(taskDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);
     }
 
     @GetMapping("/{id}")
-    public String getById(Long id) throws JsonProcessingException {
+    public ResponseEntity<TaskDTO> getById(@PathVariable("id") Long id) {
         Optional<TaskDTO> taskDTOOptional = taskService.getById(id);
-        return objectMapper.writeValueAsString(taskDTOOptional.orElse(null));
+        return taskDTOOptional.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PatchMapping("/{id}")
-    public String update(Long id, TaskDTO taskDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(taskService.update(id, taskDTO));
+    public ResponseEntity<TaskDTO> update(@PathVariable("id") Long id, @RequestBody TaskDTO taskDTO) {
+        Optional<TaskDTO> updatedTask = taskService.update(id, taskDTO);
+        return updatedTask.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public void delete(Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         taskService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
-    public String createTaskWithRelatedEntities(TaskDTO taskDTO, UserDTO userDTO, TeamDTO teamDTO, ProjectDTO projectDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(entityCreationService.createTaskWithRelatedEntities(taskDTO, userDTO, teamDTO, projectDTO));
+    public ResponseEntity<String> createTaskWithRelatedEntities(@RequestBody TaskDTO taskDTO, @RequestBody UserDTO userDTO, @RequestBody TeamDTO teamDTO, @RequestBody ProjectDTO projectDTO) {
+        String result = String.valueOf(entityCreationService.createTaskWithRelatedEntities(taskDTO, userDTO, teamDTO, projectDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 }

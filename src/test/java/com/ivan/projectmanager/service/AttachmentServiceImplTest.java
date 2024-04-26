@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,14 +28,15 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 @ContextConfiguration(classes = TestServiceConfiguration.class)
-//@WebAppConfiguration
+@WebAppConfiguration
 public class AttachmentServiceImplTest {
     @Mock
     private AttachmentRepository attachmentRepository;
-    @InjectMocks
-    private AttachmentServiceImpl attachmentService;
     @Mock
     private ModelMapper modelMapper;
+    @InjectMocks
+    private AttachmentServiceImpl attachmentService;
+
 
     @Test
     public void testGetAll() {
@@ -42,6 +44,12 @@ public class AttachmentServiceImplTest {
         attachment.setId(1L).setTitle("title1");
         Attachment attachment2 = new Attachment();
         attachment2.setId(2L).setTitle("title2");
+        AttachmentDTO attachmentDTO = new AttachmentDTO();
+        attachmentDTO.setId(1L).setTitle("title1");
+        AttachmentDTO attachmentDTO2 = new AttachmentDTO();
+        attachmentDTO2.setId(2L).setTitle("title2");
+        when(modelMapper.map(attachment, AttachmentDTO.class)).thenReturn(attachmentDTO);
+        when(modelMapper.map(attachment2, AttachmentDTO.class)).thenReturn(attachmentDTO2);
         Mockito.when(attachmentRepository.getAll()).thenReturn(List.of(attachment, attachment2));
         List<AttachmentDTO> result = attachmentService.getAll();
         assertEquals(2, result.size());
@@ -52,12 +60,11 @@ public class AttachmentServiceImplTest {
 
     @Test
     public void testSave() {
-        AttachmentDTO attachmentDTO = new AttachmentDTO();
-        Task task = new Task();
-        task.setId(1L).setTitle("title1");
-        attachmentDTO.setTitle("New Attachment").setTask(task);
-        Attachment attachment = new Attachment();
-        Mockito.when(attachmentRepository.save(attachment)).thenReturn(attachment);
+        AttachmentDTO attachmentDTO = new AttachmentDTO().setId(1L).setTitle("New Attachment").setTaskId(1L);
+        Attachment attachment = new Attachment().setId(1L).setTitle("title1");
+        when(modelMapper.map(attachmentDTO, Attachment.class)).thenReturn(attachment);
+        when(modelMapper.map(attachment, AttachmentDTO.class)).thenReturn(attachmentDTO);
+        when(attachmentRepository.save(attachment)).thenReturn(attachment);
         AttachmentDTO attachmentDTO1 = attachmentService.save(attachmentDTO);
         assertNotNull(attachmentDTO1);
         assertEquals(attachmentDTO.getTitle(), attachmentDTO1.getTitle());
@@ -67,22 +74,23 @@ public class AttachmentServiceImplTest {
     @Test
     void testGetById() {
         long id = 1L;
-        Attachment attachment = new Attachment();
-        attachment.setId(id);
-        attachment.setTitle("Attachment");
+        Attachment attachment = new Attachment().setId(1L).setTitle("Attachment");
+        AttachmentDTO attachmentDTO = new AttachmentDTO().setId(1L).setTitle("Attachment");
+        when(modelMapper.map(attachment, AttachmentDTO.class)).thenReturn(attachmentDTO);
         when(attachmentRepository.getById(id)).thenReturn(Optional.of(attachment));
         Optional<AttachmentDTO> result = attachmentService.getById(id);
         assertTrue(result.isPresent());
         assertEquals(attachment.getTitle(), result.get().getTitle());
-        verify(attachmentRepository.getById(1L));
+        verify(attachmentRepository).getById(1L);
     }
 
     @Test
     void testUpdate() {
-        Attachment attachment = new Attachment();
-        attachment.setTitle("title");
-        AttachmentDTO attachmentDTO = new AttachmentDTO();
-        attachmentDTO.setTitle("title");
+        Task task = new Task().setId(2L).setTitle("title2");
+        Attachment attachment = new Attachment().setId(1L).setTitle("title").setTask(task);
+        AttachmentDTO attachmentDTO = new AttachmentDTO().setId(1L).setTitle("title").setTaskId(2L);
+        when(modelMapper.map(attachment, AttachmentDTO.class)).thenReturn(attachmentDTO);
+        when(modelMapper.map(attachmentDTO, Attachment.class)).thenReturn(attachment);
         when(attachmentRepository.update(1L, attachment)).thenReturn(Optional.of(attachment));
         Optional<AttachmentDTO> result = attachmentService.update(1L, attachmentDTO);
         assertTrue(result.isPresent());

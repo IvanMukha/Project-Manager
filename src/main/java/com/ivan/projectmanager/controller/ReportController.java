@@ -5,51 +5,61 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ivan.projectmanager.dto.ReportDTO;
 import com.ivan.projectmanager.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/projects/{projectId}/tasks/{taskId}/reports")
 public class ReportController {
     private final ReportService reportService;
-    private final ObjectMapper objectMapper;
 
     @Autowired
-    public ReportController(ReportService reportService, ObjectMapper objectMapper) {
+    public ReportController(ReportService reportService) {
         this.reportService = reportService;
-        this.objectMapper = objectMapper;
     }
 
     @GetMapping()
-    public String getAll() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(reportService.getAll());
+    public ResponseEntity<List<ReportDTO>> getAll() {
+        List<ReportDTO> reports = reportService.getAll();
+        return ResponseEntity.ok().body(reports);
     }
 
     @PostMapping("/new")
-    public String save(ReportDTO reportDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(reportService.save(reportDTO));
+    public ResponseEntity<ReportDTO> save(@RequestBody ReportDTO reportDTO) {
+        ReportDTO savedReport = reportService.save(reportDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedReport);
     }
 
     @GetMapping("/{id}")
-    public String getById(Long id) throws JsonProcessingException {
+    public ResponseEntity<ReportDTO> getById(@PathVariable("id") Long id) {
         Optional<ReportDTO> reportDTOOptional = reportService.getById(id);
-        return objectMapper.writeValueAsString(reportDTOOptional.orElse(null));
+        return reportDTOOptional.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PatchMapping("/{id}")
-    public String update(Long id, ReportDTO reportDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(reportService.update(id, reportDTO));
+    public ResponseEntity<ReportDTO> update(@PathVariable("id") Long id, @RequestBody ReportDTO reportDTO) {
+        Optional<ReportDTO> updatedReport = reportService.update(id, reportDTO);
+        return updatedReport.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public void delete(Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         reportService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
 

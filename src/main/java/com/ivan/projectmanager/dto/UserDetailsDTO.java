@@ -1,20 +1,20 @@
 package com.ivan.projectmanager.dto;
 
 public class UserDetailsDTO {
-    private Long id;
+    private Long userId;
     private String name;
     private String surname;
     private String phone;
     private String workPhone;
-    private String workAddress;
+    private String workAdress;
     private String department;
 
-    public Long getId() {
-        return id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public UserDetailsDTO setId(Long id) {
-        this.id = id;
+    public UserDetailsDTO setUserId(Long userId) {
+        this.userId = userId;
         return this;
     }
 
@@ -54,12 +54,12 @@ public class UserDetailsDTO {
         return this;
     }
 
-    public String getWorkAddress() {
-        return workAddress;
+    public String getWorkAdress() {
+        return workAdress;
     }
 
-    public UserDetailsDTO setWorkAddress(String workAddress) {
-        this.workAddress = workAddress;
+    public UserDetailsDTO setWorkAdress(String workAdress) {
+        this.workAdress = workAdress;
         return this;
     }
 
