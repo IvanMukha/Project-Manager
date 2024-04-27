@@ -51,11 +51,6 @@ public class AttachmentServiceImpl implements AttachmentService {
         checkId(id);
         checkAttachmentDTO(updatedAttachmentDTO);
         Optional<Attachment> attachmentOptional = attachmentRepository.update(id, mapDTOToAttachment(updatedAttachmentDTO));
-        System.out.println("FROM SERVICE: "+attachmentOptional.get().getId()+" <id title> "+attachmentOptional.get().getTitle());
-        List<Attachment>list =attachmentRepository.getAll();
-        for (Attachment attachment : list) {
-            System.out.println("getall:form service "+attachment.getId()+attachment.getTitle()+attachment.getTask());
-        }
         if (attachmentOptional.isEmpty()) {
             throw new HandleCustomNotFoundException("Attachment with id " + id + " not found");
         }

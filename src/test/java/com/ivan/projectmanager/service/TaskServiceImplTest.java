@@ -59,7 +59,7 @@ public class TaskServiceImplTest {
         User user = new User().setId(1L);
         Project project = new Project().setId(1L);
         Task task = new Task().setTitle("Test Task").setReporter(user).setProject(project);
-        TaskDTO taskDTO = new TaskDTO().setTitle("Test Task").setReporterId(1L).setProjectId(1L);
+        TaskDTO taskDTO = new TaskDTO().setTitle("Test Task").setReporter(1L).setProjectId(1L);
         when(modelMapper.map(task, TaskDTO.class)).thenReturn(taskDTO);
         when(modelMapper.map(taskDTO, Task.class)).thenReturn(task);
         Mockito.when(taskRepository.save(task)).thenReturn(task);

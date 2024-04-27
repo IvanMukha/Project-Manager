@@ -9,8 +9,8 @@ public class TaskDTO {
     private String priority;
     private LocalDateTime startDate;
     private LocalDateTime dueDate;
-    private Long reporterId;
-    private Long assigneeId;
+    private Long reporter;
+    private Long assignee;
     private String category;
     private String label;
     private String description;
@@ -70,21 +70,21 @@ public class TaskDTO {
         return this;
     }
 
-    public Long getReporterId() {
-        return reporterId;
+    public Long getReporter() {
+        return reporter;
     }
 
-    public TaskDTO setReporterId(Long reporterId) {
-        this.reporterId = reporterId;
+    public TaskDTO setReporter(Long reporter) {
+        this.reporter = reporter;
         return this;
     }
 
-    public Long getAssigneeId() {
-        return assigneeId;
+    public Long getAssignee() {
+        return assignee;
     }
 
-    public TaskDTO setAssigneeId(Long assigneeId) {
-        this.assigneeId = assigneeId;
+    public TaskDTO setAssignee(Long assignee) {
+        this.assignee = assignee;
         return this;
     }
 

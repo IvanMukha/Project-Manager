@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -12,7 +11,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,24 +23,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Transactional
+@Testcontainers
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 @ContextConfiguration(classes = TestControllerConfiguration.class)
 @WebAppConfiguration
 public class UserControllerTest {
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
     private MockMvc mockMvc;
 
     @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    void setUp(WebApplicationContext wac) {
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    @Sql(scripts = {"classpath:data/userrepositorytests/insert-users.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql("classpath:data/userrepositorytests/insert-users.sql")
     void testGetAllUsers() throws Exception {
         mockMvc.perform(get("/users")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -54,8 +52,7 @@ public class UserControllerTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    @Sql(scripts = {"classpath:data/userrepositorytests/insert-users.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql("classpath:data/userrepositorytests/insert-users.sql")
     void testGetUserById() throws Exception {
         mockMvc.perform(get("/users/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -67,7 +64,6 @@ public class UserControllerTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void testSaveUser() throws Exception {
         String requestBody = "{\"username\": \"saved username\", \"password\": \"saved password\", \"email\": \"saved email\"}";
         mockMvc.perform(post("/users/new")
@@ -82,8 +78,7 @@ public class UserControllerTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    @Sql(scripts = {"classpath:data/userrepositorytests/insert-users.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql("classpath:data/userrepositorytests/insert-users.sql")
     void testUpdateUser() throws Exception {
         String requestBody = "{\"username\": \"updated username\", \"password\": \"updated password\", \"email\": \"updated email\"}";
         mockMvc.perform(patch("/users/1")
@@ -97,8 +92,7 @@ public class UserControllerTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    @Sql(scripts = {"classpath:data/userrepositorytests/insert-users.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql("classpath:data/userrepositorytests/insert-users.sql")
     void testDeleteUser() throws Exception {
         mockMvc.perform(delete("/users/1")
                         .contentType(MediaType.APPLICATION_JSON))

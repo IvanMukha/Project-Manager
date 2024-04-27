@@ -1,12 +1,9 @@
 package com.ivan.projectmanager.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ivan.projectmanager.dto.AttachmentDTO;
 import com.ivan.projectmanager.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,6 +33,7 @@ public class AttachmentController {
         List<AttachmentDTO> attachments = attachmentService.getAll();
         return ResponseEntity.ok().body(attachments);
     }
+
     @PostMapping("/new")
     public ResponseEntity<AttachmentDTO> save(@RequestBody AttachmentDTO attachmentDTO) {
         AttachmentDTO savedAttachment = attachmentService.save(attachmentDTO);

@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -12,7 +11,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,25 +23,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Transactional
+@Testcontainers
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 @ContextConfiguration(classes = TestControllerConfiguration.class)
 @WebAppConfiguration
 public class TaskControllerTest {
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
     private MockMvc mockMvc;
 
     @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    void setUp(WebApplicationContext wac) {
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    @Sql(scripts = {"classpath:data/taskrepositorytests/insert-tasks.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     void testGetAllTasks() throws Exception {
-       mockMvc.perform(get("/projects/1/tasks")
+        mockMvc.perform(get("/projects/1/tasks")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -51,8 +50,7 @@ public class TaskControllerTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    @Sql(scripts = {"classpath:data/taskrepositorytests/insert-tasks.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     void testGetTaskById() throws Exception {
         mockMvc.perform(get("/projects/1/tasks/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -61,11 +59,10 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$.title").value("Task 1"))
                 .andExpect(jsonPath("$.status").value("In progress"))
                 .andExpect(jsonPath("$.priority").value("High"))
-               .andExpect(jsonPath("$.category").value("Development"));
+                .andExpect(jsonPath("$.category").value("Development"));
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void testSaveTask() throws Exception {
         String requestBody = "{\"title\": \"Task 1\", \"status\": \"In progress\", \"priority\": \"High\", \"startDate\":" +
                 " \"2024-04-17T10:00:00\", " +
@@ -86,8 +83,7 @@ public class TaskControllerTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    @Sql(scripts = {"classpath:data/taskrepositorytests/insert-tasks.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     void testUpdateTask() throws Exception {
         String requestBody = "{\"title\": \"updated Task 1\", \"status\": \"updated status\", \"priority\": \"updated priority\"}";
         mockMvc.perform(patch("/projects/1/tasks/1")
@@ -101,8 +97,7 @@ public class TaskControllerTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    @Sql(scripts = {"classpath:data/taskrepositorytests/insert-tasks.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     void testDeleteTask() throws Exception {
         mockMvc.perform(delete("/projects/1/tasks/1")
                         .contentType(MediaType.APPLICATION_JSON))

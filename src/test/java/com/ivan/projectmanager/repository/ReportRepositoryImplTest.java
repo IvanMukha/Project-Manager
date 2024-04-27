@@ -41,7 +41,7 @@ public class ReportRepositoryImplTest {
     public void testGetById() {
         Optional<Report> report = reportRepository.getById(1L);
         assertTrue(report.isPresent());
-        assertEquals("Report 1", report.get().getTitle());
+        assertEquals("title", report.get().getTitle());
     }
 
     @Test

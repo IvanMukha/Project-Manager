@@ -11,9 +11,9 @@ import javax.sql.DataSource;
 @Configuration(proxyBeanMethods = false)
 @ComponentScan(basePackages = {"com.ivan.projectmanager.config", "com.ivan.projectmanager.repository"})
 public class TestRepositoryConfiguration {
-     //@Bean
-    public DataSource getDataSourse() {
+
+    @Bean
+    public DataSource h2DataSource() {
         return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
     }
-
 }

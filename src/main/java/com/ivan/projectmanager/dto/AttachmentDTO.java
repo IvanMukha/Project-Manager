@@ -1,7 +1,5 @@
 package com.ivan.projectmanager.dto;
 
-import com.ivan.projectmanager.model.Task;
-
 public class AttachmentDTO {
     private Long id;
     private String title;

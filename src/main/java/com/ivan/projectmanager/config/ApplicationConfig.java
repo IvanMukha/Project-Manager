@@ -3,19 +3,16 @@ package com.ivan.projectmanager.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.ivan.projectmanager.Application;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import liquibase.integration.spring.SpringLiquibase;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.modelmapper.ModelMapper;
 import org.postgresql.ds.PGSimpleDataSource;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -28,7 +25,7 @@ import java.util.Properties;
 
 
 @Configuration
-@ComponentScan(basePackageClasses = Application.class)
+@ComponentScan("com.ivan.projectmanager")
 @PropertySource("classpath:application.properties")
 @EnableTransactionManagement
 public class ApplicationConfig {
@@ -57,7 +54,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public SpringLiquibase liquibase( DataSource dataSource,
+    public SpringLiquibase liquibase(DataSource dataSource,
                                      @Value("${liquibase.changelog-master}") String liquibaseChangeLog) {
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource);
@@ -66,7 +63,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    LocalContainerEntityManagerFactoryBean entityManagerFactoryBean( DataSource dataSource) {
+    LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(dataSource);
         emf.setPersistenceProviderClass(HibernatePersistenceProvider.class);
