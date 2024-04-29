@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,8 @@ import java.util.List;
 @Table(name = "tasks")
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tasks_seq_generator")
+    @SequenceGenerator(name = "tasks_seq_generator", sequenceName = "tasks_seq", allocationSize = 1)
     private Long id;
     private String title;
     private String status;

@@ -4,11 +4,11 @@ import com.ivan.projectmanager.model.Task;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
+@Transactional
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestRepositoryConfiguration.class)
 @WebAppConfiguration
@@ -28,7 +28,6 @@ public class TaskRepositoryImplTest {
     private TaskRepository taskRepository;
 
     @Test
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     public void testGetAll() {
         List<Task> tasks = taskRepository.getAll();
@@ -36,7 +35,6 @@ public class TaskRepositoryImplTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     public void testGetById() {
         Optional<Task> task = taskRepository.getById(1L);
@@ -45,9 +43,7 @@ public class TaskRepositoryImplTest {
     }
 
     @Test
-    @DirtiesContext
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testDeleteTask() {
         Optional<Task> task = taskRepository.getById(1L);
         assertTrue(task.isPresent());
@@ -57,7 +53,6 @@ public class TaskRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testUpdate() {
         Optional<Task> task = taskRepository.getById(1L);
         assertTrue(task.isPresent());
@@ -71,7 +66,6 @@ public class TaskRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetByStatusCriteria() {
         List<Task> foundTasks = taskRepository.getByStatusCriteria("In progress");
         assertThat(foundTasks).isNotEmpty();
@@ -80,7 +74,6 @@ public class TaskRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetByCategoryJpql() {
         List<Task> foundTasks = taskRepository.getByCategoryJpql("Development");
         assertThat(foundTasks).isNotEmpty();
@@ -90,7 +83,6 @@ public class TaskRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetAllJpqlFetch() {
         List<Task> foundTasks = taskRepository.getAllJpqlFetch();
         assertThat(foundTasks).isNotEmpty();
@@ -101,7 +93,6 @@ public class TaskRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetAllCriteriaFetch() {
         List<Task> foundTasks = taskRepository.getAllCriteriaFetch();
         assertThat(foundTasks).isNotEmpty();
@@ -112,7 +103,6 @@ public class TaskRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
-    @Sql(scripts = {"classpath:data/taskrepositorytests/delete-tasks.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetAllEntityGraph() {
         List<Task> foundTasks = taskRepository.getAllEntityGraph();
         assertThat(foundTasks).isNotEmpty();

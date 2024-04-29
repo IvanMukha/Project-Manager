@@ -85,5 +85,9 @@
     <changeSet id="change-users_roles_unique-h2" author="Ivan Mukha">
         <sqlFile encoding="utf8" path="./sql/22.change-users_roles-unique-field-h2.sql" relativeToChangelogFile="true" dbms="h2"/>
     </changeSet>
+    <changeSet id="add-tables-sequences" author="Ivan Mukha">
+        <sqlFile encoding="utf8" path="./sql/23.add-tables-sequences.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 
 </databaseChangeLog> 

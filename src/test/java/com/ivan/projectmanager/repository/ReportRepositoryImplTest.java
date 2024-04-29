@@ -5,11 +5,11 @@ import com.ivan.projectmanager.model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Transactional
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestRepositoryConfiguration.class)
 @WebAppConfiguration
@@ -28,7 +29,6 @@ public class ReportRepositoryImplTest {
     private ReportRepository reportRepository;
 
     @Test
-    @Sql(scripts = {"classpath:data/reportrepositorytests/delete-reports.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
     public void testGetAll() {
         List<Report> reports = reportRepository.getAll();
@@ -36,7 +36,6 @@ public class ReportRepositoryImplTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/reportrepositorytests/delete-reports.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
     public void testGetById() {
         Optional<Report> report = reportRepository.getById(1L);
@@ -45,9 +44,7 @@ public class ReportRepositoryImplTest {
     }
 
     @Test
-    @DirtiesContext
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    @Sql(scripts = {"classpath:data/reportrepositorytests/delete-reports.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testDeleteReport() {
         Optional<Report> report = reportRepository.getById(1L);
         assertTrue(report.isPresent());
@@ -58,7 +55,6 @@ public class ReportRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    @Sql(scripts = {"classpath:data/reportrepositorytests/delete-reports.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testUpdate() {
         Optional<Report> report = reportRepository.getById(1L);
         assertTrue(report.isPresent());
@@ -74,7 +70,6 @@ public class ReportRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    @Sql(scripts = {"classpath:data/reportrepositorytests/delete-reports.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetReportsByUserJpql() {
         User user = new User();
         user.setId(1L);
@@ -86,7 +81,6 @@ public class ReportRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    @Sql(scripts = {"classpath:data/reportrepositorytests/delete-reports.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetReportsByUserCriteria() {
         User user = new User();
         user.setId(1L);
@@ -98,7 +92,6 @@ public class ReportRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    @Sql(scripts = {"classpath:data/reportrepositorytests/delete-reports.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetReportsByUserJpqlFetch() {
         User user = new User();
         user.setId(1L);
@@ -110,7 +103,6 @@ public class ReportRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    @Sql(scripts = {"classpath:data/reportrepositorytests/delete-reports.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetReportsByUserCriteriaFetch() {
         User user = new User();
         user.setId(1L);
@@ -122,7 +114,6 @@ public class ReportRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    @Sql(scripts = {"classpath:data/reportrepositorytests/delete-reports.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetReportsByUserEntityGraph() {
         User user = new User();
         user.setId(1L);

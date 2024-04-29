@@ -58,8 +58,9 @@ public class AttachmentConrollerTest {
     }
 
     @Test
+    @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     public void testSaveAttachment() throws Exception {
-        String requestBody = "{\"title\": \"Attachment\", \"taskId\": 1}";
+        String requestBody = "{\"title\": \"Attachment\", \"taskId\": 1,\"path\": \"path\"}";
         mockMvc.perform(post("/projects/1/tasks/1/attachments/new")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))

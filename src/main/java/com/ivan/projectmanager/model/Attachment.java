@@ -7,13 +7,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "attachments")
 public class Attachment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "attachments_seq_generator")
+    @SequenceGenerator(name = "attachments_seq_generator", sequenceName = "attachments_seq", allocationSize = 1)
     private Long id;
     private String title;
     private String path;

@@ -63,6 +63,7 @@ public class TaskControllerTest {
     }
 
     @Test
+    @Sql("classpath:data/taskrepositorytests/insert-tasks-save.sql")
     void testSaveTask() throws Exception {
         String requestBody = "{\"title\": \"Task 1\", \"status\": \"In progress\", \"priority\": \"High\", \"startDate\":" +
                 " \"2024-04-17T10:00:00\", " +
@@ -79,7 +80,6 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$.priority").value("High"))
                 .andExpect(jsonPath("$.category").value("Development"))
                 .andExpect(jsonPath("$.label").value("Bug"));
-
     }
 
     @Test

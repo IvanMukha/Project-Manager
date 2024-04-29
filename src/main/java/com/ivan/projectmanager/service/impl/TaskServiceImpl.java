@@ -78,7 +78,7 @@ public class TaskServiceImpl implements TaskService {
         if (taskDTO.getTitle().isEmpty()) {
             throw new HandleCustomIllegalArgumentException("Title cannot be empty");
         }
-        if (taskDTO.getReporter() == null) {
+        if (taskDTO.getReporterId() == null) {
             throw new HandleCustomNullPointerException("Reporter cannot be null");
         }
         if (taskDTO.getProjectId() == null) {
