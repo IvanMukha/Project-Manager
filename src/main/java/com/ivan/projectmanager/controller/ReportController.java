@@ -5,11 +5,12 @@ import com.ivan.projectmanager.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/projects/{projectId}/tasks/{taskId}/reports")
+@Validated
 public class ReportController {
     private final ReportService reportService;
 
@@ -28,34 +30,44 @@ public class ReportController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ReportDTO>> getAll() {
-        List<ReportDTO> reports = reportService.getAll();
+    public ResponseEntity<List<ReportDTO>> getAll(@PathVariable("projectId") Long projectId,
+                                                  @PathVariable("taskId") Long taskId) {
+        List<ReportDTO> reports = reportService.getAll(projectId, taskId);
         return ResponseEntity.ok().body(reports);
     }
 
-    @PostMapping("/new")
-    public ResponseEntity<ReportDTO> save(@RequestBody ReportDTO reportDTO) {
-        ReportDTO savedReport = reportService.save(reportDTO);
+    @PostMapping()
+    public ResponseEntity<ReportDTO> save(@PathVariable("projectId") Long projectId,
+                                          @PathVariable("taskId") Long taskId,
+                                          @RequestBody ReportDTO reportDTO) {
+        ReportDTO savedReport = reportService.save(projectId, taskId, reportDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedReport);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReportDTO> getById(@PathVariable("id") Long id) {
-        Optional<ReportDTO> reportDTOOptional = reportService.getById(id);
+    public ResponseEntity<ReportDTO> getById(@PathVariable("projectId") Long projectId,
+                                             @PathVariable("taskId") Long taskId,
+                                             @PathVariable("id") Long id) {
+        Optional<ReportDTO> reportDTOOptional = reportService.getById(projectId, taskId, id);
         return reportDTOOptional.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<ReportDTO> update(@PathVariable("id") Long id, @RequestBody ReportDTO reportDTO) {
-        Optional<ReportDTO> updatedReport = reportService.update(id, reportDTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<ReportDTO> update(@PathVariable("projectId") Long projectId,
+                                            @PathVariable("taskId") Long taskId,
+                                            @PathVariable("id") Long id,
+                                            @RequestBody ReportDTO reportDTO) {
+        Optional<ReportDTO> updatedReport = reportService.update(projectId, taskId, id, reportDTO);
         return updatedReport.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-        reportService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable("projectId") Long projectId,
+                                       @PathVariable("taskId") Long taskId,
+                                       @PathVariable("id") Long id) {
+        reportService.delete(projectId, taskId, id);
         return ResponseEntity.noContent().build();
     }
 }

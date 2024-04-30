@@ -1,8 +1,10 @@
 package com.ivan.projectmanager.service;
 
 import com.ivan.projectmanager.dto.UserDetailsDTO;
+import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.model.UserDetails;
 import com.ivan.projectmanager.repository.UserDetailsRepository;
+import com.ivan.projectmanager.repository.UserRepository;
 import com.ivan.projectmanager.service.impl.UserDetailsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,11 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,19 +26,18 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes = TestServiceConfiguration.class)
-@WebAppConfiguration
 public class UserDetailsServiceImplTest {
 
     @Mock
     ModelMapper modelMapper;
     @Mock
     private UserDetailsRepository userDetailsRepository;
+    @Mock
+    private UserRepository userRepository;
     @InjectMocks
     private UserDetailsServiceImpl userDetailsService;
     private UserDetails userDetails;
     private UserDetailsDTO userDetailsDTO;
-    @Autowired
-    private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @BeforeEach
     void setUp() {
@@ -61,35 +59,13 @@ public class UserDetailsServiceImplTest {
     }
 
     @Test
-    void testGetAllUserDetails() {
-        UserDetails userDetails2 = userDetails;
-        UserDetailsDTO userDetailsDTO2 = userDetailsDTO;
-        when(modelMapper.map(userDetails, UserDetailsDTO.class)).thenReturn(userDetailsDTO);
-        when(modelMapper.map(userDetails2, UserDetailsDTO.class)).thenReturn(userDetailsDTO2);
-        when(userDetailsRepository.getAll()).thenReturn(List.of(userDetails, userDetails2));
-        List<UserDetailsDTO> result = userDetailsService.getAll();
-        assertEquals(2, result.size());
-        assertEquals(userDetails.getName(), result.getFirst().getName());
-        assertEquals(userDetails.getSurname(), result.getFirst().getSurname());
-        assertEquals(userDetails.getPhone(), result.getFirst().getPhone());
-        assertEquals(userDetails.getWorkPhone(), result.getFirst().getWorkPhone());
-        assertEquals(userDetails.getWorkAdress(), result.getFirst().getWorkAdress());
-        assertEquals(userDetails.getDepartment(), result.getFirst().getDepartment());
-        assertEquals(userDetails2.getName(), result.get(1).getName());
-        assertEquals(userDetails2.getSurname(), result.get(1).getSurname());
-        assertEquals(userDetails2.getPhone(), result.get(1).getPhone());
-        assertEquals(userDetails2.getWorkPhone(), result.get(1).getWorkPhone());
-        assertEquals(userDetails2.getWorkAdress(), result.get(1).getWorkAdress());
-        assertEquals(userDetails2.getDepartment(), result.get(1).getDepartment());
-        verify(userDetailsRepository).getAll();
-    }
-
-    @Test
     void testSaveUserDetails() {
+        User user = new User().setId(1L).setUsername("username");
         when(modelMapper.map(userDetailsDTO, UserDetails.class)).thenReturn(userDetails);
         when(modelMapper.map(userDetails, UserDetailsDTO.class)).thenReturn(userDetailsDTO);
+        when(userRepository.getById(1L)).thenReturn(Optional.ofNullable(user));
         when(userDetailsRepository.save(userDetails)).thenReturn(userDetails);
-        UserDetailsDTO savedUserDetailsDTO = userDetailsService.save(userDetailsDTO);
+        UserDetailsDTO savedUserDetailsDTO = userDetailsService.save(1L, userDetailsDTO);
         assertNotNull(savedUserDetailsDTO);
         assertEquals(userDetails.getName(), savedUserDetailsDTO.getName());
         assertEquals(userDetails.getSurname(), savedUserDetailsDTO.getSurname());
@@ -117,8 +93,7 @@ public class UserDetailsServiceImplTest {
 
     @Test
     void testDeleteUserDetails() {
-        Long id = 1L;
-        userDetailsService.delete(id);
-        verify(userDetailsRepository).delete(id);
+        userDetailsService.delete(1L);
+        verify(userDetailsRepository).delete(1L);
     }
 }

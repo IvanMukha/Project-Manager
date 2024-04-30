@@ -1,8 +1,16 @@
 package com.ivan.projectmanager.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class UserDetailsDTO {
+    @NotNull(message = "Task id cannot be null")
+    @Positive(message = "Task id must be greater than 0")
     private Long userId;
+    @NotBlank(message = "Name cannot be empty")
     private String name;
+    @NotBlank(message = "Surname cannot be empty")
     private String surname;
     private String phone;
     private String workPhone;

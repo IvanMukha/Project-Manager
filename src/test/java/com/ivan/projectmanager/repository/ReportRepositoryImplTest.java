@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -22,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestRepositoryConfiguration.class)
-@WebAppConfiguration
 public class ReportRepositoryImplTest {
 
     @Autowired
@@ -31,14 +29,14 @@ public class ReportRepositoryImplTest {
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
     public void testGetAll() {
-        List<Report> reports = reportRepository.getAll();
+        List<Report> reports = reportRepository.getAll(1L, 1L);
         assertThat(reports).isNotEmpty();
     }
 
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
     public void testGetById() {
-        Optional<Report> report = reportRepository.getById(1L);
+        Optional<Report> report = reportRepository.getById(1L, 1L, 1L);
         assertTrue(report.isPresent());
         assertEquals("title", report.get().getTitle());
     }
@@ -46,24 +44,24 @@ public class ReportRepositoryImplTest {
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
     public void testDeleteReport() {
-        Optional<Report> report = reportRepository.getById(1L);
+        Optional<Report> report = reportRepository.getById(1L, 1L, 1L);
         assertTrue(report.isPresent());
 
-        reportRepository.delete(1L);
-        assertFalse(reportRepository.getById(1L).isPresent());
+        reportRepository.delete(1L, 1L, 1L);
+        assertFalse(reportRepository.getById(1L, 1L, 1L).isPresent());
     }
 
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
     public void testUpdate() {
-        Optional<Report> report = reportRepository.getById(1L);
+        Optional<Report> report = reportRepository.getById(1L, 1L, 1L);
         assertTrue(report.isPresent());
 
         Report updatedReport = report.get();
         updatedReport.setTitle("Updated Report");
-        reportRepository.update(1L, updatedReport);
+        reportRepository.update(1L, 1L, 1L, updatedReport);
 
-        Optional<Report> updatedReportOptional = reportRepository.getById(1L);
+        Optional<Report> updatedReportOptional = reportRepository.getById(1L, 1L, 1L);
         assertTrue(updatedReportOptional.isPresent());
         assertEquals("Updated Report", updatedReportOptional.get().getTitle());
     }

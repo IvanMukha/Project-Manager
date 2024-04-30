@@ -3,7 +3,6 @@ package com.ivan.projectmanager.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -13,19 +12,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
-@Testcontainers
-@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestControllerConfiguration.class)
 @WebAppConfiguration
 public class RoleControllerTest {
@@ -59,7 +56,7 @@ public class RoleControllerTest {
     @Test
     void testSaveRole() throws Exception {
         String requestBody = "{\"name\": \"saved name\"}";
-        mockMvc.perform(post("/roles/new")
+        mockMvc.perform(post("/roles")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -72,7 +69,7 @@ public class RoleControllerTest {
     @Sql("classpath:data/rolerepositorytests/insert-roles.sql")
     void testUpdateRole() throws Exception {
         String requestBody = "{\"name\": \"updated name\"}";
-        mockMvc.perform(patch("/roles/1")
+        mockMvc.perform(put("/roles/1")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

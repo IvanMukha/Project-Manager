@@ -1,13 +1,14 @@
 package com.ivan.projectmanager.repository;
 
+import com.ivan.projectmanager.config.ApplicationConfig;
 import com.ivan.projectmanager.model.Attachment;
+import com.ivan.projectmanager.repository.impl.AttachmentRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -19,8 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Transactional
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestRepositoryConfiguration.class)
-@WebAppConfiguration
+@ContextConfiguration(classes = {ApplicationConfig.class, AttachmentRepositoryImpl.class, TestRepositoryConfiguration.class})
 public class AttachmentRepositoryImplTest {
 
     @Autowired
@@ -29,14 +29,14 @@ public class AttachmentRepositoryImplTest {
     @Test
     @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
     public void testGetAll() {
-        List<Attachment> attachments = attachmentRepository.getAll();
+        List<Attachment> attachments = attachmentRepository.getAll(1L, 1L);
         assertThat(attachments).isNotEmpty();
     }
 
     @Test
     @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
     public void testGetById() {
-        Attachment attachment = attachmentRepository.getById(1L).orElse(null);
+        Attachment attachment = attachmentRepository.getById(1L, 1L, 1L).orElse(null);
         assertNotNull(attachment);
         assertEquals(1, attachment.getId());
     }
@@ -44,22 +44,22 @@ public class AttachmentRepositoryImplTest {
     @Test
     @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
     public void testDeleteAttachment() {
-        Attachment attachment = attachmentRepository.getById(1L).orElse(null);
+        Attachment attachment = attachmentRepository.getById(1L, 1L, 1L).orElse(null);
         assertNotNull(attachment);
 
-        attachmentRepository.delete(attachment.getId());
-        assertFalse(attachmentRepository.getById(1L).isPresent());
+        attachmentRepository.delete(1L, 1L, attachment.getId());
+        assertFalse(attachmentRepository.getById(1L, 1L, 1L).isPresent());
     }
 
     @Test
     @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
     public void testUpdate() {
-        Attachment attachment = attachmentRepository.getById(1L).orElse(null);
+        Attachment attachment = attachmentRepository.getById(1L, 1L, 1L).orElse(null);
         assertNotNull(attachment);
 
         attachment.setTitle("Updated Title");
         attachment.setPath("/attachments/updated.pdf");
-        Attachment updatedAttachment = attachmentRepository.update(1L, attachment).orElse(null);
+        Attachment updatedAttachment = attachmentRepository.update(1L, 1L, 1L, attachment).orElse(null);
         assertNotNull(updatedAttachment);
         assertEquals("Updated Title", updatedAttachment.getTitle());
         assertEquals("/attachments/updated.pdf", updatedAttachment.getPath());

@@ -5,11 +5,12 @@ import com.ivan.projectmanager.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/roles")
+@Validated
 public class RoleController {
     private final RoleService roleService;
 
@@ -33,7 +35,7 @@ public class RoleController {
         return ResponseEntity.ok().body(roles);
     }
 
-    @PostMapping("/new")
+    @PostMapping()
     public ResponseEntity<RoleDTO> save(@RequestBody RoleDTO roleDTO) {
         RoleDTO savedRole = roleService.save(roleDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRole);
@@ -46,7 +48,7 @@ public class RoleController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<RoleDTO> update(@PathVariable("id") Long id, @RequestBody RoleDTO roleDTO) {
         Optional<RoleDTO> updatedRole = roleService.update(id, roleDTO);
         return updatedRole.map(ResponseEntity::ok)

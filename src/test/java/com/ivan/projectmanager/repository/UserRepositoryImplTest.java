@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -22,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestRepositoryConfiguration.class)
-@WebAppConfiguration
 public class UserRepositoryImplTest {
 
     @Autowired

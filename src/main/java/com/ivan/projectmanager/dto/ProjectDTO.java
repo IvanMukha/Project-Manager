@@ -1,14 +1,23 @@
 package com.ivan.projectmanager.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 import java.time.LocalDateTime;
 
 public class ProjectDTO {
     private Long id;
+    @NotBlank(message = "Project title cannot be empty")
     private String title;
     private String description;
     private LocalDateTime startDate;
     private String status;
+    @NotNull(message = "Team id cannot be null")
+    @Positive(message = "Team id must be greater than 0")
     private Long teamId;
+    @NotNull(message = "Manager id cannot be null")
+    @Positive(message = "Manager id must be greater than 0")
     private Long managerId;
 
     public Long getId() {

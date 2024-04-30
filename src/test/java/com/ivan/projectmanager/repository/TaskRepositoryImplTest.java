@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -21,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestRepositoryConfiguration.class)
-@WebAppConfiguration
 public class TaskRepositoryImplTest {
 
     @Autowired
@@ -30,14 +28,14 @@ public class TaskRepositoryImplTest {
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     public void testGetAll() {
-        List<Task> tasks = taskRepository.getAll();
+        List<Task> tasks = taskRepository.getAll(1L);
         assertThat(tasks).isNotEmpty();
     }
 
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     public void testGetById() {
-        Optional<Task> task = taskRepository.getById(1L);
+        Optional<Task> task = taskRepository.getById(1L, 1L);
         assertTrue(task.isPresent());
         assertEquals("Task 1", task.get().getTitle());
     }
@@ -45,21 +43,21 @@ public class TaskRepositoryImplTest {
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     public void testDeleteTask() {
-        Optional<Task> task = taskRepository.getById(1L);
+        Optional<Task> task = taskRepository.getById(1L, 1L);
         assertTrue(task.isPresent());
-        taskRepository.delete(1L);
-        assertFalse(taskRepository.getById(1L).isPresent());
+        taskRepository.delete(1L, 1L);
+        assertFalse(taskRepository.getById(1L, 1L).isPresent());
     }
 
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     public void testUpdate() {
-        Optional<Task> task = taskRepository.getById(1L);
+        Optional<Task> task = taskRepository.getById(1L, 1L);
         assertTrue(task.isPresent());
         Task updatedTask = task.get();
         updatedTask.setTitle("Updated Task");
-        taskRepository.update(1L, updatedTask);
-        Optional<Task> updatedTaskOptional = taskRepository.getById(1L);
+        taskRepository.update(1L, 1L, updatedTask);
+        Optional<Task> updatedTaskOptional = taskRepository.getById(1L, 1L);
         assertTrue(updatedTaskOptional.isPresent());
         assertEquals("Updated Task", updatedTaskOptional.get().getTitle());
     }

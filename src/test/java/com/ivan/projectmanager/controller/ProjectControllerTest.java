@@ -3,7 +3,6 @@ package com.ivan.projectmanager.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -13,19 +12,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
-@Testcontainers
-@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestControllerConfiguration.class)
 @WebAppConfiguration
 public class ProjectControllerTest {
@@ -63,7 +60,7 @@ public class ProjectControllerTest {
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     void testSaveProject() throws Exception {
         String requestBody = "{\"title\": \"saved title\", \"description\":\"saved description\",\"startDate\": \"2024-04-25T20:01:46.488778\"}";
-        mockMvc.perform(post("/projects/new")
+        mockMvc.perform(post("/projects")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -76,7 +73,7 @@ public class ProjectControllerTest {
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     void testUpdateProject() throws Exception {
         String requestBody = "{\"title\": \"updated title\", \"description\":\"updated description\"}";
-        mockMvc.perform(patch("/projects/1")
+        mockMvc.perform(put("/projects/1")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

@@ -2,9 +2,11 @@ package com.ivan.projectmanager.service;
 
 import com.ivan.projectmanager.dto.CommentDTO;
 import com.ivan.projectmanager.model.Comment;
+import com.ivan.projectmanager.model.Project;
 import com.ivan.projectmanager.model.Task;
 import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.repository.CommentRepository;
+import com.ivan.projectmanager.repository.TaskRepository;
 import com.ivan.projectmanager.service.impl.CommentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,10 +29,11 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 @ContextConfiguration(classes = TestServiceConfiguration.class)
-@WebAppConfiguration
 public class CommentServiceImplTest {
     @Mock
     ModelMapper modelMapper;
+    @Mock
+    private TaskRepository taskRepository;
     @Mock
     private CommentRepository commentRepository;
     @InjectMocks
@@ -40,30 +42,35 @@ public class CommentServiceImplTest {
 
     @Test
     public void testGetAll() {
-        Task task = new Task();
-        User user = new User();
+        Project project = new Project().setId(1L).setTitle("title");
+        Task task = new Task().setId(1L).setTitle("task").setProject(project);
+        User user = new User().setId(1L).setUsername("username");
         Comment comment = new Comment().setText("text").setTask(task).setUser(user);
         Comment comment2 = new Comment().setText("text2").setTask(task).setUser(user);
         CommentDTO commentDTO = new CommentDTO().setText("text");
         CommentDTO commentDTO2 = new CommentDTO().setText("text2");
         when(modelMapper.map(comment, CommentDTO.class)).thenReturn(commentDTO);
         when(modelMapper.map(comment2, CommentDTO.class)).thenReturn(commentDTO2);
-        when(commentRepository.getAll()).thenReturn(List.of(comment, comment2));
-        List<CommentDTO> result = commentService.getAll();
+        when(commentRepository.getAll(1L, 1L)).thenReturn(List.of(comment, comment2));
+        List<CommentDTO> result = commentService.getAll(1L, 1L);
         assertEquals(2, result.size());
         assertEquals(comment.getText(), result.get(0).getText());
         assertEquals(comment2.getText(), result.get(1).getText());
-        verify(commentRepository).getAll();
+        verify(commentRepository).getAll(1L, 1L);
     }
 
     @Test
     public void testSave() {
-        Comment comment = new Comment().setText("text");
+        Project project = new Project().setId(1L).setTitle("title");
+        Task task = new Task().setId(1L).setTitle("task").setProject(project);
+        User user = new User().setId(1L).setUsername("username");
+        Comment comment = new Comment().setText("text").setTask(task).setUser(user);
         CommentDTO commentDTO = new CommentDTO().setText("text");
         when(modelMapper.map(comment, CommentDTO.class)).thenReturn(commentDTO);
         when(modelMapper.map(commentDTO, Comment.class)).thenReturn(comment);
+        when(taskRepository.getById(1L, 1L)).thenReturn(Optional.ofNullable(task));
         when(commentRepository.save(comment)).thenReturn(comment);
-        CommentDTO commentDTO2 = commentService.save(commentDTO);
+        CommentDTO commentDTO2 = commentService.save(1L, 1L, commentDTO);
         assertNotNull(commentDTO2);
         assertEquals(commentDTO2.getText(), commentDTO.getText());
         verify(commentRepository).save(any());
@@ -71,15 +78,14 @@ public class CommentServiceImplTest {
 
     @Test
     void testGetById() {
-        long id = 1L;
         Comment comment = new Comment().setText("text");
         CommentDTO commentDTO = new CommentDTO().setText("text");
         when(modelMapper.map(comment, CommentDTO.class)).thenReturn(commentDTO);
-        when(commentRepository.getById(id)).thenReturn(Optional.of(comment));
-        Optional<CommentDTO> result = commentService.getById(id);
+        when(commentRepository.getById(1L, 1L, 1L)).thenReturn(Optional.of(comment));
+        Optional<CommentDTO> result = commentService.getById(1L, 1L, 1L);
         assertTrue(result.isPresent());
         assertEquals(comment.getText(), result.get().getText());
-        verify(commentRepository).getById(1L);
+        verify(commentRepository).getById(1L, 1L, 1L);
     }
 
     @Test
@@ -88,18 +94,17 @@ public class CommentServiceImplTest {
         CommentDTO commentDTO = new CommentDTO().setText("text");
         when(modelMapper.map(comment, CommentDTO.class)).thenReturn(commentDTO);
         when(modelMapper.map(commentDTO, Comment.class)).thenReturn(comment);
-        when(commentRepository.update(1L, comment)).thenReturn(Optional.of(comment));
-        Optional<CommentDTO> result = commentService.update(1L, commentDTO);
+        when(commentRepository.update(1L, 1L, 1L, comment)).thenReturn(Optional.of(comment));
+        Optional<CommentDTO> result = commentService.update(1L, 1L, 1L, commentDTO);
         assertTrue(result.isPresent());
         assertEquals(comment.getText(), result.get().getText());
-        verify(commentRepository).update(1L, comment);
+        verify(commentRepository).update(1L, 1L, 1L, comment);
     }
 
     @Test
     void testDelete() {
-        Long id = 1L;
-        commentService.delete(id);
-        verify(commentRepository).delete(id);
+        commentService.delete(1L, 1L, 1L);
+        verify(commentRepository).delete(1L, 1L, 1L);
     }
 
 }

@@ -3,7 +3,6 @@ package com.ivan.projectmanager.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -13,19 +12,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
-@Testcontainers
-@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestControllerConfiguration.class)
 @WebAppConfiguration
 public class UserDetailsControllerTest {
@@ -51,10 +48,11 @@ public class UserDetailsControllerTest {
     }
 
     @Test
+    @Sql("classpath:data/userrepositorytests/insert-users.sql")
     void testSaveUser() throws Exception {
         String requestBody = "{\"userId\":1, \"name\":\"saved name\", \"surname\":\"saved surname\", \"phone\":\"saved phone\"" +
                 ", \"workPhone\":\"saved workPhone\", \"workAddress\":\"saved workAddress\", \"department\":\"saved department\"}";
-        mockMvc.perform(post("/users/1/userDetails/new")
+        mockMvc.perform(post("/users/1/userDetails")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -70,7 +68,7 @@ public class UserDetailsControllerTest {
     void testUpdateUser() throws Exception {
         String requestBody = "{\"userId\":1, \"name\":\"updated name\", \"surname\":\"updated surname\", \"phone\":\"updated phone\"" +
                 ", \"workPhone\":\"updated workPhone\", \"workAddress\":\"updated workAddress\", \"department\":\"updated department\"}";
-        mockMvc.perform(patch("/users/1/userDetails")
+        mockMvc.perform(put("/users/1/userDetails")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
