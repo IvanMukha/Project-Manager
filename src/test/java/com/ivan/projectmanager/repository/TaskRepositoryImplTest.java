@@ -1,6 +1,9 @@
 package com.ivan.projectmanager.repository;
 
+import com.ivan.projectmanager.config.ApplicationConfig;
 import com.ivan.projectmanager.model.Task;
+import com.ivan.projectmanager.repository.impl.AttachmentRepositoryImpl;
+import com.ivan.projectmanager.repository.impl.TaskRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +22,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestRepositoryConfiguration.class)
+@ContextConfiguration(classes = {ApplicationConfig.class, TaskRepositoryImpl.class, TestRepositoryConfiguration.class})
 public class TaskRepositoryImplTest {
 
     @Autowired
-    private TaskRepository taskRepository;
+    private TaskRepositoryImpl taskRepository;
 
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")

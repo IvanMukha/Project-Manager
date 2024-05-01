@@ -1,7 +1,10 @@
 package com.ivan.projectmanager.repository;
 
+import com.ivan.projectmanager.config.ApplicationConfig;
 import com.ivan.projectmanager.model.Report;
 import com.ivan.projectmanager.model.User;
+import com.ivan.projectmanager.repository.impl.AttachmentRepositoryImpl;
+import com.ivan.projectmanager.repository.impl.ReportRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestRepositoryConfiguration.class)
+@ContextConfiguration(classes = {ApplicationConfig.class, ReportRepositoryImpl.class, TestRepositoryConfiguration.class})
 public class ReportRepositoryImplTest {
 
     @Autowired
-    private ReportRepository reportRepository;
+    private ReportRepositoryImpl reportRepository;
 
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
