@@ -7,6 +7,7 @@ import com.ivan.projectmanager.repository.AbstractRepository;
 import com.ivan.projectmanager.repository.ReportRepository;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -25,32 +26,54 @@ public class ReportRepositoryImpl extends AbstractRepository<Report, Long> imple
         super(entityManager, Report.class);
     }
 
-    @Override
-    public List<Report> getAll() {
-        return super.getAll();
+    public List<Report> getAll(Long projectId, Long taskId) {
+        return entityManager.createQuery("SELECT r FROM Report r JOIN FETCH r.task t WHERE t.id = :taskId AND t.project.id = :projectId", Report.class)
+                .setParameter("taskId", taskId)
+                .setParameter("projectId", projectId)
+                .getResultList();
     }
 
-    @Override
-    public Optional<Report> getById(Long id) {
-        return super.getById(id);
-    }
-
-    @Override
-    public Optional<Report> update(Long id, Report updatedEntity) {
-        Report existingReport = entityManager.find(Report.class, id);
-        if (existingReport != null) {
-            existingReport.setTitle(updatedEntity.getTitle());
-            existingReport.setText(updatedEntity.getText());
-            entityManager.merge(existingReport);
-            return Optional.of(existingReport);
-        } else {
+    public Optional<Report> getById(Long projectId, Long taskId, Long id) {
+        try {
+            return Optional.ofNullable(entityManager.createQuery(
+                            "SELECT r FROM Report r " +
+                                    "JOIN FETCH r.task t " +
+                                    "WHERE t.id = :taskId AND t.project.id = :projectId AND r.id = :id", Report.class)
+                    .setParameter("projectId", projectId)
+                    .setParameter("taskId", taskId)
+                    .setParameter("id", id)
+                    .getSingleResult());
+        } catch (NoResultException e) {
             return Optional.empty();
         }
     }
 
-    @Override
-    public void delete(Long id) {
-        super.delete(id);
+    public Optional<Report> update(Long projectId, Long taskId, Long id, Report updatedEntity) {
+        try {
+            Report existingReport = entityManager.createQuery(
+                            "SELECT r FROM Report r " +
+                                    "JOIN FETCH r.task t " +
+                                    "WHERE t.id = :taskId AND t.project.id = :projectId AND r.id = :id", Report.class)
+                    .setParameter("projectId", projectId)
+                    .setParameter("taskId", taskId)
+                    .setParameter("id", id)
+                    .getSingleResult();
+
+            if (existingReport != null) {
+                existingReport.setText(updatedEntity.getText());
+                existingReport.setTitle(updatedEntity.getTitle());
+                entityManager.merge(existingReport);
+                return Optional.of(existingReport);
+            } else {
+                return Optional.empty();
+            }
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    public void delete(Long projectId, Long taskId, Long id) {
+        getById(projectId, taskId, id).ifPresent(entityManager::remove);
     }
 
     public List<Report> getReportsByUserJpql(User user) {

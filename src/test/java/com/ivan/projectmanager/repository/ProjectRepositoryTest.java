@@ -4,10 +4,11 @@ import com.ivan.projectmanager.model.Project;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,15 +18,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Transactional
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestRepositoryConfiguration.class)
-public class ProjectRepositoryImplTest {
+@ContextConfiguration(classes = {TestRepositoryConfiguration.class})
+@TestPropertySource("classpath:application-test.properties")
+public class ProjectRepositoryTest {
 
     @Autowired
     private ProjectRepository projectRepository;
 
     @Test
-    @Sql(scripts = {"classpath:data/projectrepositorytests/delete-projects.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     public void testGetAll() {
         List<Project> projects = projectRepository.getAll();
@@ -33,7 +35,6 @@ public class ProjectRepositoryImplTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/projectrepositorytests/delete-projects.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     public void testGetById() {
         Optional<Project> project = projectRepository.getById(1L);
@@ -42,9 +43,7 @@ public class ProjectRepositoryImplTest {
     }
 
     @Test
-    @DirtiesContext
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
-    @Sql(scripts = {"classpath:data/projectrepositorytests/delete-projects.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testDeleteProject() {
         Optional<Project> project = projectRepository.getById(1L);
         assertTrue(project.isPresent());
@@ -55,7 +54,6 @@ public class ProjectRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
-    @Sql(scripts = {"classpath:data/projectrepositorytests/delete-projects.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testUpdate() {
         Optional<Project> project = projectRepository.getById(1L);
         assertTrue(project.isPresent());
@@ -71,7 +69,6 @@ public class ProjectRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
-    @Sql(scripts = {"classpath:data/projectrepositorytests/delete-projects.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testFindByStatusCriteria() {
         List<Project> foundProjects = projectRepository.findByStatusCriteria("Active");
         assertThat(foundProjects).isNotEmpty();
@@ -80,7 +77,6 @@ public class ProjectRepositoryImplTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/projectrepositorytests/delete-projects.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     public void testFindByTitleJpql() {
         List<Project> foundProjects = projectRepository.findByTitleJpql("Project ABC");
@@ -90,7 +86,6 @@ public class ProjectRepositoryImplTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/projectrepositorytests/delete-projects.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     public void testFindAllCriteriaFetch() {
         List<Project> foundProjects = projectRepository.findAllCriteriaFetch();
@@ -99,7 +94,6 @@ public class ProjectRepositoryImplTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/projectrepositorytests/delete-projects.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     public void testFindAllJpqlFetch() {
         List<Project> foundProjects = projectRepository.findAllJpqlFetch();
@@ -108,7 +102,6 @@ public class ProjectRepositoryImplTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/projectrepositorytests/delete-projects.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     public void testFindAllEntityGraphFetch() {
         List<Project> foundProjects = projectRepository.findAllEntityGraphFetch();

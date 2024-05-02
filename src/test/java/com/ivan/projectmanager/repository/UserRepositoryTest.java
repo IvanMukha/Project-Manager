@@ -5,10 +5,11 @@ import com.ivan.projectmanager.model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,16 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
+@Transactional
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestRepositoryConfiguration.class)
-public class UserRepositoryImplTest {
+@ContextConfiguration(classes = {TestRepositoryConfiguration.class})
+@TestPropertySource("classpath:application-test.properties")
+public class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
 
     @Test
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
     public void testGetAll() {
         List<User> users = userRepository.getAll();
@@ -35,7 +36,6 @@ public class UserRepositoryImplTest {
     }
 
     @Test
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
     public void testGetById() {
         Optional<User> user = userRepository.getById(1L);
@@ -44,9 +44,7 @@ public class UserRepositoryImplTest {
     }
 
     @Test
-    @DirtiesContext
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testDeleteUser() {
         Optional<User> user = userRepository.getById(1L);
         assertTrue(user.isPresent());
@@ -56,7 +54,6 @@ public class UserRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testUpdate() {
         Optional<User> user = userRepository.getById(1L);
         assertTrue(user.isPresent());
@@ -70,7 +67,6 @@ public class UserRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetByUsernameCriteria() {
         List<User> foundUsers = userRepository.getByUsernameCriteria("user2");
         assertThat(foundUsers).isNotEmpty();
@@ -79,7 +75,6 @@ public class UserRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetByUsernameJPQL() {
         List<User> foundUsers = userRepository.getByUsernameJPQL("user2");
         assertThat(foundUsers).isNotEmpty();
@@ -88,7 +83,6 @@ public class UserRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetAllJpqlFetch() {
         List<User> foundUsers = userRepository.getAllJpqlFetch();
         assertThat(foundUsers).isNotEmpty();
@@ -98,7 +92,6 @@ public class UserRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetAllCriteriaFetch() {
         List<User> foundUsers = userRepository.getAllCriteriaFetch();
         assertThat(foundUsers).isNotEmpty();
@@ -108,7 +101,6 @@ public class UserRepositoryImplTest {
 
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
-    @Sql(scripts = {"classpath:data/userrepositorytests/delete-users.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void testGetAllGraphFetch() {
         List<User> foundUsers = userRepository.getAllGraphFetch();
         assertThat(foundUsers).isNotEmpty();

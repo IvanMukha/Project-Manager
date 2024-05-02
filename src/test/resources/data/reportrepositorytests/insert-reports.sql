@@ -15,5 +15,5 @@ VALUES (1, 'Task Title', 'In Progress', 'High', '2024-04-17 10:00:00', '2024-04-
         'Bug', 'Description of the task', 1);
 
 insert into reports (id, title, text, create_at, user_id, task_id)
-values (1, 'Report 1', 'Text for report 1', LOCALTIMESTAMP, 1, 1);
+values (1, 'title', 'text', LOCALTIMESTAMP, 1, 1);
 

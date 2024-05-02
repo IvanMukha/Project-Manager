@@ -1,6 +1,7 @@
 package com.ivan.projectmanager.service.impl;
 
 import com.ivan.projectmanager.dto.UserDTO;
+import com.ivan.projectmanager.exeptions.CustomNotFoundException;
 import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.repository.UserRepository;
 import com.ivan.projectmanager.service.UserService;
@@ -25,7 +26,6 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-
     public List<UserDTO> getAll() {
         return userRepository.getAll().stream().map(this::mapUserToDTO).collect(Collectors.toList());
     }
@@ -37,12 +37,18 @@ public class UserServiceImpl implements UserService {
 
     public Optional<UserDTO> getById(Long id) {
         Optional<User> userOptional = userRepository.getById(id);
+        if (userOptional.isEmpty()) {
+            throw new CustomNotFoundException(id, User.class);
+        }
         return userOptional.map(this::mapUserToDTO);
     }
 
     @Transactional
     public Optional<UserDTO> update(Long id, UserDTO updatedUserDTO) {
         Optional<User> userOptional = userRepository.update(id, mapDTOToUser(updatedUserDTO));
+        if (userOptional.isEmpty()) {
+            throw new CustomNotFoundException(id, User.class);
+        }
         return userOptional.map(this::mapUserToDTO);
     }
 

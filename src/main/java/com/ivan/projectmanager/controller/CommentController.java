@@ -1,44 +1,73 @@
 package com.ivan.projectmanager.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ivan.projectmanager.dto.CommentDTO;
 import com.ivan.projectmanager.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
+@RequestMapping("/projects/{projectId}/tasks/{taskId}/comments")
+@Validated
 public class CommentController {
     private final CommentService commentService;
-    private final ObjectMapper objectMapper;
 
     @Autowired
-    public CommentController(CommentService commentService, ObjectMapper objectMapper) {
+    public CommentController(CommentService commentService) {
         this.commentService = commentService;
-        this.objectMapper = objectMapper;
     }
 
-    public String getAll() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(commentService.getAll());
+    @GetMapping()
+    public ResponseEntity<List<CommentDTO>> getAll(@PathVariable("projectId") Long projectId,
+                                                   @PathVariable("taskId") Long taskId) {
+        List<CommentDTO> comments = commentService.getAll(projectId, taskId);
+        return ResponseEntity.ok().body(comments);
     }
 
-    public String save(CommentDTO commentDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(commentService.save(commentDTO));
+    @PostMapping()
+    public ResponseEntity<CommentDTO> save(@PathVariable("projectId") Long projectId,
+                                           @PathVariable("taskId") Long taskId,
+                                           @RequestBody CommentDTO commentDTO) {
+        CommentDTO savedComment = commentService.save(projectId, taskId, commentDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedComment);
     }
 
-    public String getById(Long id) throws JsonProcessingException {
-        Optional<CommentDTO> commentDTOOptional = commentService.getById(id);
-        return objectMapper.writeValueAsString(commentDTOOptional.orElse(null));
+    @GetMapping("/{id}")
+    public ResponseEntity<CommentDTO> getById(@PathVariable("projectId") Long projectId,
+                                              @PathVariable("taskId") Long taskId,
+                                              @PathVariable("id") Long id) {
+        Optional<CommentDTO> commentDTOOptional = commentService.getById(projectId, taskId, id);
+        return commentDTOOptional.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    public String update(Long id, CommentDTO commentDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(commentService.update(id, commentDTO));
+    @PutMapping("/{id}")
+    public ResponseEntity<CommentDTO> update(@PathVariable("projectId") Long projectId,
+                                             @PathVariable("taskId") Long taskId,
+                                             @PathVariable("id") Long id,
+                                             @RequestBody CommentDTO commentDTO) {
+        Optional<CommentDTO> updatedComment = commentService.update(projectId, taskId, id, commentDTO);
+        return updatedComment.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    public void delete(Long id) {
-        commentService.delete(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("projectId") Long projectId,
+                                       @PathVariable("taskId") Long taskId,
+                                       @PathVariable("id") Long id) {
+        commentService.delete(projectId, taskId, id);
+        return ResponseEntity.noContent().build();
     }
 }
-

@@ -6,6 +6,7 @@ import com.ivan.projectmanager.repository.AbstractRepository;
 import com.ivan.projectmanager.repository.TaskRepository;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.JoinType;
@@ -22,40 +23,56 @@ public class TaskRepositoryImpl extends AbstractRepository<Task, Long> implement
         super(entityManager, Task.class);
     }
 
-    @Override
-    public List<Task> getAll() {
-        return super.getAll();
+    public List<Task> getAll(Long projectId) {
+        return entityManager.createQuery("SELECT t FROM Task t JOIN FETCH t.project p WHERE  t.project.id = :projectId", Task.class)
+                .setParameter("projectId", projectId)
+                .getResultList();
     }
 
-    @Override
-    public Optional<Task> getById(Long id) {
-        return super.getById(id);
-    }
-
-    @Override
-    public Optional<Task> update(Long id, Task updatedEntity) {
-        Task task = entityManager.find(Task.class, id);
-        if (task != null) {
-            task.setTitle(updatedEntity.getTitle());
-            task.setStatus(updatedEntity.getStatus());
-            task.setPriority(updatedEntity.getPriority());
-            task.setDueDate(updatedEntity.getDueDate());
-            task.setCategory(updatedEntity.getCategory());
-            task.setLabel(updatedEntity.getLabel());
-            task.setDescription(updatedEntity.getDescription());
-            entityManager.merge(task);
-            return Optional.of(task);
-        } else {
+    public Optional<Task> getById(Long projectId, Long id) {
+        try {
+            return Optional.ofNullable(entityManager.createQuery(
+                            "SELECT t FROM Task t " +
+                                    "JOIN FETCH t.project p " +
+                                    "WHERE p.id = :projectId AND t.id = :id", Task.class)
+                    .setParameter("projectId", projectId)
+                    .setParameter("id", id)
+                    .getSingleResult());
+        } catch (NoResultException e) {
             return Optional.empty();
         }
     }
 
-    @Override
-    public void delete(Long id) {
-        Task task = entityManager.find(Task.class, id);
-        if (task != null) {
-            entityManager.remove(task);
+    public Optional<Task> update(Long projectId, Long id, Task updatedEntity) {
+        try {
+            Task existingTask = entityManager.createQuery(
+                            "SELECT t FROM Task t " +
+                                    "JOIN FETCH t.project p " +
+                                    "WHERE p.id = :projectId AND t.id = :id", Task.class)
+                    .setParameter("projectId", projectId)
+                    .setParameter("id", id)
+                    .getSingleResult();
+
+            if (existingTask != null) {
+                existingTask.setTitle(updatedEntity.getTitle());
+                existingTask.setStatus(updatedEntity.getStatus());
+                existingTask.setPriority(updatedEntity.getPriority());
+                existingTask.setDueDate(updatedEntity.getDueDate());
+                existingTask.setCategory(updatedEntity.getCategory());
+                existingTask.setLabel(updatedEntity.getLabel());
+                existingTask.setDescription(updatedEntity.getDescription());
+                entityManager.merge(existingTask);
+                return Optional.of(existingTask);
+            } else {
+                return Optional.empty();
+            }
+        } catch (NoResultException e) {
+            return Optional.empty();
         }
+    }
+
+    public void delete(Long projectId, Long id) {
+        getById(projectId, id).ifPresent(entityManager::remove);
     }
 
     public List<Task> getByStatusCriteria(String status) {

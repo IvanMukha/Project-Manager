@@ -6,6 +6,7 @@ import com.ivan.projectmanager.repository.AbstractRepository;
 import com.ivan.projectmanager.repository.AttachmentRepository;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -21,34 +22,56 @@ public class AttachmentRepositoryImpl extends AbstractRepository<Attachment, Lon
         super(entityManager, Attachment.class);
     }
 
-    @Override
-    public List<Attachment> getAll() {
-        return super.getAll();
+    public List<Attachment> getAll(Long projectId, Long taskId) {
+        return entityManager.createQuery("SELECT a FROM Attachment a JOIN FETCH a.task t WHERE t.id = :taskId AND t.project.id = :projectId", Attachment.class)
+                .setParameter("taskId", taskId)
+                .setParameter("projectId", projectId)
+                .getResultList();
     }
 
-    @Override
-    public Optional<Attachment> getById(Long id) {
-        return super.getById(id);
-    }
-
-    @Override
-    public Optional<Attachment> update(Long id, Attachment updatedEntity) {
-        Attachment existingAttachment = entityManager.find(Attachment.class, id);
-        if (existingAttachment != null) {
-            existingAttachment.setTitle(updatedEntity.getTitle());
-            existingAttachment.setPath(updatedEntity.getPath());
-            existingAttachment.setTask(updatedEntity.getTask());
-            entityManager.merge(existingAttachment);
-            return Optional.of(existingAttachment);
-        } else {
+    public Optional<Attachment> getById(Long projectId, Long taskId, Long id) {
+        try {
+            return Optional.ofNullable(entityManager.createQuery(
+                            "SELECT a FROM Attachment a " +
+                                    "JOIN FETCH a.task t " +
+                                    "WHERE t.id = :taskId AND t.project.id = :projectId AND a.id = :id", Attachment.class)
+                    .setParameter("projectId", projectId)
+                    .setParameter("taskId", taskId)
+                    .setParameter("id", id)
+                    .getSingleResult());
+        } catch (NoResultException e) {
             return Optional.empty();
         }
     }
 
-    @Override
-    public void delete(Long id) {
-        super.delete(id);
+    public void delete(Long projectId, Long taskId, Long id) {
+        getById(projectId, taskId, id).ifPresent(entityManager::remove);
     }
+
+    public Optional<Attachment> update(Long projectId, Long taskId, Long id, Attachment updatedEntity) {
+        try {
+            Attachment existingAttachment = entityManager.createQuery(
+                            "SELECT a FROM Attachment a " +
+                                    "JOIN FETCH a.task t " +
+                                    "WHERE t.id = :taskId AND t.project.id = :projectId AND a.id = :id", Attachment.class)
+                    .setParameter("projectId", projectId)
+                    .setParameter("taskId", taskId)
+                    .setParameter("id", id)
+                    .getSingleResult();
+
+            if (existingAttachment != null) {
+                existingAttachment.setTitle(updatedEntity.getTitle());
+                existingAttachment.setPath(updatedEntity.getPath());
+                entityManager.merge(existingAttachment);
+                return Optional.of(existingAttachment);
+            } else {
+                return Optional.empty();
+            }
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
 
     public List<Attachment> findByTitleCriteria(String title) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();

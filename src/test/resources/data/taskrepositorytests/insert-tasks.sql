@@ -1,7 +1,6 @@
 INSERT INTO users (id, username, password, email)
 VALUES (1, 'john_doe', 'password123', 'john@example.com'),
        (2, 'john_doe2', 'password123', 'john2@example.com');
-;
 
 INSERT INTO teams (id, name)
 VALUES (1, 'Development Team');

@@ -1,7 +1,5 @@
 package com.ivan.projectmanager.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ivan.projectmanager.dto.ProjectDTO;
 import com.ivan.projectmanager.dto.TaskDTO;
 import com.ivan.projectmanager.dto.TeamDTO;
@@ -9,45 +7,72 @@ import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.service.EntityCreationService;
 import com.ivan.projectmanager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
+@RequestMapping("/projects/{projectId}/tasks")
+@Validated
 public class TaskController {
     private final TaskService taskService;
-    private final ObjectMapper objectMapper;
     private final EntityCreationService entityCreationService;
 
     @Autowired
-    public TaskController(TaskService taskService, ObjectMapper objectMapper, EntityCreationService entityCreationService) {
+    public TaskController(TaskService taskService, EntityCreationService entityCreationService) {
         this.taskService = taskService;
-        this.objectMapper = objectMapper;
         this.entityCreationService = entityCreationService;
     }
 
-    public String getAll() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(taskService.getAll());
+    @GetMapping()
+    public ResponseEntity<List<TaskDTO>> getAll(@PathVariable("projectId") Long projectId) {
+        List<TaskDTO> tasks = taskService.getAll(projectId);
+        return ResponseEntity.ok().body(tasks);
     }
 
-    public String save(TaskDTO taskDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(taskService.save(taskDTO));
+    @PostMapping()
+    public ResponseEntity<TaskDTO> save(@PathVariable("projectId") Long projectId,
+                                        @RequestBody TaskDTO taskDTO) {
+        TaskDTO savedTask = taskService.save(projectId, taskDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);
     }
 
-    public String getById(Long id) throws JsonProcessingException {
-        Optional<TaskDTO> taskDTOOptional = taskService.getById(id);
-        return objectMapper.writeValueAsString(taskDTOOptional.orElse(null));
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskDTO> getById(@PathVariable("projectId") Long projectId,
+                                           @PathVariable("id") Long id) {
+        Optional<TaskDTO> taskDTOOptional = taskService.getById(projectId, id);
+        return taskDTOOptional.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    public String update(Long id, TaskDTO taskDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(taskService.update(id, taskDTO));
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskDTO> update(@PathVariable("projectId") Long projectId,
+                                          @PathVariable("id") Long id, @RequestBody TaskDTO taskDTO) {
+        Optional<TaskDTO> updatedTask = taskService.update(projectId, id, taskDTO);
+        return updatedTask.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    public void delete(Long id) {
-        taskService.delete(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("projectId") Long projectId,
+                                       @PathVariable("id") Long id) {
+        taskService.delete(projectId, id);
+        return ResponseEntity.noContent().build();
     }
 
-    public String createTaskWithRelatedEntities(TaskDTO taskDTO, UserDTO userDTO, TeamDTO teamDTO, ProjectDTO projectDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(entityCreationService.createTaskWithRelatedEntities(taskDTO, userDTO, teamDTO, projectDTO));
+    public ResponseEntity<String> createTaskWithRelatedEntities(@PathVariable("projectId") Long projectId, @RequestBody TaskDTO taskDTO, @RequestBody UserDTO userDTO, @RequestBody TeamDTO teamDTO, @RequestBody ProjectDTO projectDTO) {
+        String result = String.valueOf(entityCreationService.createTaskWithRelatedEntities(taskDTO, userDTO, teamDTO, projectDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 }

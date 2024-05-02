@@ -1,6 +1,7 @@
 package com.ivan.projectmanager.service.impl;
 
 import com.ivan.projectmanager.dto.RoleDTO;
+import com.ivan.projectmanager.exeptions.CustomNotFoundException;
 import com.ivan.projectmanager.model.Role;
 import com.ivan.projectmanager.repository.RoleRepository;
 import com.ivan.projectmanager.service.RoleService;
@@ -35,12 +36,18 @@ public class RoleServiceImpl implements RoleService {
 
     public Optional<RoleDTO> getById(Long id) {
         Optional<Role> roleOptional = roleRepository.getById(id);
+        if (roleOptional.isEmpty()) {
+            throw new CustomNotFoundException(id, Role.class);
+        }
         return roleOptional.map(this::mapRoleToDTO);
     }
 
     @Transactional
     public Optional<RoleDTO> update(Long id, RoleDTO updatedRoleDTO) {
         Optional<Role> roleOptional = roleRepository.update(id, mapDTOToRole(updatedRoleDTO));
+        if (roleOptional.isEmpty()) {
+            throw new CustomNotFoundException(id, Role.class);
+        }
         return roleOptional.map(this::mapRoleToDTO);
     }
 

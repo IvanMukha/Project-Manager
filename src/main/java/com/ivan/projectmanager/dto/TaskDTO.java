@@ -1,19 +1,28 @@
 package com.ivan.projectmanager.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 import java.time.LocalDateTime;
 
 public class TaskDTO {
     private Long id;
+    @NotBlank(message = "Task title cannot be empty")
     private String title;
     private String status;
     private String priority;
     private LocalDateTime startDate;
     private LocalDateTime dueDate;
-    private Long reporter;
-    private Long assignee;
+    @NotNull(message = "Reporter id cannot be null")
+    @Positive(message = "Reporter id must be greater than 0")
+    private Long reporterId;
+    private Long assigneeId;
     private String category;
     private String label;
     private String description;
+    @NotNull(message = "Project id cannot be null")
+    @Positive(message = "Project id must be greater than 0")
     private Long projectId;
 
     public Long getId() {
@@ -70,21 +79,21 @@ public class TaskDTO {
         return this;
     }
 
-    public Long getReporter() {
-        return reporter;
+    public Long getReporterId() {
+        return reporterId;
     }
 
-    public TaskDTO setReporter(Long reporter) {
-        this.reporter = reporter;
+    public TaskDTO setReporterId(Long reporterId) {
+        this.reporterId = reporterId;
         return this;
     }
 
-    public Long getAssignee() {
-        return assignee;
+    public Long getAssigneeId() {
+        return assigneeId;
     }
 
-    public TaskDTO setAssignee(Long assignee) {
-        this.assignee = assignee;
+    public TaskDTO setAssigneeId(Long assigneeId) {
+        this.assigneeId = assigneeId;
         return this;
     }
 

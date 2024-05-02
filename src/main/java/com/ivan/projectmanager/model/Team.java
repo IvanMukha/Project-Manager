@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import java.util.HashSet;
@@ -14,7 +15,8 @@ import java.util.Set;
 @Table(name = "teams")
 public class Team {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "teams_seq_generator")
+    @SequenceGenerator(name = "teams_seq_generator", sequenceName = "teams_seq", allocationSize = 1)
     private Long id;
     private String name;
     @ManyToMany(mappedBy = "teams")

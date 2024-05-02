@@ -1,6 +1,7 @@
 package com.ivan.projectmanager.service.impl;
 
 import com.ivan.projectmanager.dto.ProjectDTO;
+import com.ivan.projectmanager.exeptions.CustomNotFoundException;
 import com.ivan.projectmanager.model.Project;
 import com.ivan.projectmanager.repository.ProjectRepository;
 import com.ivan.projectmanager.service.ProjectService;
@@ -35,12 +36,18 @@ public class ProjectServiceImpl implements ProjectService {
 
     public Optional<ProjectDTO> getById(Long id) {
         Optional<Project> projectOptional = projectRepository.getById(id);
+        if (projectOptional.isEmpty()) {
+            throw new CustomNotFoundException(id, Project.class);
+        }
         return projectOptional.map(this::mapProjectToDTO);
     }
 
     @Transactional
     public Optional<ProjectDTO> update(Long id, ProjectDTO updatedProjectDTO) {
         Optional<Project> projectOptional = projectRepository.update(id, mapDTOToProject(updatedProjectDTO));
+        if (projectOptional.isEmpty()) {
+            throw new CustomNotFoundException(id, Project.class);
+        }
         return projectOptional.map(this::mapProjectToDTO);
     }
 
@@ -57,5 +64,3 @@ public class ProjectServiceImpl implements ProjectService {
         return modelMapper.map(project, ProjectDTO.class);
     }
 }
-
-

@@ -1,43 +1,74 @@
 package com.ivan.projectmanager.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ivan.projectmanager.dto.AttachmentDTO;
 import com.ivan.projectmanager.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
+@RequestMapping("projects/{projectId}/tasks/{taskId}/attachments")
+@Validated
 public class AttachmentController {
     private final AttachmentService attachmentService;
-    private final ObjectMapper objectMapper;
 
     @Autowired
-    public AttachmentController(AttachmentService attachmentService, ObjectMapper objectMapper) {
+    public AttachmentController(AttachmentService attachmentService) {
         this.attachmentService = attachmentService;
-        this.objectMapper = objectMapper;
     }
 
-    public String getAll() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(attachmentService.getAll());
+    @GetMapping()
+    public ResponseEntity<List<AttachmentDTO>> getAll(@PathVariable("projectId") Long projectId,
+                                                      @PathVariable("taskId") Long taskId) {
+        List<AttachmentDTO> attachments = attachmentService.getAll(projectId, taskId);
+        return ResponseEntity.ok().body(attachments);
     }
 
-    public String save(AttachmentDTO attachmentDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(attachmentService.save(attachmentDTO));
+    @PostMapping()
+    public ResponseEntity<AttachmentDTO> save(@PathVariable("projectId") Long projectId,
+                                              @PathVariable("taskId") Long taskId,
+                                              @RequestBody AttachmentDTO attachmentDTO) {
+        AttachmentDTO savedAttachment = attachmentService.save(projectId, taskId, attachmentDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedAttachment);
     }
 
-    public String getById(Long id) throws JsonProcessingException {
-        Optional<AttachmentDTO> attachmentDTOOptional = attachmentService.getById(id);
-        return objectMapper.writeValueAsString(attachmentDTOOptional.orElse(null));
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable("projectId") Long projectId,
+                                     @PathVariable("taskId") Long taskId,
+                                     @PathVariable("id") Long id) {
+        Optional<AttachmentDTO> attachmentDTOOptional = attachmentService.getById(projectId, taskId, id);
+        return attachmentDTOOptional
+                .map(attachmentDTO -> ResponseEntity.ok().body(attachmentDTO))
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    public String update(Long id, AttachmentDTO attachmentDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(attachmentService.update(id, attachmentDTO));
+    @PutMapping("/{id}")
+    public ResponseEntity<AttachmentDTO> update(@PathVariable("projectId") Long projectId,
+                                                @PathVariable("taskId") Long taskId,
+                                                @PathVariable("id") Long id,
+                                                @RequestBody AttachmentDTO attachmentDTO) {
+        Optional<AttachmentDTO> updatedAttachment = attachmentService.update(projectId, taskId, id, attachmentDTO);
+        return updatedAttachment.map(attachmentDTO1 -> ResponseEntity.ok().body(attachmentDTO1))
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    public void delete(Long id) {
-        attachmentService.delete(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("projectId") Long projectId,
+                                       @PathVariable("taskId") Long taskId,
+                                       @PathVariable("id") Long id) {
+        attachmentService.delete(projectId, taskId, id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,20 +1,28 @@
 package com.ivan.projectmanager.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class UserDetailsDTO {
-    private Long id;
+    @NotNull(message = "Task id cannot be null")
+    @Positive(message = "Task id must be greater than 0")
+    private Long userId;
+    @NotBlank(message = "Name cannot be empty")
     private String name;
+    @NotBlank(message = "Surname cannot be empty")
     private String surname;
     private String phone;
     private String workPhone;
-    private String workAddress;
+    private String workAdress;
     private String department;
 
-    public Long getId() {
-        return id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public UserDetailsDTO setId(Long id) {
-        this.id = id;
+    public UserDetailsDTO setUserId(Long userId) {
+        this.userId = userId;
         return this;
     }
 
@@ -54,12 +62,12 @@ public class UserDetailsDTO {
         return this;
     }
 
-    public String getWorkAddress() {
-        return workAddress;
+    public String getWorkAdress() {
+        return workAdress;
     }
 
-    public UserDetailsDTO setWorkAddress(String workAddress) {
-        this.workAddress = workAddress;
+    public UserDetailsDTO setWorkAdress(String workAdress) {
+        this.workAdress = workAdress;
         return this;
     }
 

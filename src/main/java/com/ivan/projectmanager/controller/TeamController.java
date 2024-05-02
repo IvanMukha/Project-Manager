@@ -1,43 +1,63 @@
 package com.ivan.projectmanager.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ivan.projectmanager.dto.TeamDTO;
 import com.ivan.projectmanager.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
+@RequestMapping("/teams")
+@Validated
 public class TeamController {
     private final TeamService teamService;
-    private final ObjectMapper objectMapper;
 
     @Autowired
-    public TeamController(TeamService teamService, ObjectMapper objectMapper) {
+    public TeamController(TeamService teamService) {
         this.teamService = teamService;
-        this.objectMapper = objectMapper;
     }
 
-    public String getAll() throws JsonProcessingException {
-        return objectMapper.writeValueAsString(teamService.getAll());
+    @GetMapping()
+    public ResponseEntity<List<TeamDTO>> getAll() {
+        List<TeamDTO> teams = teamService.getAll();
+        return ResponseEntity.ok().body(teams);
     }
 
-    public String save(TeamDTO teamDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(teamService.save(teamDTO));
+    @PostMapping()
+    public ResponseEntity<TeamDTO> save(@RequestBody TeamDTO teamDTO) {
+        TeamDTO savedTeam = teamService.save(teamDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedTeam);
     }
 
-    public String getById(Long id) throws JsonProcessingException {
+    @GetMapping("/{id}")
+    public ResponseEntity<TeamDTO> getById(@PathVariable("id") Long id) {
         Optional<TeamDTO> teamDTOOptional = teamService.getById(id);
-        return objectMapper.writeValueAsString(teamDTOOptional.orElse(null));
+        return teamDTOOptional.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    public String update(Long id, TeamDTO teamDTO) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(teamService.update(id, teamDTO));
+    @PutMapping("/{id}")
+    public ResponseEntity<TeamDTO> update(@PathVariable("id") Long id, @RequestBody TeamDTO teamDTO) {
+        Optional<TeamDTO> updatedTeam = teamService.update(id, teamDTO);
+        return updatedTeam.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    public void delete(Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         teamService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
