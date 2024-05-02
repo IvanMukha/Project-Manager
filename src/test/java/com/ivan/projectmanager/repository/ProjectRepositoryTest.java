@@ -1,13 +1,11 @@
 package com.ivan.projectmanager.repository;
 
-import com.ivan.projectmanager.config.ApplicationConfig;
 import com.ivan.projectmanager.model.Project;
-import com.ivan.projectmanager.repository.impl.AttachmentRepositoryImpl;
-import com.ivan.projectmanager.repository.impl.ProjectRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {ApplicationConfig.class, ProjectRepositoryImpl.class, TestRepositoryConfiguration.class})
-public class ProjectRepositoryImplTest {
+@ContextConfiguration(classes = {TestRepositoryConfiguration.class})
+@TestPropertySource("classpath:application-test.properties")
+public class ProjectRepositoryTest {
 
     @Autowired
-    private ProjectRepositoryImpl projectRepository;
+    private ProjectRepository projectRepository;
 
     @Test
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")

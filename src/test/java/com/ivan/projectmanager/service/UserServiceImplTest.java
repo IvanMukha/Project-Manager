@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +23,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = TestServiceConfiguration.class)
 public class UserServiceImplTest {
 
     @Mock

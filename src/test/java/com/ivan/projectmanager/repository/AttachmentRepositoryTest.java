@@ -1,15 +1,13 @@
 package com.ivan.projectmanager.repository;
 
-import com.ivan.projectmanager.config.ApplicationConfig;
 import com.ivan.projectmanager.model.Attachment;
-import com.ivan.projectmanager.repository.impl.AttachmentRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -21,11 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Transactional
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {ApplicationConfig.class, AttachmentRepositoryImpl.class, TestRepositoryConfiguration.class})
-public class AttachmentRepositoryImplTest {
+@ContextConfiguration(classes = {TestRepositoryConfiguration.class})
+@TestPropertySource("classpath:application-test.properties")
+public class AttachmentRepositoryTest {
 
     @Autowired
-    private AttachmentRepositoryImpl attachmentRepository;
+    private AttachmentRepository attachmentRepository;
 
     @Test
     @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
