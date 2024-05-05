@@ -5,6 +5,7 @@ import com.ivan.projectmanager.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ public class ReportController {
         this.reportService = reportService;
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping()
     public ResponseEntity<List<ReportDTO>> getAll(@PathVariable("projectId") Long projectId,
                                                   @PathVariable("taskId") Long taskId) {
@@ -36,6 +38,7 @@ public class ReportController {
         return ResponseEntity.ok().body(reports);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PostMapping()
     public ResponseEntity<ReportDTO> save(@PathVariable("projectId") Long projectId,
                                           @PathVariable("taskId") Long taskId,
@@ -44,6 +47,7 @@ public class ReportController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedReport);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ReportDTO> getById(@PathVariable("projectId") Long projectId,
                                              @PathVariable("taskId") Long taskId,
@@ -53,6 +57,7 @@ public class ReportController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ReportDTO> update(@PathVariable("projectId") Long projectId,
                                             @PathVariable("taskId") Long taskId,
@@ -63,6 +68,7 @@ public class ReportController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("projectId") Long projectId,
                                        @PathVariable("taskId") Long taskId,

@@ -5,6 +5,7 @@ import com.ivan.projectmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,18 +30,21 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping()
     public ResponseEntity<List<UserDTO>> getAll() {
         List<UserDTO> users = userService.getAll();
         return ResponseEntity.ok().body(users);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PostMapping()
     public ResponseEntity<UserDTO> save(@RequestBody UserDTO userDTO) {
         UserDTO savedUser = userService.save(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getById(@PathVariable("id") Long id) {
         Optional<UserDTO> userDTOOptional = userService.getById(id);
@@ -48,6 +52,7 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable("id") Long id, @RequestBody UserDTO userDTO) {
         Optional<UserDTO> updatedUser = userService.update(id, userDTO);
@@ -55,6 +60,7 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         userService.delete(id);

@@ -5,6 +5,7 @@ import com.ivan.projectmanager.service.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ public class UserDetailsController {
         this.userDetailsService = userDetailsService;
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PostMapping("/userDetails")
     public ResponseEntity<UserDetailsDTO> save(@PathVariable("userId") Long userId,
                                                @RequestBody UserDetailsDTO userDetailsDTO) {
@@ -36,6 +38,7 @@ public class UserDetailsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUserDetails);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/userDetails")
     public ResponseEntity<UserDetailsDTO> getById(@PathVariable("userId") Long id) {
         Optional<UserDetailsDTO> userDetailsDTOOptional = userDetailsService.getById(id);
@@ -43,6 +46,7 @@ public class UserDetailsController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/userDetails")
     public ResponseEntity<UserDetailsDTO> update(@PathVariable("userId") Long id, @RequestBody UserDetailsDTO userDetailsDTO) {
         Optional<UserDetailsDTO> updatedUserDetails = userDetailsService.update(id, userDetailsDTO);
@@ -50,6 +54,7 @@ public class UserDetailsController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @DeleteMapping("/userDetails")
     public ResponseEntity<Void> delete(@PathVariable("userId") Long id) {
         userDetailsService.delete(id);

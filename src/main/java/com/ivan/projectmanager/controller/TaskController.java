@@ -9,6 +9,7 @@ import com.ivan.projectmanager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,12 +36,14 @@ public class TaskController {
         this.entityCreationService = entityCreationService;
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping()
     public ResponseEntity<List<TaskDTO>> getAll(@PathVariable("projectId") Long projectId) {
         List<TaskDTO> tasks = taskService.getAll(projectId);
         return ResponseEntity.ok().body(tasks);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping()
     public ResponseEntity<TaskDTO> save(@PathVariable("projectId") Long projectId,
                                         @RequestBody TaskDTO taskDTO) {
@@ -48,6 +51,7 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<TaskDTO> getById(@PathVariable("projectId") Long projectId,
                                            @PathVariable("id") Long id) {
@@ -56,6 +60,7 @@ public class TaskController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<TaskDTO> update(@PathVariable("projectId") Long projectId,
                                           @PathVariable("id") Long id, @RequestBody TaskDTO taskDTO) {
@@ -64,6 +69,7 @@ public class TaskController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("projectId") Long projectId,
                                        @PathVariable("id") Long id) {

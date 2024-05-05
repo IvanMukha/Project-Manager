@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,9 +32,10 @@ public class UserControllerTest {
 
     @BeforeEach
     void setUp(WebApplicationContext wac) {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
     }
 
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
     void testGetAllUsers() throws Exception {
@@ -48,6 +51,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[1].email").value("email2@gmail.com"));
     }
 
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
     void testGetUserById() throws Exception {
@@ -60,6 +64,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.email").value("email1@gmail.com"));
     }
 
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     void testSaveUser() throws Exception {
         String requestBody = "{\"username\": \"saved username\", \"password\": \"saved password\", \"email\": \"saved email\"}";
@@ -74,6 +79,7 @@ public class UserControllerTest {
 
     }
 
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
     void testUpdateUser() throws Exception {
@@ -88,6 +94,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.email").value("updated email"));
     }
 
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
     void testDeleteUser() throws Exception {

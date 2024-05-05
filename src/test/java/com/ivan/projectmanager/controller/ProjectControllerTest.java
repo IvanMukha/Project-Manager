@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,9 +32,10 @@ public class ProjectControllerTest {
 
     @BeforeEach
     void setUp(WebApplicationContext wac) {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
     }
 
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     void testGetAllProjects() throws Exception {
@@ -44,6 +47,7 @@ public class ProjectControllerTest {
                 .andExpect(jsonPath("$[0].description").value("Description of Project ABC"));
     }
 
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     void testGetProjectById() throws Exception {
@@ -56,6 +60,7 @@ public class ProjectControllerTest {
 
     }
 
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     void testSaveProject() throws Exception {
@@ -69,6 +74,7 @@ public class ProjectControllerTest {
                 .andExpect(jsonPath("$.description").value("saved description"));
     }
 
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     void testUpdateProject() throws Exception {
@@ -82,6 +88,7 @@ public class ProjectControllerTest {
                 .andExpect(jsonPath("$.description").value("updated description"));
     }
 
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     void testDeleteProject() throws Exception {
