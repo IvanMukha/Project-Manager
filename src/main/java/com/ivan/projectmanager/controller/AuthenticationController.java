@@ -1,7 +1,8 @@
 package com.ivan.projectmanager.controller;
 
-import com.ivan.projectmanager.dto.UserDTO;
-import com.ivan.projectmanager.model.AuthenticationResponce;
+import com.ivan.projectmanager.dto.AuthenticationResponse;
+import com.ivan.projectmanager.dto.LoginRequest;
+import com.ivan.projectmanager.dto.RegistrationRequest;
 import com.ivan.projectmanager.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +22,14 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO) {
-        authenticationService.registerUser(userDTO);
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationRequest registrationRequest) {
+        authenticationService.registerUser(registrationRequest);
         return ResponseEntity.ok("User registered successfully");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody UserDTO userDTO) {
-        String token = authenticationService.authenticate(userDTO);
-        return ResponseEntity.ok(new AuthenticationResponce(token));
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+        String token = authenticationService.authenticate(loginRequest);
+        return ResponseEntity.ok(new AuthenticationResponse(token));
     }
 }

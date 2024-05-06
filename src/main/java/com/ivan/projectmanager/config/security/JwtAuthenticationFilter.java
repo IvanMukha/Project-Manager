@@ -1,6 +1,6 @@
 package com.ivan.projectmanager.config.security;
 
-import com.ivan.projectmanager.model.UsernamePasswordAuthentication;
+import com.ivan.projectmanager.service.JwtTokenService;
 import com.ivan.projectmanager.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,7 +8,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -18,9 +20,9 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final JwtTokenService jwtTokenService;
     private final UserService userService;
-    Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     public JwtAuthenticationFilter(JwtTokenService jwtTokenService, UserService userService) {
         this.jwtTokenService = jwtTokenService;
@@ -36,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userService.loadUserByUsername(username);
                     if (jwtTokenService.isValidJwt(jwt)) {
-                        UsernamePasswordAuthentication authentication = new UsernamePasswordAuthentication(
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     }
@@ -51,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getBearerFromToken(HttpServletRequest req) {
-        String header = req.getHeader("Authorization");
+        String header = req.getHeader(HttpHeaders.AUTHORIZATION);
         String jwt = null;
         if (header != null && header.startsWith("Bearer ")) {
             jwt = header.substring(7);

@@ -1,7 +1,8 @@
-package com.ivan.projectmanager.config.security;
+package com.ivan.projectmanager.service.impl;
 
 import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.repository.UserRepository;
+import com.ivan.projectmanager.service.JwtTokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

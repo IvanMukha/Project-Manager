@@ -1,9 +1,9 @@
-package com.ivan.projectmanager.model;
+package com.ivan.projectmanager.dto;
 
-public class AuthenticationResponce {
+public class AuthenticationResponse {
     private final String token;
 
-    public AuthenticationResponce(String token) {
+    public AuthenticationResponse(String token) {
         this.token = token;
     }
 

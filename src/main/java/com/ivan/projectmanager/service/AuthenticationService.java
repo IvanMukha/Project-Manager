@@ -1,9 +1,10 @@
 package com.ivan.projectmanager.service;
 
-import com.ivan.projectmanager.dto.UserDTO;
+import com.ivan.projectmanager.dto.LoginRequest;
+import com.ivan.projectmanager.dto.RegistrationRequest;
 
 public interface AuthenticationService {
-    String authenticate(UserDTO userDTO);
+    String authenticate(LoginRequest loginRequest);
 
-    void registerUser(UserDTO userDTO);
+    void registerUser(RegistrationRequest registrationRequest);
 }

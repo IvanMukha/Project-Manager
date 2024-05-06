@@ -1,10 +1,11 @@
 package com.ivan.projectmanager.service.impl;
 
-import com.ivan.projectmanager.config.security.JwtTokenService;
-import com.ivan.projectmanager.dto.UserDTO;
+import com.ivan.projectmanager.dto.LoginRequest;
+import com.ivan.projectmanager.dto.RegistrationRequest;
 import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.repository.UserRepository;
 import com.ivan.projectmanager.service.AuthenticationService;
+import com.ivan.projectmanager.service.JwtTokenService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,9 +29,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    public String authenticate(UserDTO userDTO) {
-        String username = userDTO.getUsername();
-        String password = userDTO.getPassword();
+    public String authenticate(LoginRequest loginRequest) {
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
 
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -42,14 +43,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-    public void registerUser(UserDTO userDTO) {
-        String username = userDTO.getUsername();
+    public void registerUser(RegistrationRequest registrationRequest) {
+        String username = registrationRequest.getUsername();
         if (userRepository.getByUsernameCriteria(username) != null) {
             throw new RuntimeException("User with username " + username + " already exists.");
         }
         User user = new User();
         user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         userRepository.save(user);
     }
 }

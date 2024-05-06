@@ -1,4 +1,4 @@
-package com.ivan.projectmanager.config.security;
+package com.ivan.projectmanager.service;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.Authentication;

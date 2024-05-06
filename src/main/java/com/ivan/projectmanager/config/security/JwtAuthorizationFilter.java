@@ -1,12 +1,14 @@
 package com.ivan.projectmanager.config.security;
 
-import com.ivan.projectmanager.model.UsernamePasswordAuthentication;
+import com.ivan.projectmanager.service.JwtTokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,10 +29,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        String authorizationKey = request.getHeader("Authorization");
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws IOException, ServletException {
+        String authorizationKey = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authorizationKey != null && authorizationKey.startsWith("Bearer ")) {
-            authorizationKey = authorizationKey.replace("Bearer ", "");
+            authorizationKey = authorizationKey.substring(7);
             try {
                 if (jwtTokenService.isValidJwt(authorizationKey)) {
                     Claims claims = jwtTokenService.getClaims(authorizationKey);
@@ -39,7 +41,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     List<GrantedAuthority> authorities = roles.stream()
                             .map(SimpleGrantedAuthority::new)
                             .collect(Collectors.toList());
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthentication(username, null, authorities);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             } catch (JwtException e) {
