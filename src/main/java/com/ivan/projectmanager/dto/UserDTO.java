@@ -10,6 +10,7 @@ public class UserDTO {
     private String password;
     @NotBlank(message = "Email cannot be empty")
     private String email;
+    private Long roleId;
 
     public Long getId() {
         return id;
@@ -45,5 +46,13 @@ public class UserDTO {
     public UserDTO setEmail(String email) {
         this.email = email;
         return this;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 }

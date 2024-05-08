@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,7 +36,7 @@ public class AttachmentControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
     }
 
-    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @WithMockUser(username = "username", roles = {"USER"})
     @Test
     @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
     public void testGetAllAttachments() throws Exception {
@@ -46,7 +47,7 @@ public class AttachmentControllerTest {
                 .andExpect(jsonPath("$[0].title").value("Test Attachment"));
     }
 
-    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @WithMockUser(username = "username", roles = {"USER"})
     @Test
     @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
     public void testGetAttachmentById() throws Exception {
@@ -91,6 +92,27 @@ public class AttachmentControllerTest {
         mockMvc.perform(delete("/projects/1/tasks/1/attachments/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testUnregisteredUserAccessDenied() throws Exception {
+        String requestBody = "{\"title\": \"Attachment\",\"path\": \"path\"}";
+        mockMvc.perform(post("/projects/1/tasks/1/attachments")
+                        .with(anonymous())
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @WithMockUser(username = "username", roles = {"USER"})
+    @Test
+    public void testRegisteredUserAccessDenied() throws Exception {
+        String requestBody = "{\"title\": \"Attachment\",\"path\": \"path\"}";
+        mockMvc.perform(post("/projects/1/tasks/1/attachments")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().string("Internal Server Error: Access Denied"));
     }
 }
 

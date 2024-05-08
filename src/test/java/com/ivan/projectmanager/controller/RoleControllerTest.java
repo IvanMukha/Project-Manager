@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -46,7 +47,7 @@ public class RoleControllerTest {
                 .andExpect(jsonPath("$[0].name").value("name"));
     }
 
-    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @WithMockUser(username = "username", roles = {"USER"})
     @Test
     @Sql("classpath:data/rolerepositorytests/insert-roles.sql")
     void testGetRoleById() throws Exception {
@@ -90,6 +91,27 @@ public class RoleControllerTest {
         mockMvc.perform(delete("/roles/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @WithMockUser(username = "username", roles = {"USER"})
+    @Test
+    public void testAccessDenied() throws Exception {
+        String requestBody = "{\"name\": \"saved name\"}";
+        mockMvc.perform(post("/roles")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().string("Internal Server Error: Access Denied"));
+    }
+
+    @Test
+    public void testUnregisteredUserAccessDenied() throws Exception {
+        String requestBody = "{\"name\": \"saved name\"}";
+        mockMvc.perform(post("/roles")
+                        .with(anonymous())
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 }
 

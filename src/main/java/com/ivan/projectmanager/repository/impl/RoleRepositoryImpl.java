@@ -6,9 +6,6 @@ import com.ivan.projectmanager.repository.RoleRepository;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Repository
 public class RoleRepositoryImpl extends AbstractRepository<Role, Long> implements RoleRepository {
 
@@ -16,10 +13,11 @@ public class RoleRepositoryImpl extends AbstractRepository<Role, Long> implement
         super(entityManager, Role.class);
     }
 
-    public Set<Role> findByName(String name) {
+    public Role findByName(String name) {
         return entityManager.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class)
                 .setParameter("name", name)
-                .getResultStream().collect(Collectors.toSet());
+                .getResultStream().findFirst().orElse(null);
     }
+
 }
 

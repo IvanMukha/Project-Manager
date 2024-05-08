@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,7 +36,7 @@ public class TeamControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
     }
 
-    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @WithMockUser(username = "username", roles = {"USER"})
     @Test
     @Sql("classpath:data/teamrepositorytests/insert-teams.sql")
     void testGetAllTeams() throws Exception {
@@ -46,7 +47,7 @@ public class TeamControllerTest {
                 .andExpect(jsonPath("$[0].name").value("name"));
     }
 
-    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @WithMockUser(username = "username", roles = {"USER"})
     @Test
     @Sql("classpath:data/teamrepositorytests/insert-teams.sql")
     void testGetTeamById() throws Exception {
@@ -90,6 +91,27 @@ public class TeamControllerTest {
         mockMvc.perform(delete("/teams/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @WithMockUser(username = "username", roles = {"USER"})
+    @Test
+    public void testAccessDenied() throws Exception {
+        String requestBody = "{\"name\": \"saved name\"}";
+        mockMvc.perform(post("/teams")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().string("Internal Server Error: Access Denied"));
+    }
+
+    @Test
+    public void testUnregisteredUserAccessDenied() throws Exception {
+        String requestBody = "{\"name\": \"saved name\"}";
+        mockMvc.perform(post("/teams")
+                        .with(anonymous())
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 }
 

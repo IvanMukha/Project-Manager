@@ -3,11 +3,12 @@ package com.ivan.projectmanager.service.impl;
 import com.ivan.projectmanager.dto.AuthenticationResponse;
 import com.ivan.projectmanager.dto.LoginRequest;
 import com.ivan.projectmanager.dto.RegistrationRequest;
+import com.ivan.projectmanager.dto.RoleDTO;
+import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.model.Role;
-import com.ivan.projectmanager.model.User;
-import com.ivan.projectmanager.repository.UserRepository;
 import com.ivan.projectmanager.service.AuthenticationService;
 import com.ivan.projectmanager.service.JwtTokenService;
+import com.ivan.projectmanager.service.RoleService;
 import com.ivan.projectmanager.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -28,14 +29,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenService jwtTokenService;
     private final UserService userService;
-    private final UserRepository userRepository;
+    private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthenticationServiceImpl(AuthenticationManager authenticationManager, JwtTokenService jwtTokenService, UserService userService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthenticationServiceImpl(AuthenticationManager authenticationManager, JwtTokenService jwtTokenService, UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenService = jwtTokenService;
         this.userService = userService;
-        this.userRepository = userRepository;
+        this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -59,22 +60,33 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new RuntimeException("User with username " + username + " already exists.");
         }
 
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-        user.setEmail(registrationRequest.getEmail());
-        user.setRoles(userService.getDefaultRole());
+        checkIfDefaultRoleExists();
 
-        userRepository.save(user);
-        Role role = userService.getDefaultRole().stream().findFirst().get();
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername(username);
+        userDTO.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        userDTO.setEmail(registrationRequest.getEmail());
+        userDTO.setRoleId(roleService.getDefaultRole().getId());
+
+        userService.save(userDTO);
+
+        Role role = roleService.getDefaultRole();
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()));
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
+                userDTO.getUsername(),
+                userDTO.getPassword(),
                 grantedAuthorities
         );
         String jwt = jwtTokenService.generateToken(userDetails);
         return new AuthenticationResponse(jwt);
+    }
+
+    private void checkIfDefaultRoleExists() {
+        Role defaultRoles = roleService.getDefaultRole();
+        if (defaultRoles == null) {
+            RoleDTO roleDTO = new RoleDTO().setName("USER");
+            roleService.save(roleDTO);
+        }
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -51,7 +52,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[1].email").value("email2@gmail.com"));
     }
 
-    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @WithMockUser(username = "username", roles = {"USER"})
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
     void testGetUserById() throws Exception {
@@ -64,7 +65,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.email").value("email1@gmail.com"));
     }
 
-    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @WithMockUser(username = "username", roles = {"USER"})
     @Test
     void testSaveUser() throws Exception {
         String requestBody = "{\"username\": \"saved username\", \"password\": \"saved password\", \"email\": \"saved email\"}";
@@ -94,12 +95,29 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.email").value("updated email"));
     }
 
-    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @WithMockUser(username = "username", roles = {"USER"})
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
     void testDeleteUser() throws Exception {
         mockMvc.perform(delete("/users/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @WithMockUser(username = "username", roles = {"USER"})
+    @Test
+    public void testAccessDenied() throws Exception {
+        mockMvc.perform(get("/users")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().string("Internal Server Error: Access Denied"));
+    }
+
+    @Test
+    public void testUnregisteredUserAccessDenied() throws Exception {
+        mockMvc.perform(get("/users")
+                        .with(anonymous())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 }

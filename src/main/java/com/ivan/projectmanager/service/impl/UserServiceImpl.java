@@ -4,7 +4,6 @@ import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.exeptions.CustomNotFoundException;
 import com.ivan.projectmanager.model.Role;
 import com.ivan.projectmanager.model.User;
-import com.ivan.projectmanager.repository.RoleRepository;
 import com.ivan.projectmanager.repository.UserRepository;
 import com.ivan.projectmanager.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -16,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -26,12 +26,10 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
 
-    public UserServiceImpl(ModelMapper modelMapper, UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(ModelMapper modelMapper, UserRepository userRepository) {
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
     }
 
     public List<UserDTO> getAll() {
@@ -90,16 +88,21 @@ public class UserServiceImpl implements UserService {
         return this::loadUserByUsername;
     }
 
-    public Set<Role> getDefaultRole() {
-        Set<Role> roles = roleRepository.findByName("USER");
-        return new HashSet<>(roles);
-    }
-
     private User mapDTOToUser(UserDTO userDTO) {
-        return modelMapper.map(userDTO, User.class);
+        User user = modelMapper.map(userDTO, User.class);
+        if (userDTO.getRoleId() != null) {
+            Role role = new Role();
+            role.setId(userDTO.getRoleId());
+            user.setRoles(Collections.singleton(role));
+        }
+        return user;
     }
 
     private UserDTO mapUserToDTO(User user) {
-        return modelMapper.map(user, UserDTO.class);
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+            userDTO.setRoleId(user.getRoles().iterator().next().getId());
+        }
+        return userDTO;
     }
 }

@@ -4,6 +4,7 @@ import com.ivan.projectmanager.dto.LoginRequest;
 import com.ivan.projectmanager.dto.RegistrationRequest;
 import com.ivan.projectmanager.service.AuthenticationService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationRequest registrationRequest) {
-        return ResponseEntity.ok(authenticationService.registerUser(registrationRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.registerUser(registrationRequest));
     }
 
     @PostMapping("/login")

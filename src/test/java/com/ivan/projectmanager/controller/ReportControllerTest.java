@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,10 +36,10 @@ public class ReportControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
     }
 
-    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @WithMockUser(username = "username", roles = {"USER"})
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    void testGetAllProjects() throws Exception {
+    void testGetAllReports() throws Exception {
         mockMvc.perform(get("/projects/1/tasks/1/reports")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -50,7 +51,7 @@ public class ReportControllerTest {
     @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    void testGetProjectById() throws Exception {
+    void testGetReportById() throws Exception {
         mockMvc.perform(get("/projects/1/tasks/1/reports/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -59,10 +60,10 @@ public class ReportControllerTest {
                 .andExpect(jsonPath("$.text").value("text"));
     }
 
-    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @WithMockUser(username = "username", roles = {"USER"})
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
-    void testSaveProject() throws Exception {
+    void testSaveReport() throws Exception {
         String requestBody = "{\"title\": \"saved title\", \"text\":\"saved text\",\"createAt\": \"2024-04-25T20:01:46.488778\",\"taskId\": 1,\"userId\":1}";
         mockMvc.perform(post("/projects/1/tasks/1/reports")
                         .content(requestBody)
@@ -77,7 +78,7 @@ public class ReportControllerTest {
     @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    void testUpdateProject() throws Exception {
+    void testUpdateReport() throws Exception {
         String requestBody = "{\"title\": \"updated title\", \"text\":\"updated text\"}";
         mockMvc.perform(put("/projects/1/tasks/1/reports/1")
                         .content(requestBody)
@@ -88,12 +89,33 @@ public class ReportControllerTest {
                 .andExpect(jsonPath("$.text").value("updated text"));
     }
 
-    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @WithMockUser(username = "username", roles = {"USER"})
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    void testDeleteProject() throws Exception {
+    void testDeleteReport() throws Exception {
         mockMvc.perform(delete("/projects/1/tasks/1/reports/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @WithMockUser(username = "username", roles = {"MANAGER"})
+    @Test
+    public void testAccessDenied() throws Exception {
+        String requestBody = "{\"title\": \"saved title\", \"text\":\"saved text\",\"createAt\": \"2024-04-25T20:01:46.488778\",\"taskId\": 1,\"userId\":1}";
+        mockMvc.perform(post("/projects/1/tasks/1/reports")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().string("Internal Server Error: Access Denied"));
+    }
+
+    @Test
+    public void testUnregisteredUserAccessDenied() throws Exception {
+        String requestBody = "{\"title\": \"saved title\", \"text\":\"saved text\",\"createAt\": \"2024-04-25T20:01:46.488778\",\"taskId\": 1,\"userId\":1}";
+        mockMvc.perform(post("/projects/1/tasks/1/reports")
+                        .with(anonymous())
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 }
