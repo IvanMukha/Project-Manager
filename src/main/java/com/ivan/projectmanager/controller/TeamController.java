@@ -30,38 +30,38 @@ public class TeamController {
         this.teamService = teamService;
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<List<TeamDTO>> getAll() {
         List<TeamDTO> teams = teamService.getAll();
         return ResponseEntity.ok().body(teams);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TeamDTO> save(@RequestBody TeamDTO teamDTO) {
         TeamDTO savedTeam = teamService.save(teamDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTeam);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<TeamDTO> getById(@PathVariable("id") Long id) {
         Optional<TeamDTO> teamDTOOptional = teamService.getById(id);
         return teamDTOOptional.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TeamDTO> update(@PathVariable("id") Long id, @RequestBody TeamDTO teamDTO) {
         Optional<TeamDTO> updatedTeam = teamService.update(id, teamDTO);
         return updatedTeam.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         teamService.delete(id);
         return ResponseEntity.noContent().build();

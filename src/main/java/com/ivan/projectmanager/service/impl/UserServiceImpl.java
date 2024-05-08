@@ -99,10 +99,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserDTO mapUserToDTO(User user) {
-        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
-            userDTO.setRoleId(user.getRoles().iterator().next().getId());
-        }
-        return userDTO;
+        return modelMapper.map(user, UserDTO.class);
     }
 }

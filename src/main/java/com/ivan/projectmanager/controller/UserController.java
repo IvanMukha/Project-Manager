@@ -30,38 +30,38 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO>> getAll() {
         List<UserDTO> users = userService.getAll();
         return ResponseEntity.ok().body(users);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PostMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<UserDTO> save(@RequestBody UserDTO userDTO) {
         UserDTO savedUser = userService.save(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<UserDTO> getById(@PathVariable("id") Long id) {
         Optional<UserDTO> userDTOOptional = userService.getById(id);
         return userDTOOptional.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<UserDTO> update(@PathVariable("id") Long id, @RequestBody UserDTO userDTO) {
         Optional<UserDTO> updatedUser = userService.update(id, userDTO);
         return updatedUser.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();

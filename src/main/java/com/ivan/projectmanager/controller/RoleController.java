@@ -30,38 +30,38 @@ public class RoleController {
         this.roleService = roleService;
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoleDTO>> getAll() {
         List<RoleDTO> roles = roleService.getAll();
         return ResponseEntity.ok().body(roles);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoleDTO> save(@RequestBody RoleDTO roleDTO) {
         RoleDTO savedRole = roleService.save(roleDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRole);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoleDTO> getById(@PathVariable("id") Long id) {
         Optional<RoleDTO> roleDTOOptional = roleService.getById(id);
         return roleDTOOptional.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoleDTO> update(@PathVariable("id") Long id, @RequestBody RoleDTO roleDTO) {
         Optional<RoleDTO> updatedRole = roleService.update(id, roleDTO);
         return updatedRole.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         roleService.delete(id);
         return ResponseEntity.noContent().build();

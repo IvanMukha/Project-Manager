@@ -30,32 +30,32 @@ public class UserDetailsController {
         this.userDetailsService = userDetailsService;
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PostMapping("/userDetails")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<UserDetailsDTO> save(@PathVariable("userId") Long userId,
                                                @RequestBody UserDetailsDTO userDetailsDTO) {
         UserDetailsDTO savedUserDetails = userDetailsService.save(userId, userDetailsDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUserDetails);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/userDetails")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<UserDetailsDTO> getById(@PathVariable("userId") Long id) {
         Optional<UserDetailsDTO> userDetailsDTOOptional = userDetailsService.getById(id);
         return userDetailsDTOOptional.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/userDetails")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<UserDetailsDTO> update(@PathVariable("userId") Long id, @RequestBody UserDetailsDTO userDetailsDTO) {
         Optional<UserDetailsDTO> updatedUserDetails = userDetailsService.update(id, userDetailsDTO);
         return updatedUserDetails.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @DeleteMapping("/userDetails")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("userId") Long id) {
         userDetailsService.delete(id);
         return ResponseEntity.noContent().build();

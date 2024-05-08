@@ -30,16 +30,17 @@ public class AttachmentController {
         this.attachmentService = attachmentService;
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<List<AttachmentDTO>> getAll(@PathVariable("projectId") Long projectId,
                                                       @PathVariable("taskId") Long taskId) {
         List<AttachmentDTO> attachments = attachmentService.getAll(projectId, taskId);
         return ResponseEntity.ok().body(attachments);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AttachmentDTO> save(@PathVariable("projectId") Long projectId,
                                               @PathVariable("taskId") Long taskId,
                                               @RequestBody AttachmentDTO attachmentDTO) {
@@ -47,8 +48,8 @@ public class AttachmentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedAttachment);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<?> getById(@PathVariable("projectId") Long projectId,
                                      @PathVariable("taskId") Long taskId,
                                      @PathVariable("id") Long id) {
@@ -58,8 +59,8 @@ public class AttachmentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AttachmentDTO> update(@PathVariable("projectId") Long projectId,
                                                 @PathVariable("taskId") Long taskId,
                                                 @PathVariable("id") Long id,
@@ -69,8 +70,8 @@ public class AttachmentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("projectId") Long projectId,
                                        @PathVariable("taskId") Long taskId,
                                        @PathVariable("id") Long id) {

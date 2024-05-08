@@ -30,16 +30,16 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<List<CommentDTO>> getAll(@PathVariable("projectId") Long projectId,
                                                    @PathVariable("taskId") Long taskId) {
         List<CommentDTO> comments = commentService.getAll(projectId, taskId);
         return ResponseEntity.ok().body(comments);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PostMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<CommentDTO> save(@PathVariable("projectId") Long projectId,
                                            @PathVariable("taskId") Long taskId,
                                            @RequestBody CommentDTO commentDTO) {
@@ -47,8 +47,8 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedComment);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<CommentDTO> getById(@PathVariable("projectId") Long projectId,
                                               @PathVariable("taskId") Long taskId,
                                               @PathVariable("id") Long id) {
@@ -57,8 +57,8 @@ public class CommentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<CommentDTO> update(@PathVariable("projectId") Long projectId,
                                              @PathVariable("taskId") Long taskId,
                                              @PathVariable("id") Long id,
@@ -68,8 +68,8 @@ public class CommentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("projectId") Long projectId,
                                        @PathVariable("taskId") Long taskId,
                                        @PathVariable("id") Long id) {

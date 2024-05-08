@@ -30,16 +30,16 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<List<ReportDTO>> getAll(@PathVariable("projectId") Long projectId,
                                                   @PathVariable("taskId") Long taskId) {
         List<ReportDTO> reports = reportService.getAll(projectId, taskId);
         return ResponseEntity.ok().body(reports);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PostMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<ReportDTO> save(@PathVariable("projectId") Long projectId,
                                           @PathVariable("taskId") Long taskId,
                                           @RequestBody ReportDTO reportDTO) {
@@ -47,8 +47,8 @@ public class ReportController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedReport);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<ReportDTO> getById(@PathVariable("projectId") Long projectId,
                                              @PathVariable("taskId") Long taskId,
                                              @PathVariable("id") Long id) {
@@ -57,8 +57,8 @@ public class ReportController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<ReportDTO> update(@PathVariable("projectId") Long projectId,
                                             @PathVariable("taskId") Long taskId,
                                             @PathVariable("id") Long id,
@@ -68,8 +68,8 @@ public class ReportController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("projectId") Long projectId,
                                        @PathVariable("taskId") Long taskId,
                                        @PathVariable("id") Long id) {

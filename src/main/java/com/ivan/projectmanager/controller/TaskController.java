@@ -36,23 +36,23 @@ public class TaskController {
         this.entityCreationService = entityCreationService;
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<List<TaskDTO>> getAll(@PathVariable("projectId") Long projectId) {
         List<TaskDTO> tasks = taskService.getAll(projectId);
         return ResponseEntity.ok().body(tasks);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TaskDTO> save(@PathVariable("projectId") Long projectId,
                                         @RequestBody TaskDTO taskDTO) {
         TaskDTO savedTask = taskService.save(projectId, taskDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<TaskDTO> getById(@PathVariable("projectId") Long projectId,
                                            @PathVariable("id") Long id) {
         Optional<TaskDTO> taskDTOOptional = taskService.getById(projectId, id);
@@ -60,8 +60,8 @@ public class TaskController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TaskDTO> update(@PathVariable("projectId") Long projectId,
                                           @PathVariable("id") Long id, @RequestBody TaskDTO taskDTO) {
         Optional<TaskDTO> updatedTask = taskService.update(projectId, id, taskDTO);
@@ -69,8 +69,8 @@ public class TaskController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("projectId") Long projectId,
                                        @PathVariable("id") Long id) {
         taskService.delete(projectId, id);
