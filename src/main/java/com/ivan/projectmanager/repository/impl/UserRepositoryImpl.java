@@ -1,5 +1,6 @@
 package com.ivan.projectmanager.repository.impl;
 
+import com.ivan.projectmanager.model.Role;
 import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.model.User_;
 import com.ivan.projectmanager.repository.AbstractRepository;
@@ -11,9 +12,12 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserRepositoryImpl extends AbstractRepository<User, Long> implements UserRepository {
@@ -88,6 +92,13 @@ public class UserRepositoryImpl extends AbstractRepository<User, Long> implement
                         "SELECT u FROM User u WHERE u.id IS NOT NULL", User.class)
                 .setHint("javax.persistence.fetchgraph", entityGraph)
                 .getResultList();
+    }
+
+    @Transactional
+    public Set<Role> findRolesByUserUsername(String username) {
+        return entityManager.createQuery(
+                        "SELECT r FROM Role r JOIN r.users u WHERE u.username = :username", Role.class)
+                .setParameter("username", username).getResultStream().collect(Collectors.toSet());
     }
 }
 

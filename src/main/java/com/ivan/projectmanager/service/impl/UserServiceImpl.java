@@ -4,13 +4,14 @@ import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.exeptions.CustomNotFoundException;
 import com.ivan.projectmanager.model.Role;
 import com.ivan.projectmanager.model.User;
+import com.ivan.projectmanager.repository.RoleRepository;
 import com.ivan.projectmanager.repository.UserRepository;
 import com.ivan.projectmanager.service.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +25,13 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
-
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    public UserServiceImpl(ModelMapper modelMapper, UserRepository userRepository) {
+    public UserServiceImpl(ModelMapper modelMapper, UserRepository userRepository, RoleRepository roleRepository) {
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     public List<UserDTO> getAll() {
@@ -64,14 +65,18 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(id);
     }
 
+    public List<User> getByUsername(String username) {
+        return userRepository.getByUsernameCriteria(username);
+    }
+
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.getByUsernameCriteria(username).getFirst();
-        if (username.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
-        }
-        Optional<User> userModel = Optional.ofNullable(user);
+        List<User> userList = userRepository.getByUsernameCriteria(username);
+        User user = userList.stream().findFirst().orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        Set<Role> roles = userRepository.findRolesByUserUsername(username);
+        Optional<User> userModel = Optional.of(user);
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        for (Role role : userModel.get().getRoles()) {
+        for (Role role : roles) {
             grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()));
         }
         return new org.springframework.security.core.userdetails.User(
@@ -79,6 +84,15 @@ public class UserServiceImpl implements UserService {
                 userModel.get().getPassword(),
                 grantedAuthorities
         );
+    }
+
+    public UserDetailsService userDetailsService() {
+        return this::loadUserByUsername;
+    }
+
+    public Set<Role> getDefaultRole() {
+        Set<Role> roles = roleRepository.findByName("USER");
+        return new HashSet<>(roles);
     }
 
     private User mapDTOToUser(UserDTO userDTO) {

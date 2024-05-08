@@ -7,6 +7,8 @@ public class RegistrationRequest {
     private String username;
     @NotBlank(message = "Password cannot be empty")
     private String password;
+    @NotBlank(message = "Email cannot be empty")
+    private String email;
 
     public String getUsername() {
         return username;
@@ -14,5 +16,9 @@ public class RegistrationRequest {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

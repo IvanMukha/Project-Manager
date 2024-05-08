@@ -31,23 +31,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String jwt = getBearerFromToken(request);
-        if (jwt != null) {
-            try {
+        try {
+            String jwt = getBearerFromToken(request);
+            if (jwt != null) {
                 String username = jwtTokenService.getUsernameFromToken(jwt);
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = userService.loadUserByUsername(username);
-                    if (jwtTokenService.isValidJwt(jwt)) {
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
-                }
-            } catch (Exception e) {
-                log.error("Unauthorized, reason: {}", e.getMessage(), e);
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-                return;
+                UserDetails userDetails = userService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(userDetails.getUsername(),
+                                "");
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
+        } catch (Exception e) {
+            log.error("Unauthorized, reason: {}", e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            return;
         }
         filterChain.doFilter(request, response);
     }

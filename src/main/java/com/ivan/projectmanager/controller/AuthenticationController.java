@@ -1,6 +1,5 @@
 package com.ivan.projectmanager.controller;
 
-import com.ivan.projectmanager.dto.AuthenticationResponse;
 import com.ivan.projectmanager.dto.LoginRequest;
 import com.ivan.projectmanager.dto.RegistrationRequest;
 import com.ivan.projectmanager.service.AuthenticationService;
@@ -23,13 +22,11 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationRequest registrationRequest) {
-        authenticationService.registerUser(registrationRequest);
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.ok(authenticationService.registerUser(registrationRequest));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
-        String token = authenticationService.authenticate(loginRequest);
-        return ResponseEntity.ok(new AuthenticationResponse(token));
+        return ResponseEntity.ok(authenticationService.authenticate(loginRequest));
     }
 }
