@@ -5,6 +5,7 @@ import com.ivan.projectmanager.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,18 +31,21 @@ public class TeamController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<List<TeamDTO>> getAll() {
         List<TeamDTO> teams = teamService.getAll();
         return ResponseEntity.ok().body(teams);
     }
 
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TeamDTO> save(@RequestBody TeamDTO teamDTO) {
         TeamDTO savedTeam = teamService.save(teamDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTeam);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<TeamDTO> getById(@PathVariable("id") Long id) {
         Optional<TeamDTO> teamDTOOptional = teamService.getById(id);
         return teamDTOOptional.map(ResponseEntity::ok)
@@ -49,6 +53,7 @@ public class TeamController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TeamDTO> update(@PathVariable("id") Long id, @RequestBody TeamDTO teamDTO) {
         Optional<TeamDTO> updatedTeam = teamService.update(id, teamDTO);
         return updatedTeam.map(ResponseEntity::ok)
@@ -56,6 +61,7 @@ public class TeamController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         teamService.delete(id);
         return ResponseEntity.noContent().build();

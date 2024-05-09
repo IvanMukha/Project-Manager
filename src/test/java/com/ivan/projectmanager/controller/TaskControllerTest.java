@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -13,6 +14,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,9 +33,10 @@ public class TaskControllerTest {
 
     @BeforeEach
     void setUp(WebApplicationContext wac) {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
     }
 
+    @WithMockUser(username = "username", roles = {"USER"})
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     void testGetAllTasks() throws Exception {
@@ -46,6 +50,7 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$[0].category").value("Development"));
     }
 
+    @WithMockUser(username = "username", roles = {"USER"})
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     void testGetTaskById() throws Exception {
@@ -59,6 +64,7 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$.category").value("Development"));
     }
 
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks-save.sql")
     void testSaveTask() throws Exception {
@@ -79,6 +85,7 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$.label").value("Bug"));
     }
 
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     void testUpdateTask() throws Exception {
@@ -93,11 +100,41 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$.priority").value("updated priority"));
     }
 
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     void testDeleteTask() throws Exception {
         mockMvc.perform(delete("/projects/1/tasks/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @WithMockUser(username = "username", roles = {"USER"})
+    @Test
+    public void testAccessDenied() throws Exception {
+        String requestBody = "{\"title\": \"Task 1\", \"status\": \"In progress\", \"priority\": \"High\", \"startDate\":" +
+                " \"2024-04-17T10:00:00\", " +
+                "\"dueDate\": \"2024-04-20T17:00:00\", \"reporterId\": 1, \"assigneeId\": 2, " +
+                "\"category\": \"Development\", \"label\": \"Bug\", \"description\": \"Description of the task\", " +
+                "\"projectId\": 1}";
+        mockMvc.perform(post("/projects/1/tasks")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andExpect(content().string("Internal Server Error: Access Denied"));
+    }
+
+    @Test
+    public void testUnregisteredUserAccessDenied() throws Exception {
+        String requestBody = "{\"title\": \"Task 1\", \"status\": \"In progress\", \"priority\": \"High\", \"startDate\":" +
+                " \"2024-04-17T10:00:00\", " +
+                "\"dueDate\": \"2024-04-20T17:00:00\", \"reporterId\": 1, \"assigneeId\": 2, " +
+                "\"category\": \"Development\", \"label\": \"Bug\", \"description\": \"Description of the task\", " +
+                "\"projectId\": 1}";
+        mockMvc.perform(post("/projects/1/tasks")
+                        .with(anonymous())
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 }

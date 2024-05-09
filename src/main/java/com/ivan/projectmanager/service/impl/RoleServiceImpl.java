@@ -56,6 +56,11 @@ public class RoleServiceImpl implements RoleService {
         roleRepository.delete(id);
     }
 
+    public Role getDefaultRole() {
+        Role role = roleRepository.findByName("USER");
+        return role;
+    }
+
     private Role mapDTOToRole(RoleDTO roleDTO) {
         return modelMapper.map(roleDTO, Role.class);
     }

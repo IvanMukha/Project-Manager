@@ -5,6 +5,7 @@ import com.ivan.projectmanager.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ public class CommentController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<List<CommentDTO>> getAll(@PathVariable("projectId") Long projectId,
                                                    @PathVariable("taskId") Long taskId) {
         List<CommentDTO> comments = commentService.getAll(projectId, taskId);
@@ -37,6 +39,7 @@ public class CommentController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<CommentDTO> save(@PathVariable("projectId") Long projectId,
                                            @PathVariable("taskId") Long taskId,
                                            @RequestBody CommentDTO commentDTO) {
@@ -45,6 +48,7 @@ public class CommentController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<CommentDTO> getById(@PathVariable("projectId") Long projectId,
                                               @PathVariable("taskId") Long taskId,
                                               @PathVariable("id") Long id) {
@@ -54,6 +58,7 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<CommentDTO> update(@PathVariable("projectId") Long projectId,
                                              @PathVariable("taskId") Long taskId,
                                              @PathVariable("id") Long id,
@@ -64,6 +69,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("projectId") Long projectId,
                                        @PathVariable("taskId") Long taskId,
                                        @PathVariable("id") Long id) {

@@ -5,6 +5,7 @@ import com.ivan.projectmanager.service.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ public class UserDetailsController {
     }
 
     @PostMapping("/userDetails")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<UserDetailsDTO> save(@PathVariable("userId") Long userId,
                                                @RequestBody UserDetailsDTO userDetailsDTO) {
         UserDetailsDTO savedUserDetails = userDetailsService.save(userId, userDetailsDTO);
@@ -37,6 +39,7 @@ public class UserDetailsController {
     }
 
     @GetMapping("/userDetails")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<UserDetailsDTO> getById(@PathVariable("userId") Long id) {
         Optional<UserDetailsDTO> userDetailsDTOOptional = userDetailsService.getById(id);
         return userDetailsDTOOptional.map(ResponseEntity::ok)
@@ -44,6 +47,7 @@ public class UserDetailsController {
     }
 
     @PutMapping("/userDetails")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<UserDetailsDTO> update(@PathVariable("userId") Long id, @RequestBody UserDetailsDTO userDetailsDTO) {
         Optional<UserDetailsDTO> updatedUserDetails = userDetailsService.update(id, userDetailsDTO);
         return updatedUserDetails.map(ResponseEntity::ok)
@@ -51,6 +55,7 @@ public class UserDetailsController {
     }
 
     @DeleteMapping("/userDetails")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("userId") Long id) {
         userDetailsService.delete(id);
         return ResponseEntity.noContent().build();

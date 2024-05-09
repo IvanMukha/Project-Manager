@@ -5,6 +5,7 @@ import com.ivan.projectmanager.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,13 +31,16 @@ public class AttachmentController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<List<AttachmentDTO>> getAll(@PathVariable("projectId") Long projectId,
                                                       @PathVariable("taskId") Long taskId) {
         List<AttachmentDTO> attachments = attachmentService.getAll(projectId, taskId);
         return ResponseEntity.ok().body(attachments);
     }
 
+
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AttachmentDTO> save(@PathVariable("projectId") Long projectId,
                                               @PathVariable("taskId") Long taskId,
                                               @RequestBody AttachmentDTO attachmentDTO) {
@@ -45,6 +49,7 @@ public class AttachmentController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<?> getById(@PathVariable("projectId") Long projectId,
                                      @PathVariable("taskId") Long taskId,
                                      @PathVariable("id") Long id) {
@@ -55,6 +60,7 @@ public class AttachmentController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AttachmentDTO> update(@PathVariable("projectId") Long projectId,
                                                 @PathVariable("taskId") Long taskId,
                                                 @PathVariable("id") Long id,
@@ -65,6 +71,7 @@ public class AttachmentController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("projectId") Long projectId,
                                        @PathVariable("taskId") Long taskId,
                                        @PathVariable("id") Long id) {

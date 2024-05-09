@@ -12,5 +12,12 @@ public class RoleRepositoryImpl extends AbstractRepository<Role, Long> implement
     public RoleRepositoryImpl(EntityManager entityManager) {
         super(entityManager, Role.class);
     }
+
+    public Role findByName(String name) {
+        return entityManager.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class)
+                .setParameter("name", name)
+                .getResultStream().findFirst().orElse(null);
+    }
+
 }
 

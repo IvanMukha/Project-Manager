@@ -5,6 +5,7 @@ import com.ivan.projectmanager.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,18 +31,21 @@ public class ProjectController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<List<ProjectDTO>> getAll() {
         List<ProjectDTO> projects = projectService.getAll();
         return ResponseEntity.ok().body(projects);
     }
 
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProjectDTO> save(@RequestBody ProjectDTO projectDTO) {
         ProjectDTO savedProject = projectService.save(projectDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<ProjectDTO> getById(@PathVariable("id") Long id) {
         Optional<ProjectDTO> projectDTOOptional = projectService.getById(id);
         return projectDTOOptional.map(ResponseEntity::ok)
@@ -49,6 +53,7 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProjectDTO> update(@PathVariable("id") Long id, @RequestBody ProjectDTO projectDTO) {
         Optional<ProjectDTO> updatedProject = projectService.update(id, projectDTO);
         return updatedProject.map(ResponseEntity::ok)
@@ -56,6 +61,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         projectService.delete(id);
         return ResponseEntity.noContent().build();

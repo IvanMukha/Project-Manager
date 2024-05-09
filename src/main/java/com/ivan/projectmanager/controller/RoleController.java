@@ -5,6 +5,7 @@ import com.ivan.projectmanager.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,18 +31,21 @@ public class RoleController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoleDTO>> getAll() {
         List<RoleDTO> roles = roleService.getAll();
         return ResponseEntity.ok().body(roles);
     }
 
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoleDTO> save(@RequestBody RoleDTO roleDTO) {
         RoleDTO savedRole = roleService.save(roleDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRole);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoleDTO> getById(@PathVariable("id") Long id) {
         Optional<RoleDTO> roleDTOOptional = roleService.getById(id);
         return roleDTOOptional.map(ResponseEntity::ok)
@@ -49,6 +53,7 @@ public class RoleController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoleDTO> update(@PathVariable("id") Long id, @RequestBody RoleDTO roleDTO) {
         Optional<RoleDTO> updatedRole = roleService.update(id, roleDTO);
         return updatedRole.map(ResponseEntity::ok)
@@ -56,6 +61,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         roleService.delete(id);
         return ResponseEntity.noContent().build();
