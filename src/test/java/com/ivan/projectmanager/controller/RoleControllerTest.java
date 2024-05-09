@@ -47,11 +47,11 @@ public class RoleControllerTest {
                 .andExpect(jsonPath("$[0].name").value("name"));
     }
 
-    @WithMockUser(username = "username", roles = {"USER"})
+    @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/rolerepositorytests/insert-roles.sql")
     void testGetRoleById() throws Exception {
-        mockMvc.perform(get("/roles/1")
+      var result=  mockMvc.perform(get("/roles/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
