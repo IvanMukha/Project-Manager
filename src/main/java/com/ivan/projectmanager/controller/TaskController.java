@@ -76,9 +76,4 @@ public class TaskController {
         taskService.delete(projectId, id);
         return ResponseEntity.noContent().build();
     }
-
-    public ResponseEntity<String> createTaskWithRelatedEntities(@PathVariable("projectId") Long projectId, @RequestBody TaskDTO taskDTO, @RequestBody UserDTO userDTO, @RequestBody TeamDTO teamDTO, @RequestBody ProjectDTO projectDTO) {
-        String result = String.valueOf(entityCreationService.createTaskWithRelatedEntities(taskDTO, userDTO, teamDTO, projectDTO));
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
-    }
 }

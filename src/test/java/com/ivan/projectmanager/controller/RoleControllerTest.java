@@ -51,7 +51,7 @@ public class RoleControllerTest {
     @Test
     @Sql("classpath:data/rolerepositorytests/insert-roles.sql")
     void testGetRoleById() throws Exception {
-      var result=  mockMvc.perform(get("/roles/1")
+        mockMvc.perform(get("/roles/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
