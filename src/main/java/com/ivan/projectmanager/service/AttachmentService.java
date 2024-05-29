@@ -1,12 +1,12 @@
 package com.ivan.projectmanager.service;
 
 import com.ivan.projectmanager.dto.AttachmentDTO;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface AttachmentService {
-    List<AttachmentDTO> getAll(Long projectId, Long taskId);
+    Page<AttachmentDTO> getAll(Long projectId, Long taskId, Integer page, Integer size);
 
     AttachmentDTO save(Long projectId, Long taskId, AttachmentDTO attachmentDTO);
 

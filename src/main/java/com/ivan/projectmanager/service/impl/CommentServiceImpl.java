@@ -10,12 +10,12 @@ import com.ivan.projectmanager.repository.TaskRepository;
 import com.ivan.projectmanager.service.CommentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -30,8 +30,15 @@ public class CommentServiceImpl implements CommentService {
         this.taskRepository = taskRepository;
     }
 
-    public List<CommentDTO> getAll(Long projectId, Long taskId) {
-        return commentRepository.getAll(projectId, taskId).stream().map(this::mapCommentToDTO).collect(Collectors.toList());
+    public Page<CommentDTO> getAll(Long projectId, Long taskId, Integer page, Integer size) {
+        if (page < 0) {
+            page = 0;
+        }
+        if (size <= 0 || size > 100) {
+            size = 10;
+        }
+        return commentRepository.getAll(projectId, taskId, PageRequest.of(page, size))
+                .map(this::mapCommentToDTO);
     }
 
     @Transactional

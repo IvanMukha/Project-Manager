@@ -2,13 +2,15 @@ package com.ivan.projectmanager.repository;
 
 import com.ivan.projectmanager.model.Report;
 import com.ivan.projectmanager.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ReportRepository {
+public interface ReportRepository extends CrudRepository<Report, Long> {
 
-    List<Report> getAll(Long projectId, Long taskId);
+    Page<Report> getAll(Long projectId, Long taskId, Pageable pageable);
 
     Optional<Report> getById(Long projectId, Long taskId, Long id);
 
@@ -18,13 +20,6 @@ public interface ReportRepository {
 
     void delete(Long projectId, Long taskId, Long id);
 
-    List<Report> getReportsByUserJpql(User user);
+    List<Report> getReportsByUser(User user);
 
-    List<Report> getReportsByUserCriteria(User user);
-
-    List<Report> getReportsByUserJpqlFetch(User user);
-
-    List<Report> getReportsByUserCriteriaFetch(User user);
-
-    List<Report> getReportsByUserEntityGraph(User user);
 }

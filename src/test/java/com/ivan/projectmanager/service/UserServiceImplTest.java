@@ -11,6 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,10 +55,14 @@ public class UserServiceImplTest {
     void getAllUsers() {
         User user2 = user;
         UserDTO userDTO2 = userDTO;
+        List<User> users = List.of(user, user2);
+        Page<User> page = new PageImpl<>(users, PageRequest.of(0, 10), users.size());
+
         when(modelMapper.map(user, UserDTO.class)).thenReturn(userDTO);
         when(modelMapper.map(user2, UserDTO.class)).thenReturn(userDTO2);
-        when(userRepository.getAll()).thenReturn(List.of(user, user2));
-        List<UserDTO> result = userService.getAll();
+        when(userRepository.getAll(PageRequest.of(0, 10))).thenReturn(page);
+
+        List<UserDTO> result = userService.getAll(0, 10).getContent();
         assertEquals(2, result.size());
         assertEquals(user.getUsername(), result.getFirst().getUsername());
         assertEquals(user.getPassword(), result.getFirst().getPassword());

@@ -5,6 +5,8 @@ import com.ivan.projectmanager.model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -31,8 +33,8 @@ public class ReportRepositoryTest {
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
     public void testGetAll() {
-        List<Report> reports = reportRepository.getAll(1L, 1L);
-        assertThat(reports).isNotEmpty();
+        Page<Report> reportPage = reportRepository.getAll(1L, 1L, PageRequest.of(0, 10));
+        assertThat(reportPage).isNotEmpty();
     }
 
     @Test
@@ -70,54 +72,10 @@ public class ReportRepositoryTest {
 
     @Test
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    public void testGetReportsByUserJpql() {
+    public void testGetReportsByUser() {
         User user = new User();
         user.setId(1L);
-        List<Report> foundReports = reportRepository.getReportsByUserJpql(user);
-        assertThat(foundReports).isNotEmpty();
-        assertThat(foundReports).hasSize(1);
-        assertThat(foundReports.getFirst().getUser().getId()).isEqualTo(1L);
-    }
-
-    @Test
-    @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    public void testGetReportsByUserCriteria() {
-        User user = new User();
-        user.setId(1L);
-        List<Report> foundReports = reportRepository.getReportsByUserCriteria(user);
-        assertThat(foundReports).isNotEmpty();
-        assertThat(foundReports).hasSize(1);
-        assertThat(foundReports.getFirst().getUser().getId()).isEqualTo(1L);
-    }
-
-    @Test
-    @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    public void testGetReportsByUserJpqlFetch() {
-        User user = new User();
-        user.setId(1L);
-        List<Report> foundReports = reportRepository.getReportsByUserJpqlFetch(user);
-        assertThat(foundReports).isNotEmpty();
-        assertThat(foundReports).hasSize(1);
-        assertThat(foundReports.getFirst().getUser().getId()).isEqualTo(1L);
-    }
-
-    @Test
-    @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    public void testGetReportsByUserCriteriaFetch() {
-        User user = new User();
-        user.setId(1L);
-        List<Report> foundReports = reportRepository.getReportsByUserCriteriaFetch(user);
-        assertThat(foundReports).isNotEmpty();
-        assertThat(foundReports).hasSize(1);
-        assertThat(foundReports.getFirst().getUser().getId()).isEqualTo(1L);
-    }
-
-    @Test
-    @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
-    public void testGetReportsByUserEntityGraph() {
-        User user = new User();
-        user.setId(1L);
-        List<Report> foundReports = reportRepository.getReportsByUserEntityGraph(user);
+        List<Report> foundReports = reportRepository.getReportsByUser(user);
         assertThat(foundReports).isNotEmpty();
         assertThat(foundReports).hasSize(1);
         assertThat(foundReports.getFirst().getUser().getId()).isEqualTo(1L);

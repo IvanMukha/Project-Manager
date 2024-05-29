@@ -13,7 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,18 +44,30 @@ public class TaskServiceImplTest {
     @Test
     void testGetAllTasks() {
         Project project = new Project().setId(1L).setTitle("project");
-        Task task = new Task().setTitle("Task 1").setProject(project);
+        Task task = new Task().setTitle("Task 1").setProject(project).setCategory("category");
         Task task2 = new Task().setTitle("Task 2").setProject(project);
         TaskDTO taskDTO = new TaskDTO().setTitle("Task 1").setProjectId(1L);
         TaskDTO taskDTO2 = new TaskDTO().setTitle("Task 2").setProjectId(1L);
+        Page<Task> taskPage = new PageImpl<>(List.of(task, task2));
+        LocalDateTime startDate = LocalDateTime.parse("2024-04-17 10:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime dueDate = LocalDateTime.parse("2024-04-20 17:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
         when(modelMapper.map(task, TaskDTO.class)).thenReturn(taskDTO);
         when(modelMapper.map(task2, TaskDTO.class)).thenReturn(taskDTO2);
-        when(taskRepository.getAll(1L)).thenReturn(List.of(task, task2));
-        List<TaskDTO> result = taskService.getAll(1L);
+        when(taskRepository.getAll("status", "priority", 1L, 1L,
+                "category", "label", startDate, startDate,
+                dueDate, dueDate, 1L, PageRequest.of(0, 10))).thenReturn(taskPage);
+
+        Page<TaskDTO> resultPage = taskService.getAll("status", "priority", 1L, 1L,
+                "category", "label", "2024-04-17 10:00:00", "2024-04-17 10:00:00",
+                "2024-04-20 17:00:00", "2024-04-20 17:00:00", 1L, 0, 10);
+        List<TaskDTO> result = resultPage.getContent();
         assertEquals(2, result.size());
         assertEquals(task.getTitle(), result.get(0).getTitle());
         assertEquals(task2.getTitle(), result.get(1).getTitle());
-        verify(taskRepository).getAll(1L);
+        verify(taskRepository).getAll("status", "priority", 1L, 1L,
+                "category", "label", startDate, startDate,
+                dueDate, dueDate, 1L, PageRequest.of(0, 10));
     }
 
     @Test

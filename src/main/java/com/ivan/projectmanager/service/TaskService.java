@@ -1,12 +1,16 @@
 package com.ivan.projectmanager.service;
 
 import com.ivan.projectmanager.dto.TaskDTO;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface TaskService {
-    List<TaskDTO> getAll(Long projectId);
+    Page<TaskDTO> getAll(
+            String status, String priority, Long reporterId, Long assigneeId,
+            String category, String label, String startDateFromStr,
+            String startDateToStr, String dueDateFromStr,
+            String dueDateToStr, Long projectId, Integer page, Integer size);
 
     TaskDTO save(Long projectId, TaskDTO taskDTO);
 

@@ -11,6 +11,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,14 +41,18 @@ public class RoleServiceImplTest {
         Role role2 = new Role().setName("role2");
         RoleDTO roleDTO = new RoleDTO().setName("role1");
         RoleDTO roleDTO2 = new RoleDTO().setName("role2");
+        List<Role> roles = List.of(role, role2);
+        Page<Role> page = new PageImpl<>(roles, PageRequest.of(0, 10), roles.size());
+
         when(modelMapper.map(role, RoleDTO.class)).thenReturn(roleDTO);
         when(modelMapper.map(role2, RoleDTO.class)).thenReturn(roleDTO2);
-        when(roleRepository.getAll()).thenReturn(List.of(role, role2));
-        List<RoleDTO> result = roleService.getAll();
+        when(roleRepository.getAll(PageRequest.of(0, 10))).thenReturn(page);
+
+        List<RoleDTO> result = roleService.getAll(0, 10).getContent();
         assertEquals(2, result.size());
         assertEquals(role.getName(), result.get(0).getName());
         assertEquals(role2.getName(), result.get(1).getName());
-        verify(roleRepository).getAll();
+        verify(roleRepository).getAll(PageRequest.of(0, 10));
     }
 
     @Test

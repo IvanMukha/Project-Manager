@@ -41,15 +41,19 @@ public class UserControllerTest {
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
     void testGetAllUsers() throws Exception {
         mockMvc.perform(get("/users")
+                        .param("page", "0")
+                        .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].username").value("user1"))
-                .andExpect(jsonPath("$[0].password").value("password1"))
-                .andExpect(jsonPath("$[0].email").value("email1@gmail.com"))
-                .andExpect(jsonPath("$[1].username").value("user2"))
-                .andExpect(jsonPath("$[1].password").value("password2"))
-                .andExpect(jsonPath("$[1].email").value("email2@gmail.com"));
+                .andExpect(jsonPath("$.content[0].username").value("user1"))
+                .andExpect(jsonPath("$.content[0].password").value("password1"))
+                .andExpect(jsonPath("$.content[0].email").value("email1@gmail.com"))
+                .andExpect(jsonPath("$.content[1].username").value("user2"))
+                .andExpect(jsonPath("$.content[1].password").value("password2"))
+                .andExpect(jsonPath("$.content[1].email").value("email2@gmail.com"))
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.totalPages").value(1));
     }
 
     @WithMockUser(username = "username", roles = {"USER"})

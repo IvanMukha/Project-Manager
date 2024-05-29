@@ -5,6 +5,8 @@ import com.ivan.projectmanager.model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -31,8 +33,8 @@ public class UserRepositoryTest {
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
     public void testGetAll() {
-        List<User> users = userRepository.getAll();
-        assertThat(users).isNotEmpty();
+        Page<User> userspage = userRepository.getAll(PageRequest.of(0, 10));
+        assertThat(userspage).isNotEmpty();
     }
 
     @Test
@@ -67,44 +69,11 @@ public class UserRepositoryTest {
 
     @Test
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
-    public void testGetByUsernameCriteria() {
-        List<User> foundUsers = userRepository.getByUsernameCriteria("user2");
+    public void testGetByUsername() {
+        List<User> foundUsers = userRepository.getByUsername("user2");
         assertThat(foundUsers).isNotEmpty();
         assertThat(foundUsers.getFirst().getUsername()).isEqualTo("user2");
     }
 
-    @Test
-    @Sql("classpath:data/userrepositorytests/insert-users.sql")
-    public void testGetByUsernameJPQL() {
-        List<User> foundUsers = userRepository.getByUsernameJPQL("user2");
-        assertThat(foundUsers).isNotEmpty();
-        assertThat(foundUsers.getFirst().getUsername()).isEqualTo("user2");
-    }
 
-    @Test
-    @Sql("classpath:data/userrepositorytests/insert-users.sql")
-    public void testGetAllJpqlFetch() {
-        List<User> foundUsers = userRepository.getAllJpqlFetch();
-        assertThat(foundUsers).isNotEmpty();
-        assertThat(foundUsers.getFirst().getRoles()).isNotEmpty();
-        assertThat(foundUsers.getFirst().getTeams()).isNotEmpty();
-    }
-
-    @Test
-    @Sql("classpath:data/userrepositorytests/insert-users.sql")
-    public void testGetAllCriteriaFetch() {
-        List<User> foundUsers = userRepository.getAllCriteriaFetch();
-        assertThat(foundUsers).isNotEmpty();
-        assertThat(foundUsers.getFirst().getRoles()).isNotEmpty();
-        assertThat(foundUsers.getFirst().getTeams()).isNotEmpty();
-    }
-
-    @Test
-    @Sql("classpath:data/userrepositorytests/insert-users.sql")
-    public void testGetAllGraphFetch() {
-        List<User> foundUsers = userRepository.getAllGraphFetch();
-        assertThat(foundUsers).isNotEmpty();
-        assertThat(foundUsers.getFirst().getRoles()).isNotEmpty();
-        assertThat(foundUsers.getFirst().getTeams()).isNotEmpty();
-    }
 }

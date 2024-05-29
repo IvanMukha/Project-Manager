@@ -4,6 +4,8 @@ import com.ivan.projectmanager.model.Attachment;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -29,8 +31,8 @@ public class AttachmentRepositoryTest {
     @Test
     @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
     public void testGetAll() {
-        List<Attachment> attachments = attachmentRepository.getAll(1L, 1L);
-        assertThat(attachments).isNotEmpty();
+        Page<Attachment> attachmentPage = attachmentRepository.getAll(1L, 1L, PageRequest.of(0, 10));
+        assertThat(attachmentPage).isNotEmpty();
     }
 
     @Test
@@ -69,49 +71,10 @@ public class AttachmentRepositoryTest {
 
     @Test
     @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
-    public void testFindByTitleCriteria() {
-        List<Attachment> foundAttachments = attachmentRepository.findByTitleCriteria("Test Attachment");
+    public void testFindByTitle() {
+        List<Attachment> foundAttachments = attachmentRepository.findByTitle("Test Attachment");
         assertThat(foundAttachments).isNotEmpty();
         assertThat(foundAttachments).hasSize(1);
         assertThat(foundAttachments.getFirst().getTitle()).isEqualTo("Test Attachment");
-    }
-
-    @Test
-    @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
-    public void testFindByTitleJpql() {
-        List<Attachment> foundAttachments = attachmentRepository.findByTitleJpql("Test Attachment");
-        assertThat(foundAttachments).isNotEmpty();
-        assertThat(foundAttachments).hasSize(1);
-        assertThat(foundAttachments.getFirst().getTitle()).isEqualTo("Test Attachment");
-    }
-
-    @Test
-    @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
-    public void testFindByTitleCriteriaFetch() {
-        List<Attachment> foundAttachments = attachmentRepository.findByTitleCriteriaFetch("Test Attachment");
-        assertThat(foundAttachments).isNotEmpty();
-        assertThat(foundAttachments).hasSize(1);
-        assertThat(foundAttachments.getFirst().getTitle()).isEqualTo("Test Attachment");
-        assertThat(foundAttachments.getFirst().getTask()).isNotNull();
-    }
-
-    @Test
-    @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
-    public void testFindByTitleJpqlFetch() {
-        List<Attachment> foundAttachments = attachmentRepository.findByTitleJpqlFetch("Test Attachment");
-        assertThat(foundAttachments).isNotEmpty();
-        assertThat(foundAttachments).hasSize(1);
-        assertThat(foundAttachments.getFirst().getTitle()).isEqualTo("Test Attachment");
-        assertThat(foundAttachments.getFirst().getTask()).isNotNull();
-    }
-
-    @Test
-    @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
-    public void testFindByTitleWithEntityGraphFetch() {
-        List<Attachment> foundAttachments = attachmentRepository.findByTitleWithEntityGraphFetch("Test Attachment");
-        assertThat(foundAttachments).isNotEmpty();
-        assertThat(foundAttachments).hasSize(1);
-        assertThat(foundAttachments.getFirst().getTitle()).isEqualTo("Test Attachment");
-        assertThat(foundAttachments.getFirst().getTask()).isNotNull();
     }
 }

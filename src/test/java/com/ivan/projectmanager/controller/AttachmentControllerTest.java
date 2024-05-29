@@ -41,10 +41,14 @@ public class AttachmentControllerTest {
     @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
     public void testGetAllAttachments() throws Exception {
         mockMvc.perform(get("/projects/1/tasks/1/attachments")
+                        .param("page", "0")
+                        .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].title").value("Test Attachment"));
+                .andExpect(jsonPath("$.content[0].title").value("Test Attachment"))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.totalPages").value(1));
     }
 
     @WithMockUser(username = "username", roles = {"USER"})
@@ -55,8 +59,7 @@ public class AttachmentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.title").value("Test Attachment"))
-                .andReturn();
+                .andExpect(jsonPath("$.title").value("Test Attachment"));
     }
 
     @WithMockUser(username = "username", roles = {"ADMIN"})

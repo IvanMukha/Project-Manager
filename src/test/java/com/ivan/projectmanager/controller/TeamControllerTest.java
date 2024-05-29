@@ -41,10 +41,14 @@ public class TeamControllerTest {
     @Sql("classpath:data/teamrepositorytests/insert-teams.sql")
     void testGetAllTeams() throws Exception {
         mockMvc.perform(get("/teams")
+                        .param("page", "0")
+                        .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].name").value("name"));
+                .andExpect(jsonPath("$.content[0].name").value("name"))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.totalPages").value(1));
     }
 
     @WithMockUser(username = "username", roles = {"USER"})

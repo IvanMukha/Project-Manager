@@ -5,8 +5,10 @@ import com.ivan.projectmanager.repository.AbstractRepository;
 import com.ivan.projectmanager.repository.UserDetailsRepository;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
+@Transactional
 public class UserDetailsRepositoryImpl extends AbstractRepository<UserDetails, Long> implements UserDetailsRepository {
     public UserDetailsRepositoryImpl(EntityManager entityManager) {
         super(entityManager, UserDetails.class);

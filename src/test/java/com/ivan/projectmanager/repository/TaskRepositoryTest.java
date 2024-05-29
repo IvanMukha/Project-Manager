@@ -4,12 +4,16 @@ import com.ivan.projectmanager.model.Task;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +34,11 @@ public class TaskRepositoryTest {
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     public void testGetAll() {
-        List<Task> tasks = taskRepository.getAll(1L);
+        LocalDateTime startDate = LocalDateTime.parse("2024-04-17 10:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime dueDate = LocalDateTime.parse("2024-04-20 17:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        Page<Task> tasks = taskRepository.getAll("In progress", "High",
+                1L, 2L, "Development", "Bug", startDate, startDate,
+                dueDate, dueDate, 1L, PageRequest.of(0, 10));
         assertThat(tasks).isNotEmpty();
     }
 
@@ -66,48 +74,19 @@ public class TaskRepositoryTest {
 
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
-    public void testGetByStatusCriteria() {
-        List<Task> foundTasks = taskRepository.getByStatusCriteria("In progress");
+    public void testGetByStatus() {
+        List<Task> foundTasks = taskRepository.getByStatus("In progress");
         assertThat(foundTasks).isNotEmpty();
         assertThat(foundTasks.getFirst().getStatus()).isEqualTo("In progress");
     }
 
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
-    public void testGetByCategoryJpql() {
-        List<Task> foundTasks = taskRepository.getByCategoryJpql("Development");
+    public void testGetByCategory() {
+        List<Task> foundTasks = taskRepository.getByCategory("Development");
         assertThat(foundTasks).isNotEmpty();
         assertThat(foundTasks).hasSize(1);
         assertThat(foundTasks.getFirst().getCategory()).isEqualTo("Development");
     }
 
-    @Test
-    @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
-    public void testGetAllJpqlFetch() {
-        List<Task> foundTasks = taskRepository.getAllJpqlFetch();
-        assertThat(foundTasks).isNotEmpty();
-        assertThat(foundTasks.getFirst().getReporter()).isNotNull();
-        assertThat(foundTasks.getFirst().getAssignee()).isNotNull();
-        assertThat(foundTasks.getFirst().getProject()).isNotNull();
-    }
-
-    @Test
-    @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
-    public void testGetAllCriteriaFetch() {
-        List<Task> foundTasks = taskRepository.getAllCriteriaFetch();
-        assertThat(foundTasks).isNotEmpty();
-        assertThat(foundTasks.getFirst().getReporter()).isNotNull();
-        assertThat(foundTasks.getFirst().getAssignee()).isNotNull();
-        assertThat(foundTasks.getFirst().getProject()).isNotNull();
-    }
-
-    @Test
-    @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
-    public void testGetAllEntityGraph() {
-        List<Task> foundTasks = taskRepository.getAllEntityGraph();
-        assertThat(foundTasks).isNotEmpty();
-        assertThat(foundTasks.getFirst().getReporter()).isNotNull();
-        assertThat(foundTasks.getFirst().getAssignee()).isNotNull();
-        assertThat(foundTasks.getFirst().getProject()).isNotNull();
-    }
 }

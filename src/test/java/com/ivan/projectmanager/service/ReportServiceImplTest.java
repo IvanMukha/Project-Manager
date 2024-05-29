@@ -14,6 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,14 +48,18 @@ public class ReportServiceImplTest {
         Report report2 = new Report().setTitle("report2").setTask(task);
         ReportDTO reportDTO = new ReportDTO().setTitle("report1").setTaskId(1L);
         ReportDTO reportDTO2 = new ReportDTO().setTitle("report2").setTaskId(1L);
+        List<Report> reports = List.of(report, report2);
+        Page<Report> page = new PageImpl<>(reports, PageRequest.of(0, 10), reports.size());
+
         when(modelMapper.map(report, ReportDTO.class)).thenReturn(reportDTO);
         when(modelMapper.map(report2, ReportDTO.class)).thenReturn(reportDTO2);
-        when(reportRepository.getAll(1L, 1L)).thenReturn(List.of(report, report2));
-        List<ReportDTO> result = reportService.getAll(1L, 1L);
+        when(reportRepository.getAll(1L, 1L, PageRequest.of(0, 10))).thenReturn(page);
+
+        List<ReportDTO> result = reportService.getAll(1L, 1L, 0, 10).getContent();
         assertEquals(2, result.size());
         assertEquals(report.getTitle(), result.get(0).getTitle());
         assertEquals(report2.getTitle(), result.get(1).getTitle());
-        verify(reportRepository).getAll(1L, 1L);
+        verify(reportRepository).getAll(1L, 1L, PageRequest.of(0, 10));
     }
 
     @Test

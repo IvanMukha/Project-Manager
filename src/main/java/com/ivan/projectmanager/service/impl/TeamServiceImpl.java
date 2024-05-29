@@ -1,20 +1,18 @@
 package com.ivan.projectmanager.service.impl;
 
 import com.ivan.projectmanager.dto.TeamDTO;
-import com.ivan.projectmanager.exeptions.CustomIllegalArgumentException;
 import com.ivan.projectmanager.exeptions.CustomNotFoundException;
-import com.ivan.projectmanager.exeptions.CustomNullPointerException;
 import com.ivan.projectmanager.model.Team;
 import com.ivan.projectmanager.repository.TeamRepository;
 import com.ivan.projectmanager.service.TeamService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TeamServiceImpl implements TeamService {
@@ -27,18 +25,22 @@ public class TeamServiceImpl implements TeamService {
         this.teamRepository = teamRepository;
     }
 
-    public List<TeamDTO> getAll() {
-        return teamRepository.getAll().stream().map(this::mapTeamToDTO).collect(Collectors.toList());
+    public Page<TeamDTO> getAll(Integer page, Integer size) {
+        if (page < 0) {
+            page = 0;
+        }
+        if (size <= 0 || size > 100) {
+            size = 10;
+        }
+        return teamRepository.getAll(PageRequest.of(page, size)).map(this::mapTeamToDTO);
     }
 
     @Transactional
     public TeamDTO save(TeamDTO teamDTO) {
-        checkTeam(teamDTO);
         return mapTeamToDTO(teamRepository.save(mapDTOToTeam(teamDTO)));
     }
 
     public Optional<TeamDTO> getById(Long id) {
-        checkId(id);
         Optional<Team> teamOptional = teamRepository.getById(id);
         if (teamOptional.isEmpty()) {
             throw new CustomNotFoundException(id, Team.class);
@@ -48,8 +50,6 @@ public class TeamServiceImpl implements TeamService {
 
     @Transactional
     public Optional<TeamDTO> update(Long id, TeamDTO updatedTeamDTO) {
-        checkId(id);
-        checkTeam(updatedTeamDTO);
         Optional<Team> teamOptional = teamRepository.update(id, mapDTOToTeam(updatedTeamDTO));
         if (teamOptional.isEmpty()) {
             throw new CustomNotFoundException(id, Team.class);
@@ -59,29 +59,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Transactional
     public void delete(Long id) {
-        checkId(id);
         teamRepository.delete(id);
-    }
-
-    private void checkTeam(TeamDTO teamDTO) {
-        if (teamDTO == null) {
-            throw new CustomNullPointerException("TeamDTO cannot be null");
-        }
-        if (teamDTO.getName() == null) {
-            throw new CustomNullPointerException("Team name cannot be null");
-        }
-        if (teamDTO.getName().isEmpty()) {
-            throw new CustomIllegalArgumentException("Team name cannot be empty");
-        }
-    }
-
-    private void checkId(Long id) {
-        if (id == null) {
-            throw new CustomNullPointerException("Team id cannot be null");
-        }
-        if (id <= 0) {
-            throw new CustomIllegalArgumentException("Team id must be greater than 0");
-        }
     }
 
     private Team mapDTOToTeam(TeamDTO teamDTO) {

@@ -4,6 +4,8 @@ import com.ivan.projectmanager.model.Project;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -30,8 +32,8 @@ public class ProjectRepositoryTest {
     @Test
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     public void testGetAll() {
-        List<Project> projects = projectRepository.getAll();
-        assertThat(projects).isNotEmpty();
+        Page<Project> projectPage = projectRepository.getAll(PageRequest.of(0, 10));
+        assertThat(projectPage).isNotEmpty();
     }
 
     @Test
@@ -69,8 +71,8 @@ public class ProjectRepositoryTest {
 
     @Test
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
-    public void testFindByStatusCriteria() {
-        List<Project> foundProjects = projectRepository.findByStatusCriteria("Active");
+    public void testFindByStatus() {
+        List<Project> foundProjects = projectRepository.findByStatus("Active");
         assertThat(foundProjects).isNotEmpty();
         assertThat(foundProjects).hasSize(1);
         assertThat(foundProjects.getFirst().getStatus()).isEqualTo("Active");
@@ -78,34 +80,10 @@ public class ProjectRepositoryTest {
 
     @Test
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
-    public void testFindByTitleJpql() {
-        List<Project> foundProjects = projectRepository.findByTitleJpql("Project ABC");
+    public void testFindByTitle() {
+        List<Project> foundProjects = projectRepository.findByTitle("Project ABC");
         assertThat(foundProjects).isNotEmpty();
         assertThat(foundProjects).hasSize(1);
         assertThat(foundProjects.getFirst().getTitle()).isEqualTo("Project ABC");
-    }
-
-    @Test
-    @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
-    public void testFindAllCriteriaFetch() {
-        List<Project> foundProjects = projectRepository.findAllCriteriaFetch();
-        assertThat(foundProjects).isNotEmpty();
-        assertThat(foundProjects.getFirst().getTeam()).isNotNull();
-    }
-
-    @Test
-    @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
-    public void testFindAllJpqlFetch() {
-        List<Project> foundProjects = projectRepository.findAllJpqlFetch();
-        assertThat(foundProjects).isNotEmpty();
-        assertThat(foundProjects.getFirst().getTeam()).isNotNull();
-    }
-
-    @Test
-    @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
-    public void testFindAllEntityGraphFetch() {
-        List<Project> foundProjects = projectRepository.findAllEntityGraphFetch();
-        assertThat(foundProjects).isNotEmpty();
-        assertThat(foundProjects.getFirst().getTeam()).isNotNull();
     }
 }

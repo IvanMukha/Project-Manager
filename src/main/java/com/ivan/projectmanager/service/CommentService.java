@@ -1,12 +1,12 @@
 package com.ivan.projectmanager.service;
 
 import com.ivan.projectmanager.dto.CommentDTO;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface CommentService {
-    List<CommentDTO> getAll(Long projectId, Long taskId);
+    Page<CommentDTO> getAll(Long projectId, Long taskId, Integer page, Integer size);
 
     CommentDTO save(Long projectId, Long taskId, CommentDTO commentDTO);
 

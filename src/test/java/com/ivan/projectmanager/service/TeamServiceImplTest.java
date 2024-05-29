@@ -11,6 +11,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,14 +42,17 @@ public class TeamServiceImplTest {
         Team team2 = new Team().setName("Team 2");
         TeamDTO teamDTO = new TeamDTO().setName("Team 1");
         TeamDTO teamDTO2 = new TeamDTO().setName("Team 2");
+        List<Team> teams = List.of(team, team2);
+        Page<Team> page = new PageImpl<>(teams, PageRequest.of(0, 10), teams.size());
+
         when(modelMapper.map(team, TeamDTO.class)).thenReturn(teamDTO);
         when(modelMapper.map(team2, TeamDTO.class)).thenReturn(teamDTO2);
-        when(teamRepository.getAll()).thenReturn(List.of(team, team2));
-        List<TeamDTO> result = teamService.getAll();
+        when(teamRepository.getAll(PageRequest.of(0, 10))).thenReturn(page);
+        List<TeamDTO> result = teamService.getAll(0, 10).getContent();
         assertEquals(2, result.size());
         assertEquals(team.getName(), result.get(0).getName());
         assertEquals(team2.getName(), result.get(1).getName());
-        verify(teamRepository).getAll();
+        verify(teamRepository).getAll(PageRequest.of(0, 10));
     }
 
     @Test

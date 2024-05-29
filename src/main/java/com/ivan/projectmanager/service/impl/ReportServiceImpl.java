@@ -10,12 +10,12 @@ import com.ivan.projectmanager.repository.TaskRepository;
 import com.ivan.projectmanager.service.ReportService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -30,8 +30,14 @@ public class ReportServiceImpl implements ReportService {
         this.taskRepository = taskRepository;
     }
 
-    public List<ReportDTO> getAll(Long projectId, Long taskId) {
-        return reportRepository.getAll(projectId, taskId).stream().map(this::mapReportToDTO).collect(Collectors.toList());
+    public Page<ReportDTO> getAll(Long projectId, Long taskId, Integer page, Integer size) {
+        if (page < 0) {
+            page = 0;
+        }
+        if (size <= 0 || size > 100) {
+            size = 10;
+        }
+        return reportRepository.getAll(projectId, taskId, PageRequest.of(page, size)).map(this::mapReportToDTO);
     }
 
     @Transactional

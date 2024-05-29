@@ -9,12 +9,14 @@ import com.ivan.projectmanager.repository.TaskRepository;
 import com.ivan.projectmanager.service.TaskService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -27,10 +29,6 @@ public class TaskServiceImpl implements TaskService {
         this.modelMapper = modelMapper;
         this.taskRepository = taskRepository;
         this.projectRepository = projectRepository;
-    }
-
-    public List<TaskDTO> getAll(Long projectId) {
-        return taskRepository.getAll(projectId).stream().map(this::mapTaskToDTO).collect(Collectors.toList());
     }
 
     @Transactional
@@ -59,9 +57,39 @@ public class TaskServiceImpl implements TaskService {
         return taskOptional.map(this::mapTaskToDTO);
     }
 
+    public Page<TaskDTO> getAll(
+            String status, String priority, Long reporterId, Long assigneeId,
+            String category, String label, String startDateFromStr,
+            String startDateToStr, String dueDateFromStr,
+            String dueDateToStr, Long projectId, Integer page, Integer size) {
+
+        LocalDateTime startDateFrom = parseLocalDateTime(startDateFromStr);
+        LocalDateTime startDateTo = parseLocalDateTime(startDateToStr);
+        LocalDateTime dueDateFrom = parseLocalDateTime(dueDateFromStr);
+        LocalDateTime dueDateTo = parseLocalDateTime(dueDateToStr);
+        if (page < 0) {
+            page = 0;
+        }
+        if (size <= 0 || size > 100) {
+            size = 10;
+        }
+        return taskRepository.getAll(
+                        status, priority, reporterId, assigneeId, category, label,
+                        startDateFrom, startDateTo, dueDateFrom, dueDateTo, projectId, PageRequest.of(page, size))
+                .map(this::mapTaskToDTO);
+    }
+
     @Transactional
     public void delete(Long projectId, Long id) {
         taskRepository.delete(projectId, id);
+    }
+
+    private LocalDateTime parseLocalDateTime(String dateTimeStr) {
+        if (dateTimeStr != null && !dateTimeStr.isEmpty()) {
+            dateTimeStr = dateTimeStr.trim();
+            return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+        return null;
     }
 
     private Task mapDTOToTask(TaskDTO taskDTO) {

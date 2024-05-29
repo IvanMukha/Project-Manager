@@ -14,6 +14,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,14 +49,19 @@ public class AttachmentServiceImplTest {
         Attachment attachment2 = new Attachment().setId(2L).setTitle("title2").setTask(task);
         AttachmentDTO attachmentDTO = new AttachmentDTO().setId(1L).setTitle("title1").setTaskId(1L);
         AttachmentDTO attachmentDTO2 = new AttachmentDTO().setId(2L).setTitle("title2").setTaskId(1L);
+
         when(modelMapper.map(attachment, AttachmentDTO.class)).thenReturn(attachmentDTO);
         when(modelMapper.map(attachment2, AttachmentDTO.class)).thenReturn(attachmentDTO2);
-        Mockito.when(attachmentRepository.getAll(1L, 1L)).thenReturn(List.of(attachment, attachment2));
-        List<AttachmentDTO> result = attachmentService.getAll(1L, 1L);
+        Page<Attachment> attachmentPage = new PageImpl<>(List.of(attachment, attachment2));
+        Mockito.when(attachmentRepository.getAll(1L, 1L, PageRequest.of(0, 10))).thenReturn(attachmentPage);
+
+        Page<AttachmentDTO> resultPage = attachmentService.getAll(1L, 1L, 0, 10);
+        List<AttachmentDTO> result = resultPage.getContent();
         assertEquals(2, result.size());
         assertEquals(attachment.getTitle(), result.get(0).getTitle());
         assertEquals(attachment2.getTitle(), result.get(1).getTitle());
-        verify(attachmentRepository).getAll(1L, 1L);
+
+        verify(attachmentRepository).getAll(1L, 1L, PageRequest.of(0, 10));
     }
 
     @Test
@@ -62,10 +70,12 @@ public class AttachmentServiceImplTest {
         Attachment attachment = new Attachment().setId(1L).setTitle("title1");
         Project project = new Project().setId(1L).setTitle("project");
         Task task = new Task().setId(1L).setTitle("task").setProject(project);
+
         when(modelMapper.map(attachmentDTO, Attachment.class)).thenReturn(attachment);
         when(modelMapper.map(attachment, AttachmentDTO.class)).thenReturn(attachmentDTO);
         when(taskRepository.getById(1L, 1L)).thenReturn(Optional.ofNullable(task));
         when(attachmentRepository.save(attachment)).thenReturn(attachment);
+
         AttachmentDTO attachmentDTO1 = attachmentService.save(1L, 1L, attachmentDTO);
         assertNotNull(attachmentDTO1);
         assertEquals(attachmentDTO.getTitle(), attachmentDTO1.getTitle());
@@ -78,8 +88,10 @@ public class AttachmentServiceImplTest {
         Task task = new Task().setId(1L).setTitle("task").setProject(project);
         Attachment attachment = new Attachment().setId(1L).setTitle("Attachment").setTask(task);
         AttachmentDTO attachmentDTO = new AttachmentDTO().setId(1L).setTitle("Attachment").setTaskId(1L);
+
         when(modelMapper.map(attachment, AttachmentDTO.class)).thenReturn(attachmentDTO);
         when(attachmentRepository.getById(1L, 1L, 1L)).thenReturn(Optional.of(attachment));
+
         Optional<AttachmentDTO> result = attachmentService.getById(1L, 1L, 1L);
         assertTrue(result.isPresent());
         assertEquals(attachment.getTitle(), result.get().getTitle());
@@ -92,9 +104,11 @@ public class AttachmentServiceImplTest {
         Task task = new Task().setId(2L).setTitle("title2").setProject(project);
         Attachment attachment = new Attachment().setId(1L).setTitle("title").setTask(task);
         AttachmentDTO attachmentDTO = new AttachmentDTO().setId(1L).setTitle("title").setTaskId(2L);
+
         when(modelMapper.map(attachment, AttachmentDTO.class)).thenReturn(attachmentDTO);
         when(modelMapper.map(attachmentDTO, Attachment.class)).thenReturn(attachment);
         when(attachmentRepository.update(1L, 2L, 1L, attachment)).thenReturn(Optional.of(attachment));
+
         Optional<AttachmentDTO> result = attachmentService.update(1L, 2L, 1L, attachmentDTO);
         assertTrue(result.isPresent());
         assertEquals(attachment.getTitle(), result.get().getTitle());

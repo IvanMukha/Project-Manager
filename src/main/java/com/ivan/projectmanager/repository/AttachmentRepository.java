@@ -1,13 +1,15 @@
 package com.ivan.projectmanager.repository;
 
 import com.ivan.projectmanager.model.Attachment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface AttachmentRepository {
+public interface AttachmentRepository extends CrudRepository<Attachment, Long> {
 
-    List<Attachment> getAll(Long projectId, Long taskId);
+    Page<Attachment> getAll(Long projectId, Long taskId, Pageable pageable);
 
     Optional<Attachment> getById(Long projectId, Long taskId, Long id);
 
@@ -17,16 +19,7 @@ public interface AttachmentRepository {
 
     void delete(Long projectId, Long taskId, Long id);
 
-
-    List<Attachment> findByTitleCriteria(String title);
-
-    List<Attachment> findByTitleJpql(String title);
-
-    List<Attachment> findByTitleCriteriaFetch(String title);
-
-    List<Attachment> findByTitleJpqlFetch(String title);
-
-    List<Attachment> findByTitleWithEntityGraphFetch(String title);
+    List<Attachment> findByTitle(String title);
 
 
 }

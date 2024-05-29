@@ -7,12 +7,12 @@ import com.ivan.projectmanager.repository.RoleRepository;
 import com.ivan.projectmanager.service.RoleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -25,8 +25,14 @@ public class RoleServiceImpl implements RoleService {
         this.roleRepository = roleRepository;
     }
 
-    public List<RoleDTO> getAll() {
-        return roleRepository.getAll().stream().map(this::mapRoleToDTO).collect(Collectors.toList());
+    public Page<RoleDTO> getAll(Integer page, Integer size) {
+        if (page < 0) {
+            page = 0;
+        }
+        if (size <= 0 || size > 100) {
+            size = 10;
+        }
+        return roleRepository.getAll(PageRequest.of(page, size)).map(this::mapRoleToDTO);
     }
 
     @Transactional

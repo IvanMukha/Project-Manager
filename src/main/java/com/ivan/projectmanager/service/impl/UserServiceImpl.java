@@ -7,6 +7,8 @@ import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.repository.UserRepository;
 import com.ivan.projectmanager.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,8 +33,14 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    public List<UserDTO> getAll() {
-        return userRepository.getAll().stream().map(this::mapUserToDTO).collect(Collectors.toList());
+    public Page<UserDTO> getAll(Integer page, Integer size) {
+        if (page < 0) {
+            page = 0;
+        }
+        if (size <= 0 || size > 100) {
+            size = 10;
+        }
+        return userRepository.getAll(PageRequest.of(page, size)).map(this::mapUserToDTO);
     }
 
     @Transactional
@@ -64,11 +71,11 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> getByUsername(String username) {
-        return userRepository.getByUsernameCriteria(username);
+        return userRepository.getByUsername(username);
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        List<User> userList = userRepository.getByUsernameCriteria(username);
+        List<User> userList = userRepository.getByUsername(username);
         User user = userList.stream().findFirst().orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Set<Role> roles = userRepository.findRolesByUserUsername(username);
