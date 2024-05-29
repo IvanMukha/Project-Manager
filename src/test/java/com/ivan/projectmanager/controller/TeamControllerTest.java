@@ -1,9 +1,13 @@
 package com.ivan.projectmanager.controller;
 
+import com.ivan.projectmanager.dto.TeamDTO;
+import com.ivan.projectmanager.dto.UserDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -12,7 +16,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Optional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -116,6 +126,33 @@ public class TeamControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @Test
+    @Sql("classpath:data/teamrepositorytests/insert-teams.sql")
+    @Sql("classpath:data/teamrepositorytests/insert-users-teams.sql")
+    void addUserToTeam() throws Exception {
+        String requestBody = "{\"id\": \"1\"}";
+       mockMvc.perform(post("/teams/1/users")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value("1"));
+    }
+
+    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @Test
+    @Sql("classpath:data/teamrepositorytests/insert-teams.sql")
+    @Sql("classpath:data/teamrepositorytests/insert-users-teams.sql")
+    void removeUserFromTeam() throws Exception {
+        String requestBody = "{\"id\": \"1\"}";
+           mockMvc.perform(delete("/teams/1/users")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }
 

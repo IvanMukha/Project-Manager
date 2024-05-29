@@ -1,5 +1,6 @@
 package com.ivan.projectmanager.service.impl;
 
+import com.ivan.projectmanager.dto.TaskCountDTO;
 import com.ivan.projectmanager.dto.TaskDTO;
 import com.ivan.projectmanager.exeptions.CustomNotFoundException;
 import com.ivan.projectmanager.model.Project;
@@ -14,8 +15,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -84,10 +87,29 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.delete(projectId, id);
     }
 
+    public List<TaskCountDTO> countTasksByStatusAndDateRange(String status, String dateFromStr, String dateToStr, Long projectId) {
+        LocalDateTime dateFrom = parseLocalDateTime(dateFromStr);
+        LocalDateTime dateTo = parseLocalDateTime(dateToStr);
+
+        return taskRepository.countTasksByStatusAndDateRange(status, dateFrom, dateTo, projectId);
+    }
+
+    public List<TaskCountDTO> countTasksByStatusAndDateRangeForUser(String status, String dateFromStr, String dateToStr, Long userId, Long projectId) {
+        LocalDateTime dateFrom = parseLocalDateTime(dateFromStr);
+        LocalDateTime dateTo = parseLocalDateTime(dateToStr);
+
+        return taskRepository.countTasksByStatusAndDateRangeForUser(status, dateFrom, dateTo, userId, projectId);
+    }
+
+
     private LocalDateTime parseLocalDateTime(String dateTimeStr) {
         if (dateTimeStr != null && !dateTimeStr.isEmpty()) {
             dateTimeStr = dateTimeStr.trim();
-            return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            if (dateTimeStr.length() == 10) {
+                return LocalDate.parse(dateTimeStr, DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay();
+            } else {
+                return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            }
         }
         return null;
     }

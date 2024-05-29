@@ -1,5 +1,6 @@
 package com.ivan.projectmanager.service;
 
+import com.ivan.projectmanager.dto.RoleDTO;
 import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.model.User;
 import org.springframework.data.domain.Page;
@@ -25,4 +26,8 @@ public interface UserService extends UserDetailsService {
     UserDetailsService userDetailsService();
 
     List<User> getByUsername(String username);
+
+    Optional<UserDTO> assignRoleToUser(Long userId, RoleDTO roleDTO);
+
+    Optional<UserDTO> removeRoleFromUser(Long userId, RoleDTO roleDTO);
 }

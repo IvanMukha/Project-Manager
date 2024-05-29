@@ -77,6 +77,7 @@ public class UserServiceImplTest {
         when(modelMapper.map(user, UserDTO.class)).thenReturn(userDTO);
         when(modelMapper.map(userDTO, User.class)).thenReturn(user);
         when(userRepository.save(user)).thenReturn(user);
+
         UserDTO savedUserDTO = userService.save(userDTO);
         assertNotNull(savedUserDTO);
         assertEquals(user.getUsername(), savedUserDTO.getUsername());
@@ -89,6 +90,7 @@ public class UserServiceImplTest {
     void testGetUserById() {
         when(modelMapper.map(user, UserDTO.class)).thenReturn(userDTO);
         when(userRepository.getById(1L)).thenReturn(Optional.of(user));
+
         Optional<UserDTO> result = userService.getById(1L);
         assertTrue(result.isPresent());
         assertEquals(user.getUsername(), result.get().getUsername());

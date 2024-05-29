@@ -5,8 +5,10 @@ import com.ivan.projectmanager.exeptions.CustomNotFoundException;
 import com.ivan.projectmanager.model.Comment;
 import com.ivan.projectmanager.model.Project;
 import com.ivan.projectmanager.model.Task;
+import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.repository.CommentRepository;
 import com.ivan.projectmanager.repository.TaskRepository;
+import com.ivan.projectmanager.repository.UserRepository;
 import com.ivan.projectmanager.service.CommentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -22,12 +25,14 @@ public class CommentServiceImpl implements CommentService {
     private final ModelMapper modelMapper;
     private final CommentRepository commentRepository;
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public CommentServiceImpl(ModelMapper modelMapper, CommentRepository commentRepository, TaskRepository taskRepository) {
+    public CommentServiceImpl(ModelMapper modelMapper, CommentRepository commentRepository, TaskRepository taskRepository, UserRepository userRepository) {
         this.modelMapper = modelMapper;
         this.commentRepository = commentRepository;
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
     public Page<CommentDTO> getAll(Long projectId, Long taskId, Integer page, Integer size) {
@@ -49,8 +54,11 @@ public class CommentServiceImpl implements CommentService {
         if (!task.getProject().getId().equals(projectId)) {
             throw new CustomNotFoundException(projectId, Project.class);
         }
-        commentDTO.setTaskId(taskId);
-        return mapCommentToDTO(commentRepository.save(mapDTOToComment(commentDTO)));
+
+        User user = userRepository.getById(commentDTO.getUserId()).orElseThrow();
+        Comment comment = modelMapper.map(commentDTO, Comment.class);
+        comment.setText(commentDTO.getText()).setTask(task).setAddTime(LocalDateTime.now()).setUser(user);
+        return mapCommentToDTO(commentRepository.save(comment));
     }
 
     public Optional<CommentDTO> getById(Long projectId, Long taskId, Long id) {

@@ -1,5 +1,6 @@
 package com.ivan.projectmanager.repository;
 
+import com.ivan.projectmanager.dto.TaskCountDTO;
 import com.ivan.projectmanager.model.Task;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,4 +28,10 @@ public interface TaskRepository {
             String category, String label, LocalDateTime startDateFrom,
             LocalDateTime startDateTo, LocalDateTime dueDateFrom,
             LocalDateTime dueDateTo, Long projectId, Pageable pageable);
+
+    List<TaskCountDTO> countTasksByStatusAndDateRange(String status, LocalDateTime dateFrom,
+                                                      LocalDateTime dateTo, Long projectId);
+
+    List<TaskCountDTO> countTasksByStatusAndDateRangeForUser(String status, LocalDateTime dateFrom,
+                                                             LocalDateTime dateTo, Long userId, Long projectId);
 }

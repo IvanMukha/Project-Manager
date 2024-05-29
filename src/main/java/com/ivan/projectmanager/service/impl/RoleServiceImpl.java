@@ -50,7 +50,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional
     public Optional<RoleDTO> update(Long id, RoleDTO updatedRoleDTO) {
-        Optional<Role> roleOptional = roleRepository.update(id, mapDTOToRole(updatedRoleDTO));
+        Optional<Role> roleOptional = roleRepository.update(id, mapDTOToRole(updatedRoleDTO.setId(id)));
         if (roleOptional.isEmpty()) {
             throw new CustomNotFoundException(id, Role.class);
         }

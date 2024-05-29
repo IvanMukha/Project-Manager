@@ -11,7 +11,7 @@ public class ReportDTO {
     @NotBlank(message = "Report title cannot be empty")
     private String title;
     private String text;
-    private LocalDateTime createdAt;
+    private LocalDateTime createAt;
     @NotNull(message = "User id cannot be null")
     @Positive(message = "User id must be greater than 0")
     private Long userId;
@@ -46,12 +46,12 @@ public class ReportDTO {
         return this;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getCreateAt() {
+        return createAt;
     }
 
-    public ReportDTO setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public ReportDTO setCreateAt(LocalDateTime createAt) {
+        this.createAt = createAt;
         return this;
     }
 

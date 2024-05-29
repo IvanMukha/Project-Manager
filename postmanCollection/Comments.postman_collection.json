@@ -1,0 +1,103 @@
+{
+	"info": {
+		"_postman_id": "fa5847c3-4e0d-4613-bcb0-527a6da02e3d",
+		"name": "Comments",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "24231480"
+	},
+	"item": [
+		{
+			"name": "getAll",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwMTg5MywiZXhwIjoxNzE3MDg4MjkzfQ.We5FWBQg43vWBydrbs1Ju0gu3TugjVWgT_U_--6uGkxBVGfSwLOcSWQGb_Ns1iHa4_BaI0kx8xo0O8-xW-8w3w",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/2/comments"
+			},
+			"response": []
+		},
+		{
+			"name": "getbyId",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwMTg5MywiZXhwIjoxNzE3MDg4MjkzfQ.We5FWBQg43vWBydrbs1Ju0gu3TugjVWgT_U_--6uGkxBVGfSwLOcSWQGb_Ns1iHa4_BaI0kx8xo0O8-xW-8w3w",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/2/comments/2"
+			},
+			"response": []
+		},
+		{
+			"name": "save",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\":\"text\",\r\n    \"taskId\":\"2\",\r\n    \"userId\":\"2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/2/comments"
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " {\"text\":\"updatedtext\",\r\n    \"taskId\":\"2\",\r\n    \"userId\":\"2\"\r\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/2/comments/2"
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/2/comments/2"
+			},
+			"response": []
+		}
+	]
+}

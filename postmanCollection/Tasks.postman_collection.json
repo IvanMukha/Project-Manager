@@ -1,0 +1,193 @@
+{
+	"info": {
+		"_postman_id": "ba04a731-a2ef-4469-bb2c-2ec10f4e6566",
+		"name": "Tasks",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "24231480"
+	},
+	"item": [
+		{
+			"name": "getAll",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks"
+			},
+			"response": []
+		},
+		{
+			"name": "getById",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/2"
+			},
+			"response": []
+		},
+		{
+			"name": "save",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"title\",\r\n    \"status\":\"status\",\r\n    \"priority\":\"priority\",\r\n    \"startDate\":\"2024-04-25T20:01:46.488778\",\r\n    \"dueDate\":\"2024-04-28T20:01:46.488778\",\r\n    \"reporterId\":\"2\",\r\n    \"assigneeId\":\"3\",\r\n    \"category\":\"category\",\r\n    \"label\":\"label\",\r\n    \"description\":\"description\",\r\n    \"projectId\":\"2\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks"
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"title\",\r\n    \"status\":\"status\",\r\n    \"priority\":\"priority\",\r\n    \"startDate\":\"2024-04-25T20:01:46.488778\",\r\n    \"dueDate\":\"2024-04-28T20:01:46.488778\",\r\n    \"reporterId\":\"2\",\r\n    \"assigneeId\":\"3\",\r\n    \"category\":\"category\",\r\n    \"label\":\"label\",\r\n    \"description\":\"description\",\r\n    \"projectId\":\"2\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/2"
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/2"
+			},
+			"response": []
+		},
+		{
+			"name": "countTaskByStatus",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/count-by-status?status=Completed&dateFrom=2024-01-20&dateTo=2024-01-25",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"projectmanager-1.0-SNAPSHOT",
+						"projects",
+						"2",
+						"tasks",
+						"count-by-status"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "Completed"
+						},
+						{
+							"key": "dateFrom",
+							"value": "2024-01-20"
+						},
+						{
+							"key": "dateTo",
+							"value": "2024-01-25"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CountTaskByStatusForUser",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/count-by-user?status=Completed&dateFrom=2024-01-20&dateTo=2024-01-25&userId=3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"projectmanager-1.0-SNAPSHOT",
+						"projects",
+						"2",
+						"tasks",
+						"count-by-user"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "Completed"
+						},
+						{
+							"key": "dateFrom",
+							"value": "2024-01-20"
+						},
+						{
+							"key": "dateTo",
+							"value": "2024-01-25"
+						},
+						{
+							"key": "userId",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

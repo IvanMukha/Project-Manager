@@ -1,6 +1,7 @@
 package com.ivan.projectmanager.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,7 +20,7 @@ public class Team {
     @SequenceGenerator(name = "teams_seq_generator", sequenceName = "teams_seq", allocationSize = 1)
     private Long id;
     private String name;
-    @ManyToMany(mappedBy = "teams")
+    @ManyToMany(mappedBy = "teams", fetch = FetchType.EAGER)
     private Set<User> users = new HashSet<>();
 
     public Long getId() {

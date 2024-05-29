@@ -1,5 +1,6 @@
 package com.ivan.projectmanager.service;
 
+import com.ivan.projectmanager.dto.TaskCountDTO;
 import com.ivan.projectmanager.dto.TaskDTO;
 import com.ivan.projectmanager.model.Project;
 import com.ivan.projectmanager.model.Task;
@@ -17,8 +18,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,10 +79,12 @@ public class TaskServiceImplTest {
         Project project = new Project().setId(1L);
         Task task = new Task().setTitle("Test Task").setReporter(user).setProject(project);
         TaskDTO taskDTO = new TaskDTO().setTitle("Test Task").setReporterId(1L).setProjectId(1L);
+
         when(modelMapper.map(task, TaskDTO.class)).thenReturn(taskDTO);
         when(modelMapper.map(taskDTO, Task.class)).thenReturn(task);
         when(projectRepository.getById(1L)).thenReturn(Optional.ofNullable(project));
         when(taskRepository.save(task)).thenReturn(task);
+
         TaskDTO savedTaskDTO = taskService.save(1L, taskDTO);
         assertNotNull(savedTaskDTO);
         assertEquals(task.getTitle(), savedTaskDTO.getTitle());
@@ -90,8 +95,10 @@ public class TaskServiceImplTest {
     void testGetTaskById() {
         Task task = new Task().setTitle("Test Task");
         TaskDTO taskDTO = new TaskDTO().setTitle("Test Task");
+
         when(modelMapper.map(task, TaskDTO.class)).thenReturn(taskDTO);
         when(taskRepository.getById(1L, 1L)).thenReturn(Optional.of(task));
+
         Optional<TaskDTO> result = taskService.getById(1L, 1L);
         assertTrue(result.isPresent());
         assertEquals("Test Task", result.get().getTitle());
@@ -102,5 +109,47 @@ public class TaskServiceImplTest {
     void testDeleteTask() {
         taskService.delete(1L, 1L);
         verify(taskRepository).delete(1L, 1L);
+    }
+
+    @Test
+    void countTasksByStatusAndDateRange() {
+        LocalDateTime dateFrom = LocalDateTime.now();
+        LocalDateTime dateTo = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String dateFromStr = dateFrom.format(formatter);
+        String dateToStr = dateTo.format(formatter);
+        TaskCountDTO taskCountDTO = new TaskCountDTO(LocalDate.now(), 2L);
+        List<TaskCountDTO> taskCountDTOList = new ArrayList<>();
+        taskCountDTOList.add(taskCountDTO);
+        LocalDateTime parsedDateFrom = LocalDateTime.parse(dateFromStr, formatter);
+        LocalDateTime parsedDateTo = LocalDateTime.parse(dateToStr, formatter);
+
+        when(taskRepository.countTasksByStatusAndDateRange("Completed", parsedDateFrom, parsedDateTo, 1L)).thenReturn(taskCountDTOList);
+
+        List<TaskCountDTO> result = taskService.countTasksByStatusAndDateRange("Completed", dateFromStr, dateToStr, 1L);
+        assertEquals(1, result.size());
+        assertEquals(2L, result.get(0).getCount());
+    }
+
+    @Test
+    void countTasksByStatusAndDateRangeForUser() {
+        LocalDateTime dateFrom = LocalDateTime.now();
+        LocalDateTime dateTo = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String dateFromStr = dateFrom.format(formatter);
+        String dateToStr = dateTo.format(formatter);
+        TaskCountDTO taskCountDTO = new TaskCountDTO(LocalDate.now(), 2L);
+        List<TaskCountDTO> taskCountDTOList = new ArrayList<>();
+        taskCountDTOList.add(taskCountDTO);
+        LocalDateTime parsedDateFrom = LocalDateTime.parse(dateFromStr, formatter);
+        LocalDateTime parsedDateTo = LocalDateTime.parse(dateToStr, formatter);
+
+        when(taskRepository.countTasksByStatusAndDateRangeForUser("Completed", parsedDateFrom, parsedDateTo, 1L, 1L))
+                .thenReturn(taskCountDTOList);
+
+        List<TaskCountDTO> result = taskService.countTasksByStatusAndDateRangeForUser("Completed", dateFromStr, dateToStr, 1L, 1L);
+
+        assertEquals(1, result.size());
+        assertEquals(2L, result.get(0).getCount());
     }
 }

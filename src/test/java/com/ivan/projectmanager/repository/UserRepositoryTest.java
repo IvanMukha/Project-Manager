@@ -59,11 +59,13 @@ public class UserRepositoryTest {
     public void testUpdate() {
         Optional<User> user = userRepository.getById(1L);
         assertTrue(user.isPresent());
+
         User updatedUser = user.get();
         updatedUser.setUsername("updatedUser");
         userRepository.update(1L, updatedUser);
         Optional<User> updatedUserOptional = userRepository.getById(1L);
-        assertTrue(updatedUserOptional.isPresent());
+
+        (updatedUserOptional.isPresent());
         assertEquals("updatedUser", updatedUserOptional.get().getUsername());
     }
 
@@ -71,6 +73,7 @@ public class UserRepositoryTest {
     @Sql("classpath:data/userrepositorytests/insert-users.sql")
     public void testGetByUsername() {
         List<User> foundUsers = userRepository.getByUsername("user2");
+
         assertThat(foundUsers).isNotEmpty();
         assertThat(foundUsers.getFirst().getUsername()).isEqualTo("user2");
     }

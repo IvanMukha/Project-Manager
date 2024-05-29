@@ -39,6 +39,7 @@ public class AttachmentRepositoryTest {
     @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
     public void testGetById() {
         Attachment attachment = attachmentRepository.getById(1L, 1L, 1L).orElse(null);
+
         assertNotNull(attachment);
         assertEquals(1, attachment.getId());
     }
@@ -62,6 +63,7 @@ public class AttachmentRepositoryTest {
         attachment.setTitle("Updated Title");
         attachment.setPath("/attachments/updated.pdf");
         Attachment updatedAttachment = attachmentRepository.update(1L, 1L, 1L, attachment).orElse(null);
+
         assertNotNull(updatedAttachment);
         assertEquals("Updated Title", updatedAttachment.getTitle());
         assertEquals("/attachments/updated.pdf", updatedAttachment.getPath());
@@ -73,6 +75,7 @@ public class AttachmentRepositoryTest {
     @Sql("classpath:data/attachmentrepositorytests/insert-attachments.sql")
     public void testFindByTitle() {
         List<Attachment> foundAttachments = attachmentRepository.findByTitle("Test Attachment");
+
         assertThat(foundAttachments).isNotEmpty();
         assertThat(foundAttachments).hasSize(1);
         assertThat(foundAttachments.getFirst().getTitle()).isEqualTo("Test Attachment");

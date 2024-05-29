@@ -1,5 +1,6 @@
 package com.ivan.projectmanager.repository;
 
+import com.ivan.projectmanager.dto.TaskCountDTO;
 import com.ivan.projectmanager.model.Task;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +40,7 @@ public class TaskRepositoryTest {
         Page<Task> tasks = taskRepository.getAll("In progress", "High",
                 1L, 2L, "Development", "Bug", startDate, startDate,
                 dueDate, dueDate, 1L, PageRequest.of(0, 10));
+
         assertThat(tasks).isNotEmpty();
     }
 
@@ -46,6 +48,7 @@ public class TaskRepositoryTest {
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     public void testGetById() {
         Optional<Task> task = taskRepository.getById(1L, 1L);
+
         assertTrue(task.isPresent());
         assertEquals("Task 1", task.get().getTitle());
     }
@@ -55,6 +58,7 @@ public class TaskRepositoryTest {
     public void testDeleteTask() {
         Optional<Task> task = taskRepository.getById(1L, 1L);
         assertTrue(task.isPresent());
+
         taskRepository.delete(1L, 1L);
         assertFalse(taskRepository.getById(1L, 1L).isPresent());
     }
@@ -64,10 +68,12 @@ public class TaskRepositoryTest {
     public void testUpdate() {
         Optional<Task> task = taskRepository.getById(1L, 1L);
         assertTrue(task.isPresent());
+
         Task updatedTask = task.get();
         updatedTask.setTitle("Updated Task");
         taskRepository.update(1L, 1L, updatedTask);
         Optional<Task> updatedTaskOptional = taskRepository.getById(1L, 1L);
+
         assertTrue(updatedTaskOptional.isPresent());
         assertEquals("Updated Task", updatedTaskOptional.get().getTitle());
     }
@@ -76,6 +82,7 @@ public class TaskRepositoryTest {
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     public void testGetByStatus() {
         List<Task> foundTasks = taskRepository.getByStatus("In progress");
+
         assertThat(foundTasks).isNotEmpty();
         assertThat(foundTasks.getFirst().getStatus()).isEqualTo("In progress");
     }
@@ -84,9 +91,36 @@ public class TaskRepositoryTest {
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     public void testGetByCategory() {
         List<Task> foundTasks = taskRepository.getByCategory("Development");
+
         assertThat(foundTasks).isNotEmpty();
         assertThat(foundTasks).hasSize(1);
         assertThat(foundTasks.getFirst().getCategory()).isEqualTo("Development");
+    }
+
+    @Test
+    @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
+    void testCountTasksByStatusAndDateRange() {
+        String status = "In progress";
+        LocalDateTime dateFrom = LocalDateTime.of(2024, 4, 15, 0, 0);
+        LocalDateTime dateTo = LocalDateTime.of(2024, 4, 25, 23, 59);
+
+        List<TaskCountDTO> result = taskRepository.countTasksByStatusAndDateRange(status, dateFrom, dateTo, 1L);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
+    void testCountTasksByStatusAndDateRangeForUser() {
+        String status = "In progress";
+        LocalDateTime dateFrom = LocalDateTime.of(2024, 4, 15, 0, 0);
+        LocalDateTime dateTo = LocalDateTime.of(2024, 4, 25, 23, 59);
+        Long userId = 2L;
+        Long projectId = 1L;
+
+        List<TaskCountDTO> result = taskRepository.countTasksByStatusAndDateRangeForUser(status, dateFrom, dateTo, userId, projectId);
+
+        assertEquals(1, result.size());
     }
 
 }

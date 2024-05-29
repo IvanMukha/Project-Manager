@@ -7,9 +7,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 
@@ -18,8 +21,17 @@ import javax.sql.DataSource;
 @ComponentScan(basePackageClasses = CrudRepository.class)
 @Import({LiquibaseConfig.class, EntityManagerConfig.class})
 public class TestRepositoryConfiguration {
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public PostgreSQLContainer<?> postgreSQLContainer() {
+        return new PostgreSQLContainer<>("postgres:16.0");
+    }
+
     @Bean
-    public DataSource h2DataSource() {
-        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
+    public DataSource dataSource(PostgreSQLContainer<?> postgreSQLContainer) {
+        return new DriverManagerDataSource(
+                postgreSQLContainer.getJdbcUrl(),
+                postgreSQLContainer.getUsername(),
+                postgreSQLContainer.getPassword()
+        );
     }
 }

@@ -1,6 +1,7 @@
 package com.ivan.projectmanager.controller;
 
 import com.ivan.projectmanager.dto.TeamDTO;
+import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.service.TeamService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,5 +77,27 @@ public class TeamController {
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         teamService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/users")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<TeamDTO> addUserToTeam(@PathVariable("id") Long id, @RequestBody @Valid UserDTO userDTO,BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
+        Optional<TeamDTO> updatedTeam = teamService.addUserToTeam(id, userDTO);
+        return updatedTeam.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}/users")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<TeamDTO> removeUserFromTeam(@PathVariable("id") Long id, @RequestBody @Valid UserDTO userDTO,BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        Optional<TeamDTO> updatedTeam = teamService.removeUserFromTeam(id, userDTO);
+        return updatedTeam.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

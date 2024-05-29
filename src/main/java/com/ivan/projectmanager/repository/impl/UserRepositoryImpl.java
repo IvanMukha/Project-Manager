@@ -60,6 +60,7 @@ public class UserRepositoryImpl extends AbstractRepository<User, Long> implement
             user.setUsername(updatedEntity.getUsername());
             user.setPassword(updatedEntity.getPassword());
             user.setEmail(updatedEntity.getEmail());
+            user.setRoles(updatedEntity.getRoles());
             entityManager.merge(user);
             return user;
         });

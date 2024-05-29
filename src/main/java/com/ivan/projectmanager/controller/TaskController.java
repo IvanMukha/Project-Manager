@@ -1,5 +1,6 @@
 package com.ivan.projectmanager.controller;
 
+import com.ivan.projectmanager.dto.TaskCountDTO;
 import com.ivan.projectmanager.dto.TaskDTO;
 import com.ivan.projectmanager.service.TaskService;
 import jakarta.validation.Valid;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -54,6 +56,33 @@ public class TaskController {
                 status, priority, reporterId, assigneeId, category, label,
                 startDateFrom, startDateTo, dueDateFrom, dueDateTo, projectId, page, size);
         return ResponseEntity.ok(tasks);
+    }
+
+    @GetMapping("/count-by-status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<TaskCountDTO>> countTasksByStatusAndDateRange(
+            @PathVariable("projectId") Long projectId,
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam(name = "dateFrom", required = false) String dateFrom,
+            @RequestParam(name = "dateTo", required = false) String dateTo) {
+
+        List<TaskCountDTO> taskCounts = taskService.countTasksByStatusAndDateRange(status, dateFrom, dateTo, projectId);
+        return ResponseEntity.ok(taskCounts);
+    }
+
+    @GetMapping("/count-by-user")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<TaskCountDTO>> countTasksByStatusAndDateRangeForUser(
+            @PathVariable("projectId") Long projectId,
+            @RequestParam(name = "status") String status,
+            @RequestParam(name = "dateFrom") String dateFromStr,
+            @RequestParam(name = "dateTo") String dateToStr,
+            @RequestParam(name = "userId") Long userId) {
+
+        List<TaskCountDTO> taskCounts = taskService.countTasksByStatusAndDateRangeForUser(
+                status, dateFromStr, dateToStr, userId, projectId);
+
+        return ResponseEntity.ok(taskCounts);
     }
 
     @PostMapping()

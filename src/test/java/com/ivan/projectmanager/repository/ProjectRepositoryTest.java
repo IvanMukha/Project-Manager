@@ -33,6 +33,7 @@ public class ProjectRepositoryTest {
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     public void testGetAll() {
         Page<Project> projectPage = projectRepository.getAll(PageRequest.of(0, 10));
+
         assertThat(projectPage).isNotEmpty();
     }
 
@@ -40,6 +41,7 @@ public class ProjectRepositoryTest {
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     public void testGetById() {
         Optional<Project> project = projectRepository.getById(1L);
+
         assertTrue(project.isPresent());
         assertEquals("Project ABC", project.get().getTitle());
     }
@@ -73,6 +75,7 @@ public class ProjectRepositoryTest {
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     public void testFindByStatus() {
         List<Project> foundProjects = projectRepository.findByStatus("Active");
+
         assertThat(foundProjects).isNotEmpty();
         assertThat(foundProjects).hasSize(1);
         assertThat(foundProjects.getFirst().getStatus()).isEqualTo("Active");
@@ -82,6 +85,7 @@ public class ProjectRepositoryTest {
     @Sql("classpath:data/projectrepositorytests/insert-projects.sql")
     public void testFindByTitle() {
         List<Project> foundProjects = projectRepository.findByTitle("Project ABC");
+
         assertThat(foundProjects).isNotEmpty();
         assertThat(foundProjects).hasSize(1);
         assertThat(foundProjects.getFirst().getTitle()).isEqualTo("Project ABC");

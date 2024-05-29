@@ -49,11 +49,11 @@ public class AttachmentServiceImplTest {
         Attachment attachment2 = new Attachment().setId(2L).setTitle("title2").setTask(task);
         AttachmentDTO attachmentDTO = new AttachmentDTO().setId(1L).setTitle("title1").setTaskId(1L);
         AttachmentDTO attachmentDTO2 = new AttachmentDTO().setId(2L).setTitle("title2").setTaskId(1L);
+        Page<Attachment> attachmentPage = new PageImpl<>(List.of(attachment, attachment2));
 
         when(modelMapper.map(attachment, AttachmentDTO.class)).thenReturn(attachmentDTO);
         when(modelMapper.map(attachment2, AttachmentDTO.class)).thenReturn(attachmentDTO2);
-        Page<Attachment> attachmentPage = new PageImpl<>(List.of(attachment, attachment2));
-        Mockito.when(attachmentRepository.getAll(1L, 1L, PageRequest.of(0, 10))).thenReturn(attachmentPage);
+        when(attachmentRepository.getAll(1L, 1L, PageRequest.of(0, 10))).thenReturn(attachmentPage);
 
         Page<AttachmentDTO> resultPage = attachmentService.getAll(1L, 1L, 0, 10);
         List<AttachmentDTO> result = resultPage.getContent();

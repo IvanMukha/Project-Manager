@@ -58,9 +58,11 @@ public class ProjectServiceImplTest {
     public void testSave() {
         Project project = new Project().setTitle("title");
         ProjectDTO projectDTO = new ProjectDTO().setTitle("title");
+
         when(modelMapper.map(project, ProjectDTO.class)).thenReturn(projectDTO);
         when(modelMapper.map(projectDTO, Project.class)).thenReturn(project);
-        Mockito.when(projectRepository.save(project)).thenReturn(project);
+        when(projectRepository.save(project)).thenReturn(project);
+
         ProjectDTO projectDTO2 = projectService.save(projectDTO);
         assertNotNull(projectDTO2);
         assertEquals(projectDTO2.getTitle(), project.getTitle());
@@ -72,8 +74,10 @@ public class ProjectServiceImplTest {
         long id = 1L;
         Project project = new Project().setTitle("title");
         ProjectDTO projectDTO = new ProjectDTO().setTitle("title");
+
         when(modelMapper.map(project, ProjectDTO.class)).thenReturn(projectDTO);
         when(projectRepository.getById(id)).thenReturn(Optional.of(project));
+
         Optional<ProjectDTO> result = projectService.getById(id);
         assertTrue(result.isPresent());
         assertEquals(project.getTitle(), result.get().getTitle());
@@ -84,9 +88,11 @@ public class ProjectServiceImplTest {
     void testUpdate() {
         Project project = new Project().setTitle("title");
         ProjectDTO projectDTO = new ProjectDTO().setTitle("title");
+
         when(modelMapper.map(project, ProjectDTO.class)).thenReturn(projectDTO);
         when(modelMapper.map(projectDTO, Project.class)).thenReturn(project);
         when(projectRepository.update(1L, project)).thenReturn(Optional.of(project));
+
         Optional<ProjectDTO> result = projectService.update(1L, projectDTO);
         assertTrue(result.isPresent());
         assertEquals(project.getTitle(), result.get().getTitle());

@@ -1,8 +1,11 @@
 package com.ivan.projectmanager.service;
 
 import com.ivan.projectmanager.dto.TeamDTO;
+import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.model.Team;
+import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.repository.TeamRepository;
+import com.ivan.projectmanager.repository.UserRepository;
 import com.ivan.projectmanager.service.impl.TeamServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,8 +35,11 @@ public class TeamServiceImplTest {
     ModelMapper modelMapper;
     @Mock
     private TeamRepository teamRepository;
+    @Mock
+    private UserRepository userRepository;
     @InjectMocks
     private TeamServiceImpl teamService;
+
 
 
     @Test
@@ -48,6 +54,7 @@ public class TeamServiceImplTest {
         when(modelMapper.map(team, TeamDTO.class)).thenReturn(teamDTO);
         when(modelMapper.map(team2, TeamDTO.class)).thenReturn(teamDTO2);
         when(teamRepository.getAll(PageRequest.of(0, 10))).thenReturn(page);
+
         List<TeamDTO> result = teamService.getAll(0, 10).getContent();
         assertEquals(2, result.size());
         assertEquals(team.getName(), result.get(0).getName());
@@ -59,9 +66,11 @@ public class TeamServiceImplTest {
     void testSaveTeam() {
         Team team = new Team().setName("Test Team");
         TeamDTO teamDTO = new TeamDTO().setName("Test Team");
+
         when(modelMapper.map(team, TeamDTO.class)).thenReturn(teamDTO);
         when(modelMapper.map(teamDTO, Team.class)).thenReturn(team);
-        Mockito.when(teamRepository.save(team)).thenReturn(team);
+        when(teamRepository.save(team)).thenReturn(team);
+
         TeamDTO savedTeamDTO = teamService.save(teamDTO);
         assertNotNull(savedTeamDTO);
         assertEquals(team.getName(), savedTeamDTO.getName());
@@ -72,8 +81,10 @@ public class TeamServiceImplTest {
     void testGetTeamById() {
         Team team = new Team().setName("Test Team");
         TeamDTO teamDTO = new TeamDTO().setName("Test Team");
+
         when(modelMapper.map(team, TeamDTO.class)).thenReturn(teamDTO);
         when(teamRepository.getById(1L)).thenReturn(Optional.of(team));
+
         Optional<TeamDTO> result = teamService.getById(1L);
         assertTrue(result.isPresent());
         assertEquals("Test Team", result.get().getName());
@@ -85,5 +96,34 @@ public class TeamServiceImplTest {
         Long id = 1L;
         teamService.delete(id);
         verify(teamRepository).delete(id);
+    }
+
+    @Test
+    void testAddUserToTeam() {
+        Team team = new Team().setId(1L).setName("Test Team");
+        User user = new User().setId(1L).setUsername("name");
+        UserDTO userDTO=new UserDTO().setId(1L).setUsername("name");
+
+        when(teamRepository.getById(1L)).thenReturn(Optional.of(team));
+        when(userRepository.getById(1L)).thenReturn(Optional.of(user));
+        when(teamRepository.update(1L,team)).thenReturn(Optional.of(team));
+
+        Optional<TeamDTO> result = teamService.addUserToTeam(1L, userDTO);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void testRemoveUserFromTeam() {
+        Team team = new Team().setId(1L).setName("Test Team");
+        User user = new User().setId(1L).setUsername("Test User");
+        team.getUsers().add(user);
+
+        when(teamRepository.getById(1L)).thenReturn(Optional.of(team));
+        when(teamRepository.update(1L, team)).thenReturn(Optional.of(team));
+
+        Optional<TeamDTO> result = teamService.removeUserFromTeam(1L, new UserDTO().setId(1L));
+
+        assertTrue(result.isEmpty());
     }
 }

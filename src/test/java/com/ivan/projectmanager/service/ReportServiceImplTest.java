@@ -69,10 +69,12 @@ public class ReportServiceImplTest {
         Task task = new Task().setId(1L).setProject(project);
         Report report = new Report().setTitle("Test Report").setTask(task).setUser(user);
         ReportDTO reportDTO = new ReportDTO().setTitle("Test Report").setTaskId(1L).setUserId(1L);
+
         when(modelMapper.map(report, ReportDTO.class)).thenReturn(reportDTO);
         when(modelMapper.map(reportDTO, Report.class)).thenReturn(report);
         when(taskRepository.getById(1L, 1L)).thenReturn(Optional.ofNullable(task));
         when(reportRepository.save(report)).thenReturn(report);
+
         ReportDTO savedReportDTO = reportService.save(1L, 1L, reportDTO);
         assertNotNull(savedReportDTO);
         assertEquals(report.getTitle(), savedReportDTO.getTitle());
@@ -84,8 +86,10 @@ public class ReportServiceImplTest {
         long id = 1L;
         Report report = new Report().setTitle("title");
         ReportDTO reportDTO = new ReportDTO().setTitle("title");
+
         when(modelMapper.map(report, ReportDTO.class)).thenReturn(reportDTO);
         when(reportRepository.getById(1L, 1L, id)).thenReturn(Optional.of(report));
+
         Optional<ReportDTO> result = reportService.getById(1L, 1L, id);
         assertTrue(result.isPresent());
         assertEquals("title", result.get().getTitle());

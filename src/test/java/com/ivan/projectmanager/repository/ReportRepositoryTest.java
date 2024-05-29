@@ -41,6 +41,7 @@ public class ReportRepositoryTest {
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
     public void testGetById() {
         Optional<Report> report = reportRepository.getById(1L, 1L, 1L);
+
         assertTrue(report.isPresent());
         assertEquals("title", report.get().getTitle());
     }
@@ -76,6 +77,7 @@ public class ReportRepositoryTest {
         User user = new User();
         user.setId(1L);
         List<Report> foundReports = reportRepository.getReportsByUser(user);
+
         assertThat(foundReports).isNotEmpty();
         assertThat(foundReports).hasSize(1);
         assertThat(foundReports.getFirst().getUser().getId()).isEqualTo(1L);

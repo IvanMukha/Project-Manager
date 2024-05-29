@@ -1,14 +1,19 @@
 package com.ivan.projectmanager.repository.impl;
 
+import com.ivan.projectmanager.dto.TaskCountDTO;
 import com.ivan.projectmanager.model.Task;
 import com.ivan.projectmanager.model.Task_;
+import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.repository.AbstractRepository;
 import com.ivan.projectmanager.repository.TaskRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.Tuple;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -18,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +139,80 @@ public class TaskRepositoryImpl extends AbstractRepository<Task, Long> implement
         return new PageImpl<>(resultList, pageable, totalRows);
     }
 
+    public List<TaskCountDTO> countTasksByStatusAndDateRange(String status, LocalDateTime dateFrom, LocalDateTime dateTo, Long projectId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
+        Root<Task> root = criteriaQuery.from(Task.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(criteriaBuilder.equal(root.get("project").get("id"), projectId));
+
+        if (status != null) {
+            predicates.add(criteriaBuilder.equal(root.get("status"), status));
+        }
+
+        if (dateFrom != null && dateTo != null) {
+            predicates.add(criteriaBuilder.between(root.get("dueDate"), dateFrom, dateTo));
+        } else if (dateFrom != null) {
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("dueDate"), dateFrom));
+        } else if (dateTo != null) {
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("dueDate"), dateTo));
+        }
+
+        criteriaQuery.where(predicates.toArray(new Predicate[0]));
+
+        criteriaQuery.multiselect(
+                criteriaBuilder.function("date", LocalDate.class, root.get("dueDate")).alias("date"),
+                criteriaBuilder.count(root).alias("count")
+        ).groupBy(criteriaBuilder.function("date", LocalDate.class, root.get("dueDate")));
+
+        TypedQuery<Tuple> query = entityManager.createQuery(criteriaQuery);
+        List<Tuple> results = query.getResultList();
+
+        List<TaskCountDTO> taskCountList = new ArrayList<>();
+        for (Tuple result : results) {
+            LocalDate date = result.get("date", LocalDate.class);
+            Long count = result.get("count", Long.class);
+            taskCountList.add(new TaskCountDTO(date, count));
+        }
+
+        return taskCountList;
+    }
+
+    public List<TaskCountDTO> countTasksByStatusAndDateRangeForUser(String status, LocalDateTime dateFrom, LocalDateTime dateTo, Long userId, Long projectId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
+        Root<Task> root = criteriaQuery.from(Task.class);
+
+        Join<Task, User> reporterJoin = root.join("assignee", JoinType.INNER);
+        Predicate userPredicate = criteriaBuilder.equal(reporterJoin.get("id"), userId);
+
+        Predicate statusPredicate = criteriaBuilder.equal(root.get("status"), status);
+        Predicate datePredicate = criteriaBuilder.between(root.get("dueDate"), dateFrom, dateTo);
+        Predicate projectPredicate = criteriaBuilder.equal(root.get("project").get("id"), projectId);
+
+        Predicate finalPredicate = criteriaBuilder.and(userPredicate, statusPredicate, datePredicate, projectPredicate);
+
+        criteriaQuery.multiselect(
+                criteriaBuilder.function("date", LocalDate.class, root.get("dueDate")).alias("dueDate"),
+                criteriaBuilder.count(root.get("id")).alias("count")
+        );
+
+        criteriaQuery.where(finalPredicate);
+        criteriaQuery.groupBy(root.get("dueDate"));
+
+        TypedQuery<Tuple> query = entityManager.createQuery(criteriaQuery);
+        List<Tuple> results = query.getResultList();
+
+        List<TaskCountDTO> taskCountList = new ArrayList<>();
+        for (Tuple result : results) {
+            LocalDate date = result.get("dueDate", LocalDate.class);
+            Long count = result.get("count", Long.class);
+            taskCountList.add(new TaskCountDTO(date, count));
+        }
+
+        return taskCountList;
+    }
 
     private Predicate buildEqualPredicate(CriteriaBuilder criteriaBuilder, Path<String> path, String value) {
         return (value != null) ? criteriaBuilder.equal(path, value) : null;

@@ -59,9 +59,11 @@ public class RoleServiceImplTest {
     void testSaveRole() {
         Role role = new Role().setName("Test Role");
         RoleDTO roleDTO = new RoleDTO().setName("Test Role");
+
         when(modelMapper.map(role, RoleDTO.class)).thenReturn(roleDTO);
         when(modelMapper.map(roleDTO, Role.class)).thenReturn(role);
-        Mockito.when(roleRepository.save(role)).thenReturn(role);
+        when(roleRepository.save(role)).thenReturn(role);
+
         RoleDTO savedRoleDTO = roleService.save(roleDTO);
         assertNotNull(savedRoleDTO);
         assertEquals(role.getName(), savedRoleDTO.getName());
@@ -72,8 +74,10 @@ public class RoleServiceImplTest {
     void testGetRoleById() {
         Role role = new Role().setName("Test Role");
         RoleDTO roleDTO = new RoleDTO().setName("Test Role");
+
         when(modelMapper.map(role, RoleDTO.class)).thenReturn(roleDTO);
         when(roleRepository.getById(1L)).thenReturn(Optional.of(role));
+
         Optional<RoleDTO> result = roleService.getById(1L);
         assertTrue(result.isPresent());
         assertEquals("Test Role", result.get().getName());

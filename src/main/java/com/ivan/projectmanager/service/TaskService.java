@@ -1,8 +1,10 @@
 package com.ivan.projectmanager.service;
 
+import com.ivan.projectmanager.dto.TaskCountDTO;
 import com.ivan.projectmanager.dto.TaskDTO;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface TaskService {
@@ -20,4 +22,9 @@ public interface TaskService {
 
     void delete(Long projectId, Long id);
 
+    List<TaskCountDTO> countTasksByStatusAndDateRange(String status, String dateFromStr,
+                                                      String dateToStr, Long projectId);
+
+    List<TaskCountDTO> countTasksByStatusAndDateRangeForUser(String status, String dateFromStr, String dateToStr,
+                                                             Long userId, Long projectId);
 }

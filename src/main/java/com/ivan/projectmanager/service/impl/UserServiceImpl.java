@@ -1,9 +1,11 @@
 package com.ivan.projectmanager.service.impl;
 
+import com.ivan.projectmanager.dto.RoleDTO;
 import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.exeptions.CustomNotFoundException;
 import com.ivan.projectmanager.model.Role;
 import com.ivan.projectmanager.model.User;
+import com.ivan.projectmanager.repository.RoleRepository;
 import com.ivan.projectmanager.repository.UserRepository;
 import com.ivan.projectmanager.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -27,10 +29,12 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    public UserServiceImpl(ModelMapper modelMapper, UserRepository userRepository) {
+    public UserServiceImpl(ModelMapper modelMapper, UserRepository userRepository, RoleRepository roleRepository) {
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     public Page<UserDTO> getAll(Integer page, Integer size) {
@@ -93,6 +97,24 @@ public class UserServiceImpl implements UserService {
 
     public UserDetailsService userDetailsService() {
         return this::loadUserByUsername;
+    }
+
+    public Optional<UserDTO> assignRoleToUser(Long userId, RoleDTO roleDTO) {
+        User user = userRepository.getById(userId).stream().findFirst().orElseThrow(() -> new CustomNotFoundException(userId, User.class));
+        Role role = roleRepository.getById(roleDTO.getId()).stream().findFirst().orElseThrow(() -> new CustomNotFoundException(roleDTO.getId(), Role.class));
+        if (user.getRoles().stream().noneMatch(r -> r.getId().equals(role.getId()))) {
+            user.getRoles().add(role);
+        }
+        Optional<User> userOptional = userRepository.update(userId, user);
+        return userOptional.map(this::mapUserToDTO);
+    }
+
+    public Optional<UserDTO> removeRoleFromUser(Long userId, RoleDTO roleDTO) {
+        User user = userRepository.getById(userId).stream().findFirst().orElseThrow(() -> new CustomNotFoundException(userId, User.class));
+        Role role = roleRepository.getById(roleDTO.getId()).stream().findFirst().orElseThrow(() -> new CustomNotFoundException(roleDTO.getId(), Role.class));
+        user.getRoles().removeIf(r -> r.getId().equals(role.getId()));
+        Optional<User> userOptional = userRepository.update(userId, user);
+        return userOptional.map(this::mapUserToDTO);
     }
 
     private User mapDTOToUser(UserDTO userDTO) {

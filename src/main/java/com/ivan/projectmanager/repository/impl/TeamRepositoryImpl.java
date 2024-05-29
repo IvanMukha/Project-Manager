@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -42,5 +43,15 @@ public class TeamRepositoryImpl extends AbstractRepository<Team, Long> implement
 
         return new PageImpl<>(resultList, pageable, totalRows);
     }
+
+    public Optional<Team> update(Long id, Team updatedEntity) {
+        return super.getById(id).map(team -> {
+            team.setName(updatedEntity.getName());
+            team.setUsers(updatedEntity.getUsers());
+            entityManager.merge(team);
+            return team;
+        });
+    }
+
 }
 

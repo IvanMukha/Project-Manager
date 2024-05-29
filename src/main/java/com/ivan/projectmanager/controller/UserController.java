@@ -1,5 +1,6 @@
 package com.ivan.projectmanager.controller;
 
+import com.ivan.projectmanager.dto.RoleDTO;
 import com.ivan.projectmanager.dto.UserDTO;
 import com.ivan.projectmanager.service.UserService;
 import jakarta.validation.Valid;
@@ -75,5 +76,25 @@ public class UserController {
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/assign-role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserDTO> assignRoleToUser(@PathVariable("id") Long id, @RequestBody @Valid RoleDTO roleDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        userService.assignRoleToUser(id, roleDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/remove-role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> removeRoleFromUser(@PathVariable("id") Long id, @RequestBody @Valid RoleDTO roleDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        userService.removeRoleFromUser(id, roleDTO);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
