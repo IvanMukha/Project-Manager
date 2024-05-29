@@ -81,10 +81,10 @@ public class TeamController {
 
     @PostMapping("/{id}/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TeamDTO> addUserToTeam(@PathVariable("id") Long id, @RequestBody @Valid UserDTO userDTO,BindingResult bindingResult) {
+    public ResponseEntity<TeamDTO> addUserToTeam(@PathVariable("id") Long id, @RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-    }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
         Optional<TeamDTO> updatedTeam = teamService.addUserToTeam(id, userDTO);
         return updatedTeam.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -92,7 +92,7 @@ public class TeamController {
 
     @DeleteMapping("/{id}/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<TeamDTO> removeUserFromTeam(@PathVariable("id") Long id, @RequestBody @Valid UserDTO userDTO,BindingResult bindingResult) {
+    public ResponseEntity<TeamDTO> removeUserFromTeam(@PathVariable("id") Long id, @RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }

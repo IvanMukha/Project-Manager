@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -39,7 +38,6 @@ public class TeamServiceImplTest {
     private UserRepository userRepository;
     @InjectMocks
     private TeamServiceImpl teamService;
-
 
 
     @Test
@@ -102,11 +100,11 @@ public class TeamServiceImplTest {
     void testAddUserToTeam() {
         Team team = new Team().setId(1L).setName("Test Team");
         User user = new User().setId(1L).setUsername("name");
-        UserDTO userDTO=new UserDTO().setId(1L).setUsername("name");
+        UserDTO userDTO = new UserDTO().setId(1L).setUsername("name");
 
         when(teamRepository.getById(1L)).thenReturn(Optional.of(team));
         when(userRepository.getById(1L)).thenReturn(Optional.of(user));
-        when(teamRepository.update(1L,team)).thenReturn(Optional.of(team));
+        when(teamRepository.update(1L, team)).thenReturn(Optional.of(team));
 
         Optional<TeamDTO> result = teamService.addUserToTeam(1L, userDTO);
 

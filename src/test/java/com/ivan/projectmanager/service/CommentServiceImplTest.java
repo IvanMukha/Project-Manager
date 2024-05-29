@@ -68,26 +68,26 @@ public class CommentServiceImplTest {
     }
 
 
-        @Test
-        public void testSave() {
-            Project project = new Project().setId(1L).setTitle("title");
-            Task task = new Task().setId(1L).setTitle("task").setProject(project);
-            User user = new User().setId(1L).setUsername("username");
-            Comment comment = new Comment().setText("text").setTask(task).setUser(user);
-            CommentDTO commentDTO = new CommentDTO().setText("text");
-            commentDTO.setUserId(1L);
+    @Test
+    public void testSave() {
+        Project project = new Project().setId(1L).setTitle("title");
+        Task task = new Task().setId(1L).setTitle("task").setProject(project);
+        User user = new User().setId(1L).setUsername("username");
+        Comment comment = new Comment().setText("text").setTask(task).setUser(user);
+        CommentDTO commentDTO = new CommentDTO().setText("text");
+        commentDTO.setUserId(1L);
 
-            when(modelMapper.map(comment, CommentDTO.class)).thenReturn(commentDTO);
-            when(modelMapper.map(commentDTO, Comment.class)).thenReturn(comment);
-            when(taskRepository.getById(1L, 1L)).thenReturn(Optional.ofNullable(task));
-            when(userRepository.getById(1L)).thenReturn(Optional.ofNullable(user));
-            when(commentRepository.save(comment)).thenReturn(comment);
+        when(modelMapper.map(comment, CommentDTO.class)).thenReturn(commentDTO);
+        when(modelMapper.map(commentDTO, Comment.class)).thenReturn(comment);
+        when(taskRepository.getById(1L, 1L)).thenReturn(Optional.ofNullable(task));
+        when(userRepository.getById(1L)).thenReturn(Optional.ofNullable(user));
+        when(commentRepository.save(comment)).thenReturn(comment);
 
-            CommentDTO commentDTO2 = commentService.save(1L, 1L, commentDTO);
-            assertNotNull(commentDTO2);
-            assertEquals(commentDTO2.getText(), commentDTO.getText());
-            verify(commentRepository).save(any());
-        }
+        CommentDTO commentDTO2 = commentService.save(1L, 1L, commentDTO);
+        assertNotNull(commentDTO2);
+        assertEquals(commentDTO2.getText(), commentDTO.getText());
+        verify(commentRepository).save(any());
+    }
 
     @Test
     void testGetById() {
