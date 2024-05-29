@@ -4,30 +4,53 @@ import com.ivan.projectmanager.model.Attachment;
 import com.ivan.projectmanager.model.Attachment_;
 import com.ivan.projectmanager.repository.AbstractRepository;
 import com.ivan.projectmanager.repository.AttachmentRepository;
-import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public class AttachmentRepositoryImpl extends AbstractRepository<Attachment, Long> implements AttachmentRepository {
 
     public AttachmentRepositoryImpl(EntityManager entityManager) {
         super(entityManager, Attachment.class);
     }
 
-    public List<Attachment> getAll(Long projectId, Long taskId) {
-        return entityManager.createQuery("SELECT a FROM Attachment a JOIN FETCH a.task t WHERE t.id = :taskId AND t.project.id = :projectId", Attachment.class)
-                .setParameter("taskId", taskId)
-                .setParameter("projectId", projectId)
-                .getResultList();
+    public Page<Attachment> getAll(Long projectId, Long taskId, Pageable pageable) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Attachment> criteriaQuery = criteriaBuilder.createQuery(Attachment.class);
+        Root<Attachment> root = criteriaQuery.from(Attachment.class);
+
+        Predicate taskIdPredicate = criteriaBuilder.equal(root.get("task").get("id"), taskId);
+        Predicate projectIdPredicate = criteriaBuilder.equal(root.get("task").get("project").get("id"), projectId);
+        Predicate finalPredicate = criteriaBuilder.and(taskIdPredicate, projectIdPredicate);
+
+        CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+        Root<Attachment> rootCount = countQuery.from(Attachment.class);
+        countQuery.select(criteriaBuilder.count(rootCount));
+        Long totalRows = entityManager.createQuery(countQuery).getSingleResult();
+
+        criteriaQuery.where(finalPredicate);
+        TypedQuery<Attachment> typedQuery = entityManager.createQuery(criteriaQuery);
+        typedQuery.setFirstResult((int) pageable.getOffset());
+        typedQuery.setMaxResults(pageable.getPageSize());
+        List<Attachment> resultList = typedQuery.getResultList();
+
+        return new PageImpl<>(resultList, pageable, totalRows);
     }
+
 
     public Optional<Attachment> getById(Long projectId, Long taskId, Long id) {
         try {
@@ -73,42 +96,11 @@ public class AttachmentRepositoryImpl extends AbstractRepository<Attachment, Lon
     }
 
 
-    public List<Attachment> findByTitleCriteria(String title) {
+    public List<Attachment> findByTitle(String title) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Attachment> query = cb.createQuery(Attachment.class);
         Root<Attachment> root = query.from(Attachment.class);
         query.select(root).where(cb.equal(root.get(Attachment_.TITLE), title));
         return entityManager.createQuery(query).getResultList();
-    }
-
-    public List<Attachment> findByTitleJpql(String title) {
-        return entityManager.createQuery("SELECT a FROM Attachment a WHERE a.title = :title", Attachment.class)
-                .setParameter("title", title)
-                .getResultList();
-    }
-
-    public List<Attachment> findByTitleCriteriaFetch(String title) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Attachment> query = cb.createQuery(Attachment.class);
-        Root<Attachment> root = query.from(Attachment.class);
-        root.fetch(Attachment_.TASK);
-        query.select(root).where(cb.equal(root.get(Attachment_.TITLE), title));
-        return entityManager.createQuery(query).getResultList();
-    }
-
-    public List<Attachment> findByTitleJpqlFetch(String title) {
-        return entityManager.createQuery("SELECT a FROM Attachment a JOIN FETCH a.task WHERE a.title = :title", Attachment.class)
-                .setParameter("title", title)
-                .getResultList();
-    }
-
-    public List<Attachment> findByTitleWithEntityGraphFetch(String title) {
-        EntityGraph<Attachment> graph = entityManager.createEntityGraph(Attachment.class);
-        graph.addAttributeNodes(Attachment_.TASK);
-
-        return entityManager.createQuery("SELECT a FROM Attachment a WHERE a.title = :title", Attachment.class)
-                .setParameter("title", title)
-                .setHint("javax.persistence.fetchgraph", graph)
-                .getResultList();
     }
 }

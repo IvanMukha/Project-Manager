@@ -11,6 +11,9 @@ public class CommentDTO {
     @NotNull(message = "Task id cannot be null")
     @Positive(message = "Task id must be greater than 0")
     private Long taskId;
+    @NotNull(message = "User id cannot be null")
+    @Positive(message = "User id must be greater than 0")
+    private Long userId;
 
     public Long getId() {
         return id;
@@ -36,5 +39,13 @@ public class CommentDTO {
 
     public void setTaskId(Long taskId) {
         this.taskId = taskId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

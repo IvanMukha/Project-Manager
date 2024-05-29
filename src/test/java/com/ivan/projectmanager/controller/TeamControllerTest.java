@@ -41,10 +41,14 @@ public class TeamControllerTest {
     @Sql("classpath:data/teamrepositorytests/insert-teams.sql")
     void testGetAllTeams() throws Exception {
         mockMvc.perform(get("/teams")
+                        .param("page", "0")
+                        .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].name").value("name"));
+                .andExpect(jsonPath("$.content[0].name").value("name"))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.totalPages").value(1));
     }
 
     @WithMockUser(username = "username", roles = {"USER"})
@@ -112,6 +116,33 @@ public class TeamControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @Test
+    @Sql("classpath:data/teamrepositorytests/insert-teams.sql")
+    @Sql("classpath:data/teamrepositorytests/insert-users-teams.sql")
+    void addUserToTeam() throws Exception {
+        String requestBody = "{\"id\": \"1\"}";
+        mockMvc.perform(post("/teams/1/users")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value("1"));
+    }
+
+    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @Test
+    @Sql("classpath:data/teamrepositorytests/insert-teams.sql")
+    @Sql("classpath:data/teamrepositorytests/insert-users-teams.sql")
+    void removeUserFromTeam() throws Exception {
+        String requestBody = "{\"id\": \"1\"}";
+        mockMvc.perform(delete("/teams/1/users")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }
 

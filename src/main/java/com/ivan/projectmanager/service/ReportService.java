@@ -1,12 +1,12 @@
 package com.ivan.projectmanager.service;
 
 import com.ivan.projectmanager.dto.ReportDTO;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ReportService {
-    List<ReportDTO> getAll(Long projectId, Long taskId);
+    Page<ReportDTO> getAll(Long projectId, Long taskId, Integer page, Integer size);
 
     ReportDTO save(Long projectId, Long taskId, ReportDTO reportDTO);
 

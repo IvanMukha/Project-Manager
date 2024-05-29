@@ -1,12 +1,13 @@
 package com.ivan.projectmanager.repository;
 
 import com.ivan.projectmanager.model.Comment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface CommentRepository {
-    List<Comment> getAll(Long projectId, Long taskId);
+public interface CommentRepository extends CrudRepository<Comment, Long> {
+    Page<Comment> getAll(Long projectId, Long taskId, Pageable pageable);
 
     Optional<Comment> getById(Long projectId, Long taskId, Long id);
 

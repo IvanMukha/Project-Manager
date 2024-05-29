@@ -1,0 +1,151 @@
+{
+	"info": {
+		"_postman_id": "59fb56df-5ec2-4d36-a7d4-71616f5351f0",
+		"name": "Teams",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "24231480"
+	},
+	"item": [
+		{
+			"name": "getAll",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/teams"
+			},
+			"response": []
+		},
+		{
+			"name": "getByid",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/teams/2"
+			},
+			"response": []
+		},
+		{
+			"name": "save",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"name\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/teams"
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"updatedName\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/teams/2"
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/teams/2"
+			},
+			"response": []
+		},
+		{
+			"name": "addUserInTeam",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwODY2MywiZXhwIjoxNzE3MDk1MDYzfQ.MCiNv2hbnnfaMyVv_VX5a4IWaZhdDSG3YcCTMGuE-mDjaZo0SPjo3nbdHngL632cn6iAy7WdRV1LBrb-lHiphg",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":\"1\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/teams/2"
+			},
+			"response": []
+		},
+		{
+			"name": "deleteUserFromTeam",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwODY2MywiZXhwIjoxNzE3MDk1MDYzfQ.MCiNv2hbnnfaMyVv_VX5a4IWaZhdDSG3YcCTMGuE-mDjaZo0SPjo3nbdHngL632cn6iAy7WdRV1LBrb-lHiphg",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":\"2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/teams/2/users"
+			},
+			"response": []
+		}
+	]
+}

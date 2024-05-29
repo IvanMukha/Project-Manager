@@ -10,12 +10,12 @@ import com.ivan.projectmanager.repository.TaskRepository;
 import com.ivan.projectmanager.service.AttachmentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AttachmentServiceImpl implements AttachmentService {
@@ -30,9 +30,17 @@ public class AttachmentServiceImpl implements AttachmentService {
         this.taskRepository = taskRepository;
     }
 
-    public List<AttachmentDTO> getAll(Long projectId, Long taskId) {
-        return attachmentRepository.getAll(projectId, taskId).stream().map(this::mapAttachmentToDTO).collect(Collectors.toList());
+    public Page<AttachmentDTO> getAll(Long projectId, Long taskId, Integer page, Integer size) {
+        if (page < 0) {
+            page = 0;
+        }
+        if (size <= 0 || size > 100) {
+            size = 10;
+        }
+        return attachmentRepository.getAll(projectId, taskId, PageRequest.of(page, size))
+                .map(this::mapAttachmentToDTO);
     }
+
 
     @Transactional
     public AttachmentDTO save(Long projectId, Long taskId, AttachmentDTO attachmentDTO) {

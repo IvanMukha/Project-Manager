@@ -7,6 +7,7 @@ import com.ivan.projectmanager.model.Task;
 import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.repository.CommentRepository;
 import com.ivan.projectmanager.repository.TaskRepository;
+import com.ivan.projectmanager.repository.UserRepository;
 import com.ivan.projectmanager.service.impl.CommentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +37,8 @@ public class CommentServiceImplTest {
     private TaskRepository taskRepository;
     @Mock
     private CommentRepository commentRepository;
+    @Mock
+    private UserRepository userRepository;
     @InjectMocks
     private CommentServiceImpl commentService;
 
@@ -46,15 +52,21 @@ public class CommentServiceImplTest {
         Comment comment2 = new Comment().setText("text2").setTask(task).setUser(user);
         CommentDTO commentDTO = new CommentDTO().setText("text");
         CommentDTO commentDTO2 = new CommentDTO().setText("text2");
+        List<Comment> comments = List.of(comment, comment2);
+        Page<Comment> page = new PageImpl<>(comments, PageRequest.of(0, 10), comments.size());
+
+        when(commentRepository.getAll(1L, 1L, PageRequest.of(0, 10))).thenReturn(page);
         when(modelMapper.map(comment, CommentDTO.class)).thenReturn(commentDTO);
         when(modelMapper.map(comment2, CommentDTO.class)).thenReturn(commentDTO2);
-        when(commentRepository.getAll(1L, 1L)).thenReturn(List.of(comment, comment2));
-        List<CommentDTO> result = commentService.getAll(1L, 1L);
+
+        List<CommentDTO> result = commentService.getAll(1L, 1L, 0, 10).getContent();
         assertEquals(2, result.size());
         assertEquals(comment.getText(), result.get(0).getText());
         assertEquals(comment2.getText(), result.get(1).getText());
-        verify(commentRepository).getAll(1L, 1L);
+
+        verify(commentRepository).getAll(1L, 1L, PageRequest.of(0, 10));
     }
+
 
     @Test
     public void testSave() {
@@ -63,10 +75,14 @@ public class CommentServiceImplTest {
         User user = new User().setId(1L).setUsername("username");
         Comment comment = new Comment().setText("text").setTask(task).setUser(user);
         CommentDTO commentDTO = new CommentDTO().setText("text");
+        commentDTO.setUserId(1L);
+
         when(modelMapper.map(comment, CommentDTO.class)).thenReturn(commentDTO);
         when(modelMapper.map(commentDTO, Comment.class)).thenReturn(comment);
         when(taskRepository.getById(1L, 1L)).thenReturn(Optional.ofNullable(task));
+        when(userRepository.getById(1L)).thenReturn(Optional.ofNullable(user));
         when(commentRepository.save(comment)).thenReturn(comment);
+
         CommentDTO commentDTO2 = commentService.save(1L, 1L, commentDTO);
         assertNotNull(commentDTO2);
         assertEquals(commentDTO2.getText(), commentDTO.getText());
@@ -77,8 +93,10 @@ public class CommentServiceImplTest {
     void testGetById() {
         Comment comment = new Comment().setText("text");
         CommentDTO commentDTO = new CommentDTO().setText("text");
+
         when(modelMapper.map(comment, CommentDTO.class)).thenReturn(commentDTO);
         when(commentRepository.getById(1L, 1L, 1L)).thenReturn(Optional.of(comment));
+
         Optional<CommentDTO> result = commentService.getById(1L, 1L, 1L);
         assertTrue(result.isPresent());
         assertEquals(comment.getText(), result.get().getText());
@@ -89,9 +107,11 @@ public class CommentServiceImplTest {
     void testUpdate() {
         Comment comment = new Comment().setText("text");
         CommentDTO commentDTO = new CommentDTO().setText("text");
+
         when(modelMapper.map(comment, CommentDTO.class)).thenReturn(commentDTO);
         when(modelMapper.map(commentDTO, Comment.class)).thenReturn(comment);
         when(commentRepository.update(1L, 1L, 1L, comment)).thenReturn(Optional.of(comment));
+
         Optional<CommentDTO> result = commentService.update(1L, 1L, 1L, commentDTO);
         assertTrue(result.isPresent());
         assertEquals(comment.getText(), result.get().getText());

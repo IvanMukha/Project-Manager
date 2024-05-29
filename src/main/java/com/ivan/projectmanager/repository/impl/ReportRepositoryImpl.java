@@ -1,24 +1,27 @@
 package com.ivan.projectmanager.repository.impl;
 
 import com.ivan.projectmanager.model.Report;
-import com.ivan.projectmanager.model.Report_;
 import com.ivan.projectmanager.model.User;
 import com.ivan.projectmanager.repository.AbstractRepository;
 import com.ivan.projectmanager.repository.ReportRepository;
-import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public class ReportRepositoryImpl extends AbstractRepository<Report, Long> implements ReportRepository {
 
 
@@ -26,12 +29,29 @@ public class ReportRepositoryImpl extends AbstractRepository<Report, Long> imple
         super(entityManager, Report.class);
     }
 
-    public List<Report> getAll(Long projectId, Long taskId) {
-        return entityManager.createQuery("SELECT r FROM Report r JOIN FETCH r.task t WHERE t.id = :taskId AND t.project.id = :projectId", Report.class)
-                .setParameter("taskId", taskId)
-                .setParameter("projectId", projectId)
-                .getResultList();
+    public Page<Report> getAll(Long projectId, Long taskId, Pageable pageable) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Report> criteriaQuery = criteriaBuilder.createQuery(Report.class);
+        Root<Report> root = criteriaQuery.from(Report.class);
+
+        Predicate taskIdPredicate = criteriaBuilder.equal(root.get("task").get("id"), taskId);
+        Predicate projectIdPredicate = criteriaBuilder.equal(root.get("task").get("project").get("id"), projectId);
+        Predicate finalPredicate = criteriaBuilder.and(taskIdPredicate, projectIdPredicate);
+
+        criteriaQuery.where(finalPredicate);
+
+        CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+        countQuery.select(criteriaBuilder.count(countQuery.from(Report.class)));
+        Long totalRows = entityManager.createQuery(countQuery).getSingleResult();
+
+        TypedQuery<Report> typedQuery = entityManager.createQuery(criteriaQuery);
+        typedQuery.setFirstResult((int) pageable.getOffset());
+        typedQuery.setMaxResults(pageable.getPageSize());
+        List<Report> resultList = typedQuery.getResultList();
+
+        return new PageImpl<>(resultList, pageable, totalRows);
     }
+
 
     public Optional<Report> getById(Long projectId, Long taskId, Long id) {
         try {
@@ -76,45 +96,10 @@ public class ReportRepositoryImpl extends AbstractRepository<Report, Long> imple
         getById(projectId, taskId, id).ifPresent(entityManager::remove);
     }
 
-    public List<Report> getReportsByUserJpql(User user) {
+    public List<Report> getReportsByUser(User user) {
         TypedQuery<Report> query = entityManager.createQuery(
                 "SELECT r FROM Report r WHERE r.user = :user", Report.class);
         query.setParameter("user", user);
         return query.getResultList();
-    }
-
-    public List<Report> getReportsByUserCriteria(User user) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Report> cq = cb.createQuery(Report.class);
-        Root<Report> root = cq.from(Report.class);
-        cq.select(root).where(cb.equal(root.get(Report_.USER), user));
-        TypedQuery<Report> query = entityManager.createQuery(cq);
-        return query.getResultList();
-    }
-
-    public List<Report> getReportsByUserJpqlFetch(User user) {
-        return entityManager.createQuery(
-                        "SELECT r FROM Report r JOIN FETCH r.user WHERE r.user = :user", Report.class)
-                .setParameter("user", user)
-                .getResultList();
-    }
-
-    public List<Report> getReportsByUserCriteriaFetch(User user) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Report> cq = cb.createQuery(Report.class);
-        Root<Report> root = cq.from(Report.class);
-        root.fetch(Report_.USER, JoinType.LEFT);
-        cq.select(root).where(cb.equal(root.get(Report_.USER), user));
-        return entityManager.createQuery(cq).getResultList();
-    }
-
-    public List<Report> getReportsByUserEntityGraph(User user) {
-        EntityGraph<Report> entityGraph = entityManager.createEntityGraph(Report.class);
-        entityGraph.addAttributeNodes(Report_.USER);
-        return entityManager.createQuery(
-                        "SELECT r FROM Report r WHERE r.user = :user", Report.class)
-                .setParameter("user", user)
-                .setHint("javax.persistence.fetchgraph", entityGraph)
-                .getResultList();
     }
 }

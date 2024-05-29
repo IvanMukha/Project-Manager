@@ -1,13 +1,15 @@
 package com.ivan.projectmanager.repository;
 
+import com.ivan.projectmanager.dto.TaskCountDTO;
 import com.ivan.projectmanager.model.Task;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface TaskRepository {
-
-    List<Task> getAll(Long projectId);
 
     Optional<Task> getById(Long projectId, Long id);
 
@@ -17,14 +19,19 @@ public interface TaskRepository {
 
     void delete(Long projectId, Long id);
 
-    List<Task> getByStatusCriteria(String status);
+    List<Task> getByStatus(String status);
 
-    List<Task> getByCategoryJpql(String category);
+    List<Task> getByCategory(String category);
 
-    List<Task> getAllJpqlFetch();
+    Page<Task> getAll(
+            String status, String priority, Long reporterId, Long assigneeId,
+            String category, String label, LocalDateTime startDateFrom,
+            LocalDateTime startDateTo, LocalDateTime dueDateFrom,
+            LocalDateTime dueDateTo, Long projectId, Pageable pageable);
 
-    List<Task> getAllCriteriaFetch();
+    List<TaskCountDTO> countTasksByStatusAndDateRange(String status, LocalDateTime dateFrom,
+                                                      LocalDateTime dateTo, Long projectId);
 
-    List<Task> getAllEntityGraph();
-
+    List<TaskCountDTO> countTasksByStatusAndDateRangeForUser(String status, LocalDateTime dateFrom,
+                                                             LocalDateTime dateTo, Long userId, Long projectId);
 }

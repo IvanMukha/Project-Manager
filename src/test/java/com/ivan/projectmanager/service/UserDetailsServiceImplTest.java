@@ -59,10 +59,12 @@ public class UserDetailsServiceImplTest {
     @Test
     void testSaveUserDetails() {
         User user = new User().setId(1L).setUsername("username");
+
         when(modelMapper.map(userDetailsDTO, UserDetails.class)).thenReturn(userDetails);
         when(modelMapper.map(userDetails, UserDetailsDTO.class)).thenReturn(userDetailsDTO);
         when(userRepository.getById(1L)).thenReturn(Optional.ofNullable(user));
         when(userDetailsRepository.save(userDetails)).thenReturn(userDetails);
+
         UserDetailsDTO savedUserDetailsDTO = userDetailsService.save(1L, userDetailsDTO);
         assertNotNull(savedUserDetailsDTO);
         assertEquals(userDetails.getName(), savedUserDetailsDTO.getName());
@@ -78,6 +80,7 @@ public class UserDetailsServiceImplTest {
     void testGetUserDetailsById() {
         when(modelMapper.map(userDetails, UserDetailsDTO.class)).thenReturn(userDetailsDTO);
         when(userDetailsRepository.getById(1L)).thenReturn(Optional.of(userDetails));
+
         Optional<UserDetailsDTO> result = userDetailsService.getById(1L);
         assertTrue(result.isPresent());
         assertEquals(userDetails.getName(), result.get().getName());

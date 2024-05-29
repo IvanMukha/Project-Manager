@@ -1,0 +1,103 @@
+{
+	"info": {
+		"_postman_id": "6bb6c745-7a0e-4f25-b34c-3bb490fd081e",
+		"name": "Reports",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "24231480"
+	},
+	"item": [
+		{
+			"name": "getAll",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/2/reports"
+			},
+			"response": []
+		},
+		{
+			"name": "getById",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/2/reports/2"
+			},
+			"response": []
+		},
+		{
+			"name": "save",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"title\",\r\n    \"text\":\"text\",\r\n    \"createAt\":\"2024-04-25T20:01:46.488778\",\r\n    \"userId\":\"2\",\r\n    \"taskId\":\"2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/2/reports"
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"title\",\r\n    \"text\":\"text\",\r\n    \"createAt\":\"2024-04-25T20:01:46.488778\",\r\n    \"userId\":\"2\",\r\n    \"taskId\":\"2\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/2/reports/2"
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwNDQyOSwiZXhwIjoxNzE3MDkwODI5fQ.k5Zu9bPz9dsxPFP9zSzyR9khit3wocyjxz_ZYy3uo3n-A6xVoSgORTaLJQD5WtwBTL4VgD4rvsIOfJbyodAExw",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/projects/2/tasks/2/reports/2"
+			},
+			"response": []
+		}
+	]
+}

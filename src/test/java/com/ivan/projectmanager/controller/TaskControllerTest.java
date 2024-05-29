@@ -41,13 +41,17 @@ public class TaskControllerTest {
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     void testGetAllTasks() throws Exception {
         mockMvc.perform(get("/projects/1/tasks")
+                        .param("page", "0")
+                        .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].title").value("Task 1"))
-                .andExpect(jsonPath("$[0].status").value("In progress"))
-                .andExpect(jsonPath("$[0].priority").value("High"))
-                .andExpect(jsonPath("$[0].category").value("Development"));
+                .andExpect(jsonPath("$.content[0].title").value("Task 1"))
+                .andExpect(jsonPath("$.content[0].status").value("In progress"))
+                .andExpect(jsonPath("$.content[0].priority").value("High"))
+                .andExpect(jsonPath("$.content[0].category").value("Development"))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.totalPages").value(1));
     }
 
     @WithMockUser(username = "username", roles = {"USER"})
@@ -111,7 +115,7 @@ public class TaskControllerTest {
 
     @WithMockUser(username = "username", roles = {"USER"})
     @Test
-    public void testAccessDenied() throws Exception {
+    void testAccessDenied() throws Exception {
         String requestBody = "{\"title\": \"Task 1\", \"status\": \"In progress\", \"priority\": \"High\", \"startDate\":" +
                 " \"2024-04-17T10:00:00\", " +
                 "\"dueDate\": \"2024-04-20T17:00:00\", \"reporterId\": 1, \"assigneeId\": 2, " +
@@ -125,7 +129,7 @@ public class TaskControllerTest {
     }
 
     @Test
-    public void testUnregisteredUserAccessDenied() throws Exception {
+    void testUnregisteredUserAccessDenied() throws Exception {
         String requestBody = "{\"title\": \"Task 1\", \"status\": \"In progress\", \"priority\": \"High\", \"startDate\":" +
                 " \"2024-04-17T10:00:00\", " +
                 "\"dueDate\": \"2024-04-20T17:00:00\", \"reporterId\": 1, \"assigneeId\": 2, " +
@@ -136,5 +140,32 @@ public class TaskControllerTest {
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @Test
+    @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
+    void countTasksByStatusAndDateRange() throws Exception {
+        mockMvc.perform(get("/projects/1/tasks/count-by-status")
+                        .param("status", "Completed")
+                        .param("dateFrom", "2024-04-20")
+                        .param("dateTo", "2024-04-20")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @WithMockUser(username = "username", roles = {"ADMIN"})
+    @Test
+    @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
+    void countTasksByStatusAndDateRangeForUser() throws Exception {
+        mockMvc.perform(get("/projects/1/tasks/count-by-user")
+                        .param("status", "Completed")
+                        .param("dateFrom", "2024-04-20")
+                        .param("dateTo", "2024-04-20")
+                        .param("userId", "2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }

@@ -41,10 +41,14 @@ public class CommentControllerTest {
     @Sql("classpath:data/commentrepositorytests/insert-comments.sql")
     void testGetAllComments() throws Exception {
         mockMvc.perform(get("/projects/1/tasks/1/comments")
+                        .param("page", "0")
+                        .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].text").value("text"));
+                .andExpect(jsonPath("$.content[0].text").value("text"))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.totalPages").value(1));
     }
 
     @WithMockUser(username = "username", roles = {"USER"})
@@ -63,7 +67,7 @@ public class CommentControllerTest {
     @Test
     @Sql("classpath:data/taskrepositorytests/insert-tasks.sql")
     void testSaveComment() throws Exception {
-        String requestBody = "{\"text\": \"saveText\", \"addtime\":\"2024-04-25 20:01:46.488778\"}";
+        String requestBody = "{\"text\": \"saveText\", \"userId\":\"1\"}";
         mockMvc.perform(post("/projects/1/tasks/1/comments")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))

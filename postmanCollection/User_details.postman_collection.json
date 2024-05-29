@@ -1,0 +1,91 @@
+{
+	"info": {
+		"_postman_id": "6ce08f41-2edd-49f4-a5cb-4256d687ba58",
+		"name": "User_details",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "24231480"
+	},
+	"item": [
+		{
+			"name": "getByid",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAxMDAyMCwiZXhwIjoxNzE3MDk2NDIwfQ.vBK08gm2SXMMNAuRnCxVH5RAxsolKdH1ttTXyhgvoX3f0JQCgazV0j6O-SN7qDcB586tXoEoOfZ8kxo_YZSRqw",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/users/1/userDetails"
+			},
+			"response": []
+		},
+		{
+			"name": "save",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAxMDAyMCwiZXhwIjoxNzE3MDk2NDIwfQ.vBK08gm2SXMMNAuRnCxVH5RAxsolKdH1ttTXyhgvoX3f0JQCgazV0j6O-SN7qDcB586tXoEoOfZ8kxo_YZSRqw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " {\"userId\": 2,\r\n    \"name\": \"Jane\",\r\n    \"surname\": \"Doe\",\r\n    \"phone\": \"+1234567891\",\r\n    \"workPhone\": \"+9876543211\",\r\n    \"workAdress\": \"456 Elm St, City, Country\",\r\n    \"department\": \"HR Department\"\r\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/users/2/userDetails"
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAxMDAyMCwiZXhwIjoxNzE3MDk2NDIwfQ.vBK08gm2SXMMNAuRnCxVH5RAxsolKdH1ttTXyhgvoX3f0JQCgazV0j6O-SN7qDcB586tXoEoOfZ8kxo_YZSRqw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " {\"userId\": 2,\r\n    \"name\": \"Jane\",\r\n    \"surname\": \"Doe\",\r\n    \"phone\": \"+1234567891\",\r\n    \"workPhone\": \"+9876543211\",\r\n    \"workAdress\": \"456 Elm St, City, Country\",\r\n    \"department\": \"HR Department\"\r\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/users/2/userDetails"
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAxMDAyMCwiZXhwIjoxNzE3MDk2NDIwfQ.vBK08gm2SXMMNAuRnCxVH5RAxsolKdH1ttTXyhgvoX3f0JQCgazV0j6O-SN7qDcB586tXoEoOfZ8kxo_YZSRqw",
+						"type": "text"
+					}
+				],
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/users/2/userDetails"
+			},
+			"response": []
+		}
+	]
+}

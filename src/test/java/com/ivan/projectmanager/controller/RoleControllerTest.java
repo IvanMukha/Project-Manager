@@ -41,17 +41,21 @@ public class RoleControllerTest {
     @Sql("classpath:data/rolerepositorytests/insert-roles.sql")
     void testGetAllRoles() throws Exception {
         mockMvc.perform(get("/roles")
+                        .param("page", "0")
+                        .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].name").value("name"));
+                .andExpect(jsonPath("$.content[0].name").value("name"))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.totalPages").value(1));
     }
 
     @WithMockUser(username = "username", roles = {"ADMIN"})
     @Test
     @Sql("classpath:data/rolerepositorytests/insert-roles.sql")
     void testGetRoleById() throws Exception {
-      var result=  mockMvc.perform(get("/roles/1")
+        mockMvc.perform(get("/roles/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

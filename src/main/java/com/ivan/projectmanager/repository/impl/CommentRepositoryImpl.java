@@ -5,24 +5,51 @@ import com.ivan.projectmanager.repository.AbstractRepository;
 import com.ivan.projectmanager.repository.CommentRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public class CommentRepositoryImpl extends AbstractRepository<Comment, Long> implements CommentRepository {
 
     public CommentRepositoryImpl(EntityManager entityManager) {
         super(entityManager, Comment.class);
     }
 
-    public List<Comment> getAll(Long projectId, Long taskId) {
-        return entityManager.createQuery("SELECT c FROM Comment c JOIN FETCH c.task t WHERE t.id = :taskId AND t.project.id = :projectId", Comment.class)
-                .setParameter("taskId", taskId)
-                .setParameter("projectId", projectId)
-                .getResultList();
+    public Page<Comment> getAll(Long projectId, Long taskId, Pageable pageable) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Comment> criteriaQuery = criteriaBuilder.createQuery(Comment.class);
+        Root<Comment> root = criteriaQuery.from(Comment.class);
+
+        Predicate taskIdPredicate = criteriaBuilder.equal(root.get("task").get("id"), taskId);
+        Predicate projectIdPredicate = criteriaBuilder.equal(root.get("task").get("project").get("id"), projectId);
+        Predicate finalPredicate = criteriaBuilder.and(taskIdPredicate, projectIdPredicate);
+
+        CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+        Root<Comment> countRoot = countQuery.from(Comment.class);
+        countQuery.select(criteriaBuilder.count(countRoot));
+        Long totalRows = entityManager.createQuery(countQuery).getSingleResult();
+
+        criteriaQuery.where(finalPredicate);
+        TypedQuery<Comment> typedQuery = entityManager.createQuery(criteriaQuery);
+        typedQuery.setFirstResult((int) pageable.getOffset());
+        typedQuery.setMaxResults(pageable.getPageSize());
+        List<Comment> resultList = typedQuery.getResultList();
+
+        return new PageImpl<>(resultList, pageable, totalRows);
     }
+
 
     public Optional<Comment> getById(Long projectId, Long taskId, Long id) {
         try {
@@ -65,6 +92,5 @@ public class CommentRepositoryImpl extends AbstractRepository<Comment, Long> imp
             return Optional.empty();
         }
     }
-
 }
 

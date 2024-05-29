@@ -41,11 +41,16 @@ public class ReportControllerTest {
     @Sql("classpath:data/reportrepositorytests/insert-reports.sql")
     void testGetAllReports() throws Exception {
         mockMvc.perform(get("/projects/1/tasks/1/reports")
+                        .param("page", "0")
+                        .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].title").value("title"))
-                .andExpect(jsonPath("$[0].text").value("text"));
+                .andExpect(jsonPath("$.content[0].title").value("title"))
+                .andExpect(jsonPath("$.content[0].text").value("text"))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.totalPages").value(1));
+
     }
 
     @WithMockUser(username = "username", roles = {"ADMIN"})

@@ -1,0 +1,63 @@
+{
+	"info": {
+		"_postman_id": "d0381698-d8ec-48fb-8121-135b573977a6",
+		"name": "Authnentication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "24231480"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/auth/register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlhdCI6MTcxNzAwMDQxOSwiZXhwIjoxNzE3MDg2ODE5fQ.TY7x8_3nb8SZIN_a_IlsgB2y1saLfYt_QXQT2qVorNzNlaisNFeISbCrG39UUJ20iatT7rUyV529zvsE4D5XLw",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"username\",\r\n    \"password\": \"password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/auth/register",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"username\",\r\n    \"password\": \"password\",\r\n    \"email\": \"email@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/projectmanager-1.0-SNAPSHOT/auth/register"
+			},
+			"response": []
+		}
+	]
+}

@@ -19,7 +19,7 @@ public class TestControllerConfiguration {
 
     @Primary
     @Bean
-    public DataSource dataSource1(PostgreSQLContainer<?> postgreSQLContainer) {
+    public DataSource dataSource(PostgreSQLContainer<?> postgreSQLContainer) {
         return new DriverManagerDataSource(
                 postgreSQLContainer.getJdbcUrl(),
                 postgreSQLContainer.getUsername(),
